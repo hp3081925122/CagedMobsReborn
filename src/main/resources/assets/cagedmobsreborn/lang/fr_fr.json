@@ -1,0 +1,65 @@
+{
+	"itemGroup.cagedmobsreborn_tab": "Cages à monstres",
+	
+	"item.cagedmobsreborn.dna_sampler": "Echantillonneur ADN",
+	"item.cagedmobsreborn.diamond_dna_sampler": "Echantillonneur ADN en diamant",
+	"item.cagedmobsreborn.netherite_dna_sampler": "Echantillonneur ADN en Netherite",
+
+	"item.cagedmobsreborn.dna_sampler.empty": "Frappez une entité pour récupérer son ADN",
+	"item.cagedmobsreborn.dna_sampler.tier1Info": "Peut être utilisé sur les entités faibles",
+	"item.cagedmobsreborn.dna_sampler.tier2Info": "Peut être utilisé sur les entités plus fortes",
+	"item.cagedmobsreborn.dna_sampler.tier3Info": "Peut être utilisé sur les Boss",
+	"item.cagedmobsreborn.dna_sampler.makeEmpty": "Maj-Clic droit - Pour vider le contenu de l'échantillonneur",
+	"item.cagedmobsreborn.dna_sampler.not_cachable": "Cette entité ne peut pas être échantillonnée",
+	"item.cagedmobsreborn.dna_sampler.not_sufficient": "Cet échantillonneur n'est pas assez résistant pour cette entité",
+	"item.cagedmobsreborn.dna_sampler.unknown_entity": "Entité inconnue",
+
+	"item.cagedmobsreborn.cooking_upgrade": "Amélioration - Cuisine",
+	"item.cagedmobsreborn.lightning_upgrade": "Amélioration - Foudre",
+	"item.cagedmobsreborn.arrow_upgrade": "Amélioration - Flèches",
+	"item.cagedmobsreborn.cooking_upgrade.info": "Cuisine automatiquement les butins de l'entité",
+	"item.cagedmobsreborn.lightning_upgrade.info": "Tue l'entité avec l'aide de la foudre",
+	"item.cagedmobsreborn.arrow_upgrade.info": "Tue l'entité avec l'aide de flèches",
+
+	"item.cagedmobsreborn.upgrades.attach": "Peut être ajouté à une cage",
+
+	"item.cagedmobsreborn.dragon_scale": "Ecaille de Dragon",
+	"item.cagedmobsreborn.sponge_fragment": "Fragment d'éponge",
+	"item.cagedmobsreborn.nether_star_fragment": "Fragment d'étoile du Nether",
+	"item.cagedmobsreborn.honey_drop": "Goutte de miel",
+	"item.cagedmobsreborn.star_infused_netherite_ingot": "Lingot de Netherite scintillante",
+	"item.cagedmobsreborn.star_infused_netherite_nugget": "Pépite de Netherite scintillante",
+	
+	"block.cagedmobsreborn.mob_cage": "Cage à monstres",
+	"block.cagedmobsreborn.hopping_mob_cage": "Cage à monstres auto-récoltante",
+	"block.cagedmobsreborn.star_infused_netherite_block": "Bloc de Netherite scintillante",
+	"block.cagedmobsreborn.mob_cage.envNotSuitable": "L'environnement de la cage ne convient pas a l'entité.",
+	"block.cagedmobsreborn.mob_cage.mainInfo": "Permet de générer le butin de l'entité échantillonnée",
+	"block.cagedmobsreborn.mob_cage.envInfo": "Nécessite un environnement adapté à l'entité",
+	"block.cagedmobsreborn.mob_cage.hoppingInfo": "Envoie les butins dans un stockage placé en dessous",
+	"block.cagedmobsreborn.mob_cage.upgrading": "Peut être amélioré",
+	"block.cagedmobsreborn.mob_cage.hoppingCagesDisabled1": "Récolte automatique désactivée.",
+	"block.cagedmobsreborn.mob_cage.hoppingCagesDisabled2": "Les cages auto-récoltantes Fonctionnerons comme les cages standards.",
+	"block.cagedmobsreborn.mob_cage.requiresWater": "Cette entité nécessite une cage immergée dans de l'eau.",
+	"block.cagedmobsreborn.mob_cage.envRequired": "Vous devez d'abord définir un environnement.",
+	"block.cagedmobsreborn.star_infused_netherite_block.beacon": "Peut être utilisé comme base d'une balise.",
+
+	"jei.category.cagedmobsreborn.entity": "Butin de l'entité",
+	"jei.tooltip.cagedmobsreborn.entity.chance": "Chance: %d%%",
+	"jei.tooltip.cagedmobsreborn.entity.growModifier": "Croissance: +%d%%",
+	"jei.tooltip.cagedmobsreborn.entity.amountEqual": "Quantité: %d",
+	"jei.tooltip.cagedmobsreborn.entity.amount": "Quantité: %d - %d",
+	"jei.tooltip.cagedmobsreborn.entity.ticks": "%d secondes",
+	"jei.tooltip.cagedmobsreborn.entity.cooking_upgrade": "Nécessite l'amélioration - Cuisine",
+	"jei.tooltip.cagedmobsreborn.entity.lightning_upgrade": "Nécessite l'amélioration - Foudre",
+	"jei.tooltip.cagedmobsreborn.entity.arrow_upgrade": "Nécessite l'amélioration - Flèches",
+	"jei.tooltip.cagedmobsreborn.entity.colorItem": "S'obtient uniquement sur les entité de la couleur correspondante",
+	"jei.tooltip.cagedmobsreborn.entity.requiresWater": "Nécessite une cage immergée",
+
+	"JADE.tooltip.cagedmobsreborn.cage.entity": "Entité: ",
+	"JADE.tooltip.cagedmobsreborn.cage.environment": "Environnement: ",
+	"JADE.tooltip.cagedmobsreborn.cage.progress": "Progression: ",
+	"TOP.tooltip.cagedmobsreborn.cage.upgrades": "Améliorations:",
+
+	"config.jade.plugin_cagedmobsreborn.cagedmobsreborn_jade": "Cages à monstres"
+}

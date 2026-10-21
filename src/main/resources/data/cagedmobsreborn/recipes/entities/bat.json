@@ -1,0 +1,13 @@
+{
+	"type": "cagedmobsreborn:entity_data",
+	"forge:condition": {
+			"type": "forge:mod_loaded",
+			"modid": "cagedmobsreborn"
+	},
+	"entity": "minecraft:bat",
+	"samplerTier": 1,
+	"environments": ["cave"],
+	"growTicks": 1200,
+	"results": [
+	]
+}

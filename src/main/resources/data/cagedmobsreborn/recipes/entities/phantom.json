@@ -1,0 +1,22 @@
+{
+	"type": "cagedmobsreborn:entity_data",
+	"forge:condition": {
+			"type": "forge:mod_loaded",
+			"modid": "cagedmobsreborn"
+	},
+	"entity": "minecraft:phantom",
+	"samplerTier": 2,
+	"environments": ["cave"],
+	"growTicks": 1800,
+	"results": [
+		{
+			"chance": 0.6,
+				"output": {
+					"item": "minecraft:phantom_membrane"
+				},
+				"minAmount": 1,
+				"maxAmount": 1
+		}
+	]
+	
+}

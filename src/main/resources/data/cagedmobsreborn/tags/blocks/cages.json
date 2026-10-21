@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "cagedmobsreborn:mob_cage",
+    "cagedmobsreborn:hopping_mob_cage"
+  ]
+}

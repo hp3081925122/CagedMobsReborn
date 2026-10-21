@@ -1,0 +1,20 @@
+{
+	"type": "cagedmobsreborn:additional_loot_data",
+	"forge:condition": {
+			"type": "forge:mod_loaded",
+			"modid": "cagedmobsreborn"
+	},
+	"entity": "minecraft:ender_dragon",
+	"results": [
+		{
+			"lightning": true,
+			"chance": 0.01,
+			"output": {
+				"item": "minecraft:dragon_head"
+			},
+			"minAmount": 1,
+			"maxAmount": 1
+		}
+	]
+
+}

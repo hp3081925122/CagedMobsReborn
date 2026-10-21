@@ -1,0 +1,45 @@
+{
+	"itemGroup.cagedmobsreborn_tab": "Caged Mobs",
+	
+	"item.cagedmobsreborn.dna_sampler": "Amostrador de DNA",
+	"item.cagedmobsreborn.diamond_dna_sampler": "Amostrador de DNA de Diamante",
+	"item.cagedmobsreborn.netherite_dna_sampler": "Amostrador de DNA de Netherite",
+
+	"item.cagedmobsreborn.dna_sampler.empty": "Bata uma entidade para extrair sua amostra de DNA",
+	"item.cagedmobsreborn.dna_sampler.tier1Info": "Pode ser usado em entidades básicas",
+	"item.cagedmobsreborn.dna_sampler.tier2Info": "Pode ser usado em entidades mais fortes",
+	"item.cagedmobsreborn.dna_sampler.tier3Info": "Pode ser usado em chefes",
+	"item.cagedmobsreborn.dna_sampler.makeEmpty": "Shift + Clique Direito para limpar a amostra de DNA armazenada",
+	"item.cagedmobsreborn.dna_sampler.not_cachable": "Não é possível tirar amostras deste tipo de entidade",
+	"item.cagedmobsreborn.dna_sampler.not_sufficient": "Este amostrador de DNA não é forte o suficiente para amostrar esta entidade",
+	"item.cagedmobsreborn.dna_sampler.unknown_entity": "Entidade desconhecida",
+
+	"item.cagedmobsreborn.cooking_upgrade": "Upgrade: Cozinhar",
+	"item.cagedmobsreborn.lightning_upgrade": "Upgrade: Relâmpago",
+	"item.cagedmobsreborn.cooking_upgrade.info": "Cozinha automaticamente drops de entidades que podem ser cozidos",
+	"item.cagedmobsreborn.lightning_upgrade.info": "Mata entidades dentro da jaula com um raio",
+
+	"item.cagedmobsreborn.upgrades.attach": "Pode ser anexado ao Gaiola de Mob",
+
+	"item.cagedmobsreborn.dragon_scale": "Escama de Dragão",
+	"item.cagedmobsreborn.sponge_fragment": "Fragmento de Esponja",
+	"item.cagedmobsreborn.nether_star_fragment": "Fragmento de Estrela Nether",
+	
+	"block.cagedmobsreborn.mob_cage": "Gaiola de Mob",
+	"block.cagedmobsreborn.hopping_mob_cage": "Gaiola de Mob Saltitante",
+	"block.cagedmobsreborn.mob_cage.envNotSuitable": "O ambiente dentro da gaiola não é adequado para esta entidade.",
+	"block.cagedmobsreborn.mob_cage.mainInfo": "Pode replicar drops da entidade da amostra de DNA armazenada",
+	"block.cagedmobsreborn.mob_cage.envInfo": "Precisa ter ambiente adequado para entidade",
+	"block.cagedmobsreborn.mob_cage.hoppingInfo": "Coloca os drops produzidos no estoque abaixo",
+	"block.cagedmobsreborn.mob_cage.upgrading": "Pode receber Upgrade",
+
+	"jei.category.cagedmobsreborn.entity": "Drops de Entidades Enjauladas",
+	"jei.tooltip.cagedmobsreborn.entity.chance": "Chance: %d%%",
+	"jei.tooltip.cagedmobsreborn.entity.amountEqual": "Quantidade: %d",
+	"jei.tooltip.cagedmobsreborn.entity.amount": "Quantidade: %d - %d",
+	"jei.tooltip.cagedmobsreborn.entity.cooking_upgrade": "Requer o Upgrade: Cozinhar",
+	"jei.tooltip.cagedmobsreborn.entity.lightning_upgrade": "Requer  o Upgrade: Relâmpago",
+	"jei.tooltip.cagedmobsreborn.entity.colorItem": "Dropa apenas de entidades tingidas",
+
+	"config.jade.plugin_cagedmobsreborn.cagedmobsreborn_jade": "Caged Mobs"
+}

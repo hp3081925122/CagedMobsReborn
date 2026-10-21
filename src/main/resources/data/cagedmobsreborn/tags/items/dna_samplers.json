@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "cagedmobsreborn:dna_sampler",
+    "cagedmobsreborn:diamond_dna_sampler",
+    "cagedmobsreborn:netherite_dna_sampler"
+  ]
+}

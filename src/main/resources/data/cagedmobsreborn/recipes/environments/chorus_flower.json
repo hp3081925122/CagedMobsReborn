@@ -1,0 +1,13 @@
+{
+	"type": "cagedmobsreborn:environment_data",
+	"forge:condition": {
+			"type": "forge:mod_loaded",
+			"modid": "cagedmobsreborn"
+	},
+	"input": {
+		"item": "minecraft:chorus_flower"
+	},
+	"render": "minecraft:chorus_flower",
+	"growModifier": 1.15,
+	"categories": ["end"]
+}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "r#r",
+    " . "
+  ],
+  "key": {
+    "#": {
+      "item": "cagedmobsreborn:mob_cage"
+    },
+    ".": {
+      "item": "minecraft:hopper"
+    },
+    "r": {
+      "tag": "forge:dusts/redstone"
+    }
+  },
+  "result": {
+    "item": "cagedmobsreborn:hopping_mob_cage"
+  }
+}

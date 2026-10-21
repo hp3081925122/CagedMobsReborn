@@ -1,0 +1,26 @@
+{
+	"type": "cagedmobsreborn:entity_data",
+	"forge:condition": {
+			"type": "forge:mod_loaded",
+			"modid": "cagedmobsreborn"
+	},
+	"entity": "minecraft:dolphin",
+	"samplerTier": 1,
+	"environments": ["sand"],
+	"growTicks": 1200,
+	"requiresWater": true,
+	"results": [
+		{
+			"chance": 0.8,
+				"output": {
+					"item": "minecraft:cod"
+				},
+				"output_cooked": {
+					"item": "minecraft:cooked_cod"
+				},
+				"minAmount": 1,
+				"maxAmount": 1
+		}
+	]
+	
+}

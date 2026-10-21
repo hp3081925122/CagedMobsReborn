@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "cagedmobsreborn:arrow_upgrade",
+    "cagedmobsreborn:cooking_upgrade",
+    "cagedmobsreborn:lightning_upgrade",
+    "cagedmobsreborn:experience_upgrade",
+    "cagedmobsreborn:looting_upgrade",
+    "cagedmobsreborn:speed_i_upgrade",
+    "cagedmobsreborn:speed_ii_upgrade",
+    "cagedmobsreborn:speed_iii_upgrade",
+    "cagedmobsreborn:creative_upgrade"
+  ]
+}
