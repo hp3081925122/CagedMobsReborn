@@ -1,0 +1,10 @@
+{
+	"type": "cagedmobsreborn:environment_data",
+	"neoforge:conditions": [{ "type": "neoforge:mod_loaded", "modid": "cagedmobsreborn" }],
+	"input": {
+		"item": "minecraft:deepslate_diamond_ore"
+	},
+	"render": "minecraft:deepslate_diamond_ore",
+	"growModifier": 1.15,
+	"categories": ["cave"]
+}

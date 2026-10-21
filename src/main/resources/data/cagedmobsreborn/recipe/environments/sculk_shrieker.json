@@ -1,0 +1,10 @@
+{
+	"type": "cagedmobsreborn:environment_data",
+	"neoforge:conditions": [{ "type": "neoforge:mod_loaded", "modid": "cagedmobsreborn" }],
+	"input": {
+		"item": "minecraft:sculk_shrieker"
+	},
+	"render": "minecraft:sculk_shrieker",
+	"growModifier": 1.15,
+	"categories": ["sculk"]
+}

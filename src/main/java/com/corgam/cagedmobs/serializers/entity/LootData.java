@@ -17,7 +17,7 @@ public class LootData {
             Codec.FLOAT.fieldOf("chance").forGetter(LootData::getChance),
             Codec.INT.fieldOf("minAmount").forGetter(LootData::getMinAmount),
             Codec.INT.fieldOf("maxAmount").forGetter(LootData::getMaxAmount),
-            Codec.BOOL.fieldOf("lighting").orElse(false).forGetter(LootData::isLighting),
+            Codec.BOOL.fieldOf("lightning").orElse(false).forGetter(LootData::isLighting),
             Codec.BOOL.fieldOf("needsArrow").orElse(false).forGetter(LootData::isArrow),
             Codec.INT.fieldOf("color").orElse(-1).forGetter(LootData::getColor),
             Codec.BOOL.fieldOf("randomDurability").orElse(false).forGetter(LootData::ifRandomDurability),
@@ -77,7 +77,11 @@ public class LootData {
         // Arrow
         buffer.writeBoolean(lootData.isArrow());
         // Cooking
-        ItemStack.STREAM_CODEC.encode(buffer, lootData.getCookedItem().getItems()[0]);
+        final boolean hasCookedItem = !lootData.getCookedItem().isEmpty();
+        buffer.writeBoolean(hasCookedItem);
+        if (hasCookedItem) {
+            ItemStack.STREAM_CODEC.encode(buffer, lootData.getCookedItem().getItems()[0]);
+        }
         // Color
         buffer.writeInt(lootData.getColor());
         // Random durability
@@ -102,7 +106,9 @@ public class LootData {
         // Arrow
         final boolean isArrow = buffer.readBoolean();
         // Cooked item
-        final Ingredient cookedItem = Ingredient.of(ItemStack.STREAM_CODEC.decode(buffer));
+        final Ingredient cookedItem = buffer.readBoolean()
+                ? Ingredient.of(ItemStack.STREAM_CODEC.decode(buffer))
+                : Ingredient.EMPTY;
         // Color
         final int color = buffer.readInt();
         // Random durability

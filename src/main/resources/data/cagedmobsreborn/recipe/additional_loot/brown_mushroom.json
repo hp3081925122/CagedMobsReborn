@@ -1,0 +1,16 @@
+{
+	"type": "cagedmobsreborn:additional_loot_data",
+	"neoforge:conditions": [{ "type": "neoforge:mod_loaded", "modid": "cagedmobsreborn" }],
+	"entity": "minecraft:mooshroom",
+	"results": [
+		{
+			"chance": 0.45,
+			"output": {
+				"item": "minecraft:brown_mushroom"
+			},
+			"minAmount": 1,
+			"maxAmount": 3
+		}
+	]
+
+}

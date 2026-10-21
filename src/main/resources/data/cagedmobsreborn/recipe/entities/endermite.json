@@ -1,0 +1,10 @@
+{
+	"type": "cagedmobsreborn:entity_data",
+	"neoforge:conditions": [{ "type": "neoforge:mod_loaded", "modid": "cagedmobsreborn" }],
+	"entity": "minecraft:endermite",
+	"samplerTier": 2,
+	"environments": ["end"],
+	"growTicks": 1200,
+	"results": [
+	]
+}

@@ -25,8 +25,11 @@ public class RecipesHelper {
     public static List<EntityData> getEntitiesRecipesList() {
         RecipeManager manager = getRecipeManager();
         if (manager != null) {
-            return manager.getAllRecipesFor(CagedRecipeTypes.ENTITY_RECIPE.get()).stream().map(RecipeHolder::value).toList();
+            List<EntityData> recipes = manager.getAllRecipesFor(CagedRecipeTypes.ENTITY_RECIPE.get()).stream().map(RecipeHolder::value).toList();
+            CagedMobsReborn.LOGGER.debug("Entity recipe lookup returned {} recipes", recipes.size());
+            return recipes;
         }
+        CagedMobsReborn.LOGGER.debug("Entity recipe lookup has no recipe manager");
         return Collections.emptyList();
     }
 
