@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "X",
+    "B"
+  ],
+  "key": {
+    "X": "cagedmobsreborn:honey_drop",
+    "B": "minecraft:glass_bottle"
+  },
+  "result": {
+    "id": "minecraft:honey_bottle"
+  }
+}

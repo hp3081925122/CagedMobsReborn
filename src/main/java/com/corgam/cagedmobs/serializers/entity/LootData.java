@@ -9,11 +9,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 
+import java.util.Optional;
+
 public class LootData {
 
     public static final Codec<LootData> CODEC = RecordCodecBuilder.create((builder) -> builder.group(
             Ingredient.CODEC.fieldOf("output").forGetter(LootData::getItem),
-            Ingredient.CODEC.optionalFieldOf("output_cooked", Ingredient.of(Items.AIR)).forGetter(LootData::getCookedItem),
+            Ingredient.CODEC.optionalFieldOf("output_cooked").forGetter(lootData -> Optional.ofNullable(lootData.getCookedItem())),
             Codec.FLOAT.fieldOf("chance").forGetter(LootData::getChance),
             Codec.INT.fieldOf("minAmount").forGetter(LootData::getMinAmount),
             Codec.INT.fieldOf("maxAmount").forGetter(LootData::getMaxAmount),
@@ -23,7 +25,7 @@ public class LootData {
             Codec.BOOL.fieldOf("randomDurability").orElse(false).forGetter(LootData::ifRandomDurability),
             Codec.STRING.fieldOf("nbtName").orElse("").forGetter(LootData::getNbtName),
             Codec.STRING.fieldOf("nbtData").orElse("").forGetter(LootData::getNbtData)
-    ).apply(builder, LootData::new));
+    ).apply(builder, (item, cookedItem, chance, min, max, lighting, arrow, color, randomDurability, nbtName, nbtData) -> new LootData(item, cookedItem.orElse(null), chance, min, max, lighting, arrow, color, randomDurability, nbtName, nbtData)));
 
     private final float chance;
     private Ingredient item;
@@ -56,18 +58,13 @@ public class LootData {
         if (min > max) {
             throw new IllegalArgumentException("Min amount must not be greater than max amount!");
         }
-        // Apply NBT data
-        if(!nbtName.isEmpty() && !nbtData.isEmpty()){
-            ItemStack newItem = writeNBTtoItem(nbtName, nbtData, item.getItems()[0]);
-            this.item = Ingredient.of(newItem);
-        }
     }
 
     public static void serializeBuffer(RegistryFriendlyByteBuf buffer, LootData lootData) {
         // Chance
         buffer.writeFloat(lootData.getChance());
         // Item
-        ItemStack.STREAM_CODEC.encode(buffer, lootData.getItem().getItems()[0]);
+        ItemStack.STREAM_CODEC.encode(buffer, com.corgam.cagedmobsreborn.serializers.SerializationHelper.ingredientStack(lootData.getItem()));
         // Min amount
         buffer.writeInt(lootData.getMinAmount());
         // Max amount
@@ -77,7 +74,10 @@ public class LootData {
         // Arrow
         buffer.writeBoolean(lootData.isArrow());
         // Cooking
-        ItemStack.STREAM_CODEC.encode(buffer, lootData.getCookedItem().getItems()[0]);
+        buffer.writeBoolean(lootData.isCooking());
+        if(lootData.isCooking()){
+            ItemStack.STREAM_CODEC.encode(buffer, com.corgam.cagedmobsreborn.serializers.SerializationHelper.ingredientStack(lootData.getCookedItem()));
+        }
         // Color
         buffer.writeInt(lootData.getColor());
         // Random durability
@@ -92,7 +92,7 @@ public class LootData {
         // Chance
         final float chance = buffer.readFloat();
         // Item
-        final Ingredient item = Ingredient.of(ItemStack.STREAM_CODEC.decode(buffer));
+            final Ingredient item = Ingredient.of(ItemStack.STREAM_CODEC.decode(buffer).getItem());
         // Min amount
         final int min = buffer.readInt();
         // Max amount
@@ -102,7 +102,7 @@ public class LootData {
         // Arrow
         final boolean isArrow = buffer.readBoolean();
         // Cooked item
-        final Ingredient cookedItem = Ingredient.of(ItemStack.STREAM_CODEC.decode(buffer));
+        final Ingredient cookedItem = buffer.readBoolean() ? Ingredient.of(ItemStack.STREAM_CODEC.decode(buffer).getItem()) : null;
         // Color
         final int color = buffer.readInt();
         // Random durability
@@ -158,7 +158,7 @@ public class LootData {
         return this.lighting;
     }
     public boolean isCooking(){
-        return !this.cookedItem.isEmpty();
+        return this.cookedItem != null;
     }
     public boolean isArrow(){
         return this.arrow;

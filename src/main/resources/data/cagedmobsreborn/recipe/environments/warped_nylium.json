@@ -1,0 +1,10 @@
+{
+  "type": "cagedmobsreborn:environment_data",
+  "neoforge:conditions": [{ "type": "neoforge:mod_loaded", "modid": "cagedmobsreborn" }],
+  "input": "minecraft:warped_nylium",
+  "render": "minecraft:warped_nylium",
+  "growModifier": 1.0,
+  "categories": [
+    "warped_nylium"
+  ]
+}

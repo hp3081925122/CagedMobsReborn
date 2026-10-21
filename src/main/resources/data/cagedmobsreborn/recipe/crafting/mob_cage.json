@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " X ",
+    "# #",
+    "..."
+  ],
+  "key": {
+    "X": "minecraft:iron_chain",
+    "#": "minecraft:iron_bars",
+    ".": "#forge:storage_blocks/iron"
+  },
+  "result": {
+    "id": "cagedmobsreborn:mob_cage"
+  }
+}

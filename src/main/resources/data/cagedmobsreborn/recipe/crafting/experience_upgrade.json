@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " BX",
+    "rGb",
+    "bQb"
+  ],
+  "key": {
+    "X": "minecraft:glass_bottle",
+    "r": "#forge:dusts/redstone",
+    "B": "#forge:storage_blocks/coal",
+    "b": "minecraft:blackstone",
+    "Q": "#forge:storage_blocks/emerald",
+    "G": "#forge:glass/lime"
+  },
+  "result": {
+    "id": "cagedmobsreborn:experience_upgrade"
+  }
+}

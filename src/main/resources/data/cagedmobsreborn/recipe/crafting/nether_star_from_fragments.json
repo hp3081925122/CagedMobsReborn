@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "XX",
+    "XX"
+  ],
+  "key": {
+    "X": "#forge:nuggets/nether_star"
+  },
+  "result": {
+    "id": "minecraft:nether_star"
+  }
+}

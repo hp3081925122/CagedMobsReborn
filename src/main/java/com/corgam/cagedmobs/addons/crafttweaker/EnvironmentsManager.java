@@ -8,7 +8,7 @@ import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.corgam.cagedmobsreborn.registers.CagedRecipeSerializers;
 import com.corgam.cagedmobsreborn.registers.CagedRecipeTypes;
 import com.corgam.cagedmobsreborn.serializers.environment.EnvironmentData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
 import org.openzen.zencode.java.ZenCodeType;
@@ -31,7 +31,7 @@ public class EnvironmentsManager implements IRecipeManager<EnvironmentData> {
 
     @ZenCodeType.Method
     public CTEnvironment getEnvironment(String id) {
-        ResourceLocation resource = ResourceLocation.tryParse(id);
+        Identifier resource = Identifier.tryParse(id);
         if(resource != null){
             final EnvironmentData recipe = this.getRecipes().stream().filter(holder -> holder.id().equals(resource)).findFirst().orElseThrow().value();
             return new CTEnvironment(recipe);
@@ -39,12 +39,10 @@ public class EnvironmentsManager implements IRecipeManager<EnvironmentData> {
         throw new IllegalStateException("[CagedMobsReborn] Invalid CraftTweaker Environment recipe ID: " + id);
     }
 
-    @Override
-    public ResourceLocation getBracketResourceLocation () {
+    public Identifier getBracketIdentifier () {
         return CagedRecipeSerializers.ENVIRONMENT_RECIPE_SERIALIZER.getId();
     }
 
-    @Override
     public RecipeType<EnvironmentData> getRecipeType () {
         return CagedRecipeTypes.ENVIRONMENT_RECIPE.get();
     }

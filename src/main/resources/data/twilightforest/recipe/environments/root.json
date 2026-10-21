@@ -1,0 +1,10 @@
+{
+  "type": "cagedmobsreborn:environment_data",
+  "neoforge:conditions": [{ "type": "neoforge:mod_loaded", "modid": "twilightforest" }],
+  "input": "twilightforest:root",
+  "render": "twilightforest:root",
+  "growModifier": 1.0,
+  "categories": [
+    "forest"
+  ]
+}

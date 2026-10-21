@@ -1,0 +1,89 @@
+{
+  "type": "cagedmobsreborn:entity_data",
+  "neoforge:conditions": [{ "type": "neoforge:mod_loaded", "modid": "botania" }],
+  "entity": "botania:doppleganger",
+  "samplerTier": 3,
+  "environments": [
+    "gaia"
+  ],
+  "growTicks": 2400,
+  "results": [
+    {
+      "chance": 0.02,
+      "output": "botania:life_essence",
+      "minAmount": 1,
+      "maxAmount": 1
+    },
+    {
+      "lightning": true,
+      "chance": 0.01,
+      "output": "botania:gaia_head",
+      "minAmount": 1,
+      "maxAmount": 1
+    },
+    {
+      "chance": 0.25,
+      "output": "botania:overgrowth_seed",
+      "minAmount": 1,
+      "maxAmount": 3
+    },
+    {
+      "chance": 0.25,
+      "output": "botania:black_lotus",
+      "minAmount": 1,
+      "maxAmount": 3
+    },
+    {
+      "chance": 0.15,
+      "output": "botania:blacker_lotus",
+      "minAmount": 1,
+      "maxAmount": 1
+    },
+    {
+      "chance": 0.2,
+      "output": "botania:manasteel_ingot",
+      "minAmount": 1,
+      "maxAmount": 3
+    },
+    {
+      "chance": 0.15,
+      "output": "botania:mana_pearl",
+      "minAmount": 1,
+      "maxAmount": 2
+    },
+    {
+      "chance": 0.1,
+      "output": "botania:mana_diamond",
+      "minAmount": 1,
+      "maxAmount": 1
+    },
+    {
+      "needsArrow": true,
+      "chance": 0.1,
+      "output": "botania:record_gaia_1",
+      "minAmount": 1,
+      "maxAmount": 1
+    },
+    {
+      "needsArrow": true,
+      "chance": 0.1,
+      "output": "botania:record_gaia_2",
+      "minAmount": 1,
+      "maxAmount": 1
+    },
+    {
+      "needsArrow": true,
+      "chance": 0.1,
+      "output": "minecraft:music_disc_13",
+      "minAmount": 1,
+      "maxAmount": 1
+    },
+    {
+      "needsArrow": true,
+      "chance": 0.1,
+      "output": "minecraft:music_disc_wait",
+      "minAmount": 1,
+      "maxAmount": 1
+    }
+  ]
+}

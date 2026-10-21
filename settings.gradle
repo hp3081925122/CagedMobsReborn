@@ -1,14 +1,23 @@
 pluginManagement {
+    def localProperties = new Properties()
+    def localPropertiesFile = file('gradle-local.properties')
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.withReader('UTF-8') { localProperties.load(it) }
+    }
+    def localMaven = localProperties.getProperty('hpLocalMaven')
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id == 'net.neoforged.moddev') {
+                useModule("net.neoforged:moddev-gradle:${requested.version}")
+            }
+        }
+    }
     repositories {
-        // 使用 NeoForge userdev 插件所需的官方仓库。
+        if (localMaven) {
+            maven { name = 'HpLocalMaven'; url = uri(localMaven) }
+        }
         mavenLocal()
         gradlePluginPortal()
         maven { url = 'https://maven.neoforged.net/releases' }
     }
 }
-
-plugins {
-    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.9.0'
-}
-
-rootProject.name = 'cagedmobsreborn'

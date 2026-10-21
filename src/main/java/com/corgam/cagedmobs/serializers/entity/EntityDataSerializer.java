@@ -8,11 +8,10 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import java.util.*;
 
-public class EntityDataSerializer implements RecipeSerializer<EntityData> {
+public final class EntityDataSerializer {
 
     public static final MapCodec<EntityData> CODEC = RecordCodecBuilder.mapCodec((entityDataInstance) -> entityDataInstance
             .group(
@@ -34,12 +33,7 @@ public class EntityDataSerializer implements RecipeSerializer<EntityData> {
                         .forGetter(EntityData::getSamplerTier)
             ).apply(entityDataInstance, EntityData::new));
 
-    @Override
-    public MapCodec<EntityData> codec() {
-        return CODEC;
-    }
-
-    public EntityData fromNetwork(RegistryFriendlyByteBuf buffer) {
+    private static EntityData fromNetwork(RegistryFriendlyByteBuf buffer) {
         try {
             // EntityId
             final String entityId = buffer.readUtf();
@@ -66,7 +60,7 @@ public class EntityDataSerializer implements RecipeSerializer<EntityData> {
         }
     }
 
-    public void toNetwork(RegistryFriendlyByteBuf buffer, EntityData recipe) {
+    private static void toNetwork(RegistryFriendlyByteBuf buffer, EntityData recipe) {
         try {
             // EntityId
             buffer.writeUtf(recipe.getEntityId());
@@ -89,9 +83,6 @@ public class EntityDataSerializer implements RecipeSerializer<EntityData> {
         }
     }
 
-    @Override
-    public StreamCodec<RegistryFriendlyByteBuf, EntityData> streamCodec() {
-        return StreamCodec.of(this::toNetwork, this::fromNetwork);
-    }
+    public static final StreamCodec<RegistryFriendlyByteBuf, EntityData> STREAM_CODEC = StreamCodec.of(EntityDataSerializer::toNetwork, EntityDataSerializer::fromNetwork);
 
 }

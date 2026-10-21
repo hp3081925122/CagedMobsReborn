@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " X ",
+    "rBs",
+    "bQb"
+  ],
+  "key": {
+    "X": "minecraft:arrow",
+    "r": "#forge:dusts/redstone",
+    "B": "minecraft:dispenser",
+    "b": "minecraft:blackstone",
+    "Q": "#forge:storage_blocks/quartz",
+    "s": "minecraft:skeleton_skull"
+  },
+  "result": {
+    "id": "cagedmobsreborn:arrow_upgrade"
+  }
+}

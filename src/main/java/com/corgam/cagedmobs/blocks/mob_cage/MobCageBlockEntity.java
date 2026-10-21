@@ -38,6 +38,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
@@ -192,9 +193,9 @@ public class MobCageBlockEntity extends BlockEntity {
      */
     private void dropItem(ItemStack item) {
         if(this.level != null && !this.level.isClientSide()) {
-            final double offsetX = (double) (level.random.nextFloat() * 0.7F) + (double) 0.15F;
-            final double offsetY = (double) (level.random.nextFloat() * 0.7F) + (double) 0.060000002F + 0.6D;
-            final double offsetZ = (double) (level.random.nextFloat() * 0.7F) + (double) 0.15F;
+            final double offsetX = (double) (level.getRandom().nextFloat() * 0.7F) + (double) 0.15F;
+            final double offsetY = (double) (level.getRandom().nextFloat() * 0.7F) + (double) 0.060000002F + 0.6D;
+            final double offsetZ = (double) (level.getRandom().nextFloat() * 0.7F) + (double) 0.15F;
             final ItemEntity itemEntity = new ItemEntity(this.level, this.worldPosition.getX() + offsetX, this.worldPosition.getY() + offsetY, this.worldPosition.getZ() + offsetZ, item);
             itemEntity.setDefaultPickUpDelay();
             this.level.addFreshEntity(itemEntity);
@@ -265,7 +266,7 @@ public class MobCageBlockEntity extends BlockEntity {
         if(envItem.isEmpty()){
             this.removeEnvironment();
         }else if(this.environmentData == null
-                || !this.environmentData.getInputItem().getItems()[0].getItem().equals(envItem.getItem())){
+                || !SerializationHelper.ingredientStack(this.environmentData.getInputItem()).getItem().equals(envItem.getItem())){
             this.setEnvironment(envItem);
         }
     }
@@ -326,7 +327,7 @@ public class MobCageBlockEntity extends BlockEntity {
         EntityData recipe = getMobDataFromType(entityType);
         // Check if entity needs waterlogged cage
         if(recipe.ifRequiresWater() && !state.getValue(BlockStateProperties.WATERLOGGED)){
-            player.displayClientMessage(Component.translatable("block.cagedmobsreborn.mob_cage.requiresWater").withStyle(ChatFormatting.RED), true);
+            player.sendOverlayMessage(Component.translatable("block.cagedmobsreborn.mob_cage.requiresWater").withStyle(ChatFormatting.RED));
             return false;
         }
         if(this.environmentData != null){
@@ -336,7 +337,7 @@ public class MobCageBlockEntity extends BlockEntity {
                 }
             }
         }
-        player.displayClientMessage(Component.translatable("block.cagedmobsreborn.mob_cage.envNotSuitable").withStyle(ChatFormatting.RED), true);
+        player.sendOverlayMessage(Component.translatable("block.cagedmobsreborn.mob_cage.envNotSuitable").withStyle(ChatFormatting.RED));
         return false;
     }
 
@@ -351,7 +352,7 @@ public class MobCageBlockEntity extends BlockEntity {
         // Lookup the entity color
         if(entityType.toString().contains("sheep")){
             if(SerializationHelper.hasCustomData(sampler) && SerializationHelper.getCustomData(sampler).contains("Color") ){
-                this.color = SerializationHelper.getCustomData(sampler).getInt("Color");
+                this.color = SerializationHelper.getCustomData(sampler).getIntOr("Color", 0);
             }
         }
         // Load the mob data
@@ -445,7 +446,7 @@ public class MobCageBlockEntity extends BlockEntity {
                 nbt.putString("id", EntityType.getKey(this.entityType).toString());
                 this.renderedEntity = new SpawnData(nbt, Optional.empty(), Optional.empty());
             }
-            this.cachedEntity = EntityType.loadEntityRecursive(this.renderedEntity.getEntityToSpawn(), level, Function.identity());
+            this.cachedEntity = EntityType.loadEntityRecursive(this.renderedEntity.getEntityToSpawn(), level, net.minecraft.world.entity.EntitySpawnReason.LOAD, entity -> entity);
         }
         return this.cachedEntity;
     }
@@ -493,7 +494,7 @@ public class MobCageBlockEntity extends BlockEntity {
                                 }
                             // Remove loot
                             }else{
-                                entityData.getResults().removeIf(lootData -> lootData.getItem().getItems()[0].getItem().equals(data.getItem().getItems()[0].getItem()));
+                                entityData.getResults().removeIf(lootData -> SerializationHelper.ingredientStack(lootData.getItem()).getItem().equals(SerializationHelper.ingredientStack(data.getItem()).getItem()));
                             }
                         }
                     }
@@ -696,17 +697,17 @@ public class MobCageBlockEntity extends BlockEntity {
      */
     private IItemHandler getInv(Level world, BlockPos pos, Direction side){
         final BlockEntity te = world.getBlockEntity(pos);
-        // Capability system
         if(te != null){
-            final IItemHandler invCap = Capabilities.ItemHandler.BLOCK.getCapability(world, pos, world.getBlockState(pos), te, side);
-            return invCap == null ? EMPTY_HANDLER : invCap;
-        }else{
-            // When block doesn't use capability system
-            final BlockState state = world.getBlockState(pos);
-            if(state.getBlock() instanceof WorldlyContainerHolder invProvider){
-                final WorldlyContainer inv = invProvider.getContainer(state, world, pos);
-                return new SidedInvWrapper(inv, side);
-            }
+            final var invCap = Capabilities.Item.BLOCK.getCapability(world, pos, world.getBlockState(pos), te, side);
+            if(invCap != null) return net.neoforged.neoforge.items.IItemHandler.of(invCap);
+        }
+        if(te instanceof WorldlyContainer inv){
+            return new SidedInvWrapper(inv, side);
+        }
+        final BlockState state = world.getBlockState(pos);
+        if(state.getBlock() instanceof WorldlyContainerHolder invProvider){
+            final WorldlyContainer inv = invProvider.getContainer(state, world, pos);
+            return new SidedInvWrapper(inv, side);
         }
         return EMPTY_HANDLER;
     }
@@ -721,11 +722,11 @@ public class MobCageBlockEntity extends BlockEntity {
         for(LootData loot : this.entity.getResults()) {
             // Skip item if it's blacklisted or whitelisted
             if(!CagedMobsReborn.SERVER_CONFIG.isEntitiesListInWhitelistMode()){
-                if(blacklistedItems.contains(loot.getItem().getItems()[0].getItem())){
+                if(blacklistedItems.contains(SerializationHelper.ingredientStack(loot.getItem()).getItem())){
                     continue;
                 }
             }else{
-                if(!blacklistedItems.contains(loot.getItem().getItems()[0].getItem())){
+                if(!blacklistedItems.contains(SerializationHelper.ingredientStack(loot.getItem()).getItem())){
                     continue;
                 }
             }
@@ -743,18 +744,18 @@ public class MobCageBlockEntity extends BlockEntity {
             if(!this.hasUpgrades(CagedItems.ARROW_UPGRADE.get(), 1) && loot.isArrow()){
                 continue;
             }
-            if(this.level != null && !this.level.isClientSide() && this.level.random.nextFloat() <= loot.getChance()) {
+            if(this.level != null && !this.level.isClientSide() && this.level.getRandom().nextFloat() <= loot.getChance()) {
                 // Roll the amount of items
                 int range = loot.getMaxAmount() - loot.getMinAmount() + 1;
-                int amount = this.level.random.nextInt(range) + loot.getMinAmount();
+                int amount = this.level.getRandom().nextInt(range) + loot.getMinAmount();
                 if(amount > 0) {
                     // Add copied item stack to the drop list
-                    ItemStack stack = loot.getItem().getItems()[0].copy();
+                    ItemStack stack = SerializationHelper.ingredientStack(loot.getItem()).copy();
                     // Replace the item if there is a cooking upgrade.
                     if(this.hasUpgrades(CagedItems.COOKING_UPGRADE.get(), 3) && loot.isCooking()){
                         stack = new ItemStack(Items.COAL);
                     }else if(this.hasUpgrades(CagedItems.COOKING_UPGRADE.get(), 1) && loot.isCooking()){
-                        stack = loot.getCookedItem().getItems()[0].copy();
+                        stack = SerializationHelper.ingredientStack(loot.getCookedItem()).copy();
                     }
                     stack.setCount(amount);
                     if(loot.ifRandomDurability()){
@@ -769,7 +770,7 @@ public class MobCageBlockEntity extends BlockEntity {
         }
         // Add experience orb if the experience upgrade is present
         if(this.hasUpgrades(CagedItems.EXPERIENCE_UPGRADE.get(), 1)){
-            if(this.level != null && !this.level.isClientSide() && this.level.random.nextFloat() <= 0.7){
+            if(this.level != null && !this.level.isClientSide() && this.level.getRandom().nextFloat() <= 0.7){
                 ItemStack experienceOrbItem = new ItemStack(CagedItems.CRYSTALLIZED_EXPERIENCE.get());
                 experienceOrbItem.setCount(this.getUpgradeCount(CagedItems.EXPERIENCE_UPGRADE.get()));
                 drops.add(experienceOrbItem);
@@ -790,8 +791,8 @@ public class MobCageBlockEntity extends BlockEntity {
      */
     private void calculateFortune(@Nullable LootData lootData, NonNullList<ItemStack> dropList, ItemStack item){
         double fortuneChance = this.getUpgradeCount(CagedItems.LOOTING_UPGRADE.get()) * 0.2;
-        if(this.level != null && !this.level.isClientSide() && this.level.random.nextFloat() < fortuneChance){
-            int countMultiplayer = this.level.random.nextInt(2) + 2;
+        if(this.level != null && !this.level.isClientSide() && this.level.getRandom().nextFloat() < fortuneChance){
+            int countMultiplayer = this.level.getRandom().nextInt(2) + 2;
             for(int i = 0; i < countMultiplayer - 1; i++){
                 if(lootData !=null && lootData.ifRandomDurability()){
                     item = applyRandomDurability(item.copy());
@@ -807,7 +808,7 @@ public class MobCageBlockEntity extends BlockEntity {
      */
     public ItemStack applyRandomDurability(ItemStack stack){
         if(this.level != null && !this.level.isClientSide() && stack.getMaxDamage() > 0){
-            int randomDurability = Math.max(1,this.level.random.nextInt(stack.getMaxDamage()));
+            int randomDurability = Math.max(1,this.level.getRandom().nextInt(stack.getMaxDamage()));
             stack.setDamageValue(randomDurability);
         }
         return stack;
@@ -898,126 +899,58 @@ public class MobCageBlockEntity extends BlockEntity {
         return this.color;
     }
 
-    // SAVING AND LOADING
+    // 保存和加载方块实体状态
 
-    /**
-     * Saves all the additional tags of the block entity.
-     * @param tag the nbt tag to save to
-     */
     @Override
-    protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider provider){
-        super.saveAdditional(tag, provider);
-        this.saveTag(tag, provider);
+    protected void saveAdditional(net.minecraft.world.level.storage.ValueOutput output) {
+        super.saveAdditional(output);
+        this.saveTag(output);
     }
 
-    private void saveTag(@NotNull CompoundTag tag, HolderLookup.Provider provider){
-        // Item capability
-        tag.put(ITEMS_TAG, items.serializeNBT(provider));
-        // Put entity type
-        if(this.hasEntity()){
-            SerializationHelper.serializeEntityTypeNBT(tag, this.entityType);
+    private void saveTag(net.minecraft.world.level.storage.ValueOutput output) {
+        items.serialize(output.child(ITEMS_TAG));
+        if(this.hasEntity()) {
+            output.putString("entity", EntityType.getKey(this.entityType).toString());
         }
-        // Put color
-        tag.putInt("color",this.color);
-        // Put ticks info
-        tag.putInt("currentGrowTicks", this.currentGrowTicks);
-        tag.putBoolean("waitingForHarvest", this.waitingForHarvest);
+        output.putInt("color", this.color);
+        output.putInt("currentGrowTicks", this.currentGrowTicks);
+        output.putBoolean("waitingForHarvest", this.waitingForHarvest);
     }
 
-    /**
-     * Loads all the additional tags of the block entity.
-     * @param tag the nbt tag to load from
-     */
     @Override
-    protected void loadAdditional(@NotNull CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
-        this.loadTag(tag, provider);
+    protected void loadAdditional(net.minecraft.world.level.storage.ValueInput input) {
+        super.loadAdditional(input);
+        this.loadTag(input);
     }
 
-    /**
-     * Loads the block entity data from the tag.
-     * @param tag the tag to load
-     */
-    private void loadTag(@NotNull CompoundTag tag, HolderLookup.Provider provider){
-        // Store old env and entity type
+    private void loadTag(net.minecraft.world.level.storage.ValueInput input) {
         ItemStack oldEnv = this.items.getStackInSlot(ENVIRONMENT_SLOT);
         EntityType<?> oldEntityType = this.entityType;
-        // Item capability
-        if (tag.contains(ITEMS_TAG)) {
-            items.deserializeNBT(provider, tag.getCompound(ITEMS_TAG));
-        }
-        // Read the env
+        input.readChild(ITEMS_TAG, items);
         this.environmentData = MobCageBlockEntity.getEnvironmentDataFromItemStack(this.items.getStackInSlot(ENVIRONMENT_SLOT));
-        // Read the mob data
-        this.entityType = SerializationHelper.deserializeEntityTypeNBT(tag);
+        this.entityType = input.getString("entity").flatMap(EntityType::byString).orElse(null);
         this.entity = MobCageBlockEntity.getMobDataFromType(this.entityType);
         if(this.entityType == null){
             this.renderedEntity = null;
             this.cachedEntity = null;
         }
-        // Read color
-        this.color = tag.getInt("color");
-        // Read ticks info
-        this.waitingForHarvest = tag.getBoolean("waitingForHarvest");
-        this.currentGrowTicks = tag.getInt("currentGrowTicks");
-        if(hasEntity()){
+        this.color = input.getIntOr("color", 0);
+        this.waitingForHarvest = input.getBooleanOr("waitingForHarvest", false);
+        this.currentGrowTicks = input.getIntOr("currentGrowTicks", 0);
+        if(hasEntity()) {
             this.totalGrowTicks = this.calculateTotalGrowTicks();
         }
-        // If env or entity changed, refresh model data
-        if(!Objects.equals(oldEnv, this.items.getStackInSlot(ENVIRONMENT_SLOT)) || !Objects.equals(oldEntityType,this.entityType)){
+        if(!Objects.equals(oldEnv, this.items.getStackInSlot(ENVIRONMENT_SLOT)) || !Objects.equals(oldEntityType, this.entityType)) {
             requestModelDataUpdate();
-            // Sync with client
-            if(this.level != null){
+            if(this.level != null) {
                 this.level.sendBlockUpdated(this.worldPosition, getBlockState(), getBlockState(), 3);
             }
         }
     }
 
-    // CLIENT-SERVER SYNCHRONIZATION
-
-    /**
-     * Creates the update tag on server side, when a new chunk is loaded.
-     * @return the update nbt tag to send
-     */
-    @Override
-    public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider provider) {
-        CompoundTag tag = super.getUpdateTag(provider);
-        this.saveTag(tag, provider);
-        return tag;
-    }
-
-    /**
-     * Reads the update tag on client side, when a new chunk is loaded.
-     * @param tag The {@link CompoundTag} sent from {@link BlockEntity#getUpdateTag()}
-     */
-    @Override
-    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
-        super.handleUpdateTag(tag, provider);
-        if(tag != null){
-            this.loadTag(tag, provider);
-        }
-    }
-
-    /**
-     * Creates an update packet when the block state has changed.
-     * @return the update packet
-     */
     @Nullable
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    /**
-     * Loads the received data packet on client side, when the block state has changed.
-     * @param net The NetworkManager the packet originated from
-     * @param pkt The data packet
-     */
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider provider) {
-        CompoundTag tag = pkt.getTag();
-        if (tag != null) {
-            handleUpdateTag(tag, provider);
-        }
     }
 }

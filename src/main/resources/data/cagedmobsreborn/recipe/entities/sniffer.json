@@ -1,0 +1,30 @@
+{
+  "type": "cagedmobsreborn:entity_data",
+  "neoforge:conditions": [{ "type": "neoforge:mod_loaded", "modid": "cagedmobsreborn" }],
+  "entity": "minecraft:sniffer",
+  "samplerTier": 2,
+  "environments": [
+    "farm"
+  ],
+  "growTicks": 1200,
+  "results": [
+    {
+      "chance": 0.2,
+      "output": "minecraft:sniffer_egg",
+      "minAmount": 1,
+      "maxAmount": 1
+    },
+    {
+      "chance": 0.4,
+      "output": "minecraft:pitcher_pod",
+      "minAmount": 1,
+      "maxAmount": 1
+    },
+    {
+      "chance": 0.4,
+      "output": "minecraft:torchflower_seeds",
+      "minAmount": 1,
+      "maxAmount": 1
+    }
+  ]
+}

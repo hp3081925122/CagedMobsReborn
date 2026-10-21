@@ -13,7 +13,6 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.core.registries.BuiltInRegistries;
 
 import java.util.List;
 
@@ -29,9 +28,8 @@ public class EnvironmentData implements Recipe<RecipeInput> {
         this.renderBlock = renderBlock;
         this.growModifier = growModifier;
         this.categories = categories;
-        // Add the id to the list of loaded recipes
-        if(CagedMobsReborn.LOGGER != null && BuiltInRegistries.ITEM.getKey(item.getItems()[0].getItem()) != null){
-            CagedMobsReborn.LOGGER.info("Loaded EnvironmentData recipe for input item: " + BuiltInRegistries.ITEM.getKey(item.getItems()[0].getItem()));
+        if(CagedMobsReborn.LOGGER != null){
+            CagedMobsReborn.LOGGER.info("Loaded EnvironmentData recipe");
         }
     }
 
@@ -41,27 +39,25 @@ public class EnvironmentData implements Recipe<RecipeInput> {
     }
 
     @Override
-    public ItemStack assemble(RecipeInput pContainer, HolderLookup.Provider pRegistryAccess) {
+    public ItemStack assemble(RecipeInput pContainer) {
         return ItemStack.EMPTY;
     }
 
-    @Override
     public boolean canCraftInDimensions(int width, int height) {
         return false;
     }
 
-    @Override
     public ItemStack getResultItem(HolderLookup.Provider pRegistryAccess) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<? extends Recipe<RecipeInput>> getSerializer() {
         return CagedRecipeSerializers.ENVIRONMENT_RECIPE_SERIALIZER.get();
     }
 
     @Override
-    public RecipeType<?> getType() {
+    public RecipeType<? extends Recipe<RecipeInput>> getType() {
         return CagedRecipeTypes.ENVIRONMENT_RECIPE.get();
     }
 
@@ -97,8 +93,15 @@ public class EnvironmentData implements Recipe<RecipeInput> {
         this.inputItem = item;
     }
 
-    @Override
     public boolean isSpecial() {
         return true;
     }
+
+    public boolean showNotification() { return false; }
+
+    public String group() { return ""; }
+
+    public net.minecraft.world.item.crafting.PlacementInfo placementInfo() { return net.minecraft.world.item.crafting.PlacementInfo.NOT_PLACEABLE; }
+
+    public net.minecraft.world.item.crafting.RecipeBookCategory recipeBookCategory() { return net.minecraft.world.item.crafting.RecipeBookCategories.CRAFTING_MISC; }
 }

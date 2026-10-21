@@ -5,6 +5,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
+import java.util.function.Consumer;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -19,9 +23,9 @@ public abstract class UpgradeItem extends Item {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable Item.TooltipContext worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        tooltip.add(Component.translatable("item.cagedmobsreborn.upgrades.attach").withStyle(ChatFormatting.GRAY));
-        tooltip.add(Component.translatable("item.cagedmobsreborn.upgrades.stack").withStyle(ChatFormatting.GRAY));
-        super.appendHoverText(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, @Nullable Item.TooltipContext worldIn, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flagIn) {
+        tooltip.accept(Component.translatable("item.cagedmobsreborn.upgrades.attach").withStyle(ChatFormatting.GRAY));
+        tooltip.accept(Component.translatable("item.cagedmobsreborn.upgrades.stack").withStyle(ChatFormatting.GRAY));
+        super.appendHoverText(stack, worldIn, display, tooltip, flagIn);
     }
 }

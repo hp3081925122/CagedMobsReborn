@@ -17,7 +17,6 @@ public class CrystallizedExperienceBlock extends SlimeBlock {
     public CrystallizedExperienceBlock(Properties props) {
         super(props);
     }
-    @Override
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack item, Item.TooltipContext getter, List<Component> tooltip, TooltipFlag flag) {
         tooltip.add(Component.translatable("item.cagedmobsreborn.crystallized_experience.info2").withStyle(ChatFormatting.GRAY));

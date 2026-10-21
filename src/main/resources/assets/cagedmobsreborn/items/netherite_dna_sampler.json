@@ -1,0 +1,14 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "property": "cagedmobsreborn:full",
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "cagedmobsreborn:item/netherite_dna_sampler_full"
+    },
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "cagedmobsreborn:item/netherite_dna_sampler"
+    }
+  }
+}

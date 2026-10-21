@@ -9,14 +9,14 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.subtypes.IIngredientSubtypeInterpreter;
+import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -31,8 +31,8 @@ public class CagedMobsRebornPlugin implements IModPlugin {
     public static final RecipeType<EntityDataWrapper> ENTITY_RECIPE = RecipeType.create(CagedMobsReborn.MOD_ID, "entity", EntityDataWrapper.class);
 
     @Override
-    public ResourceLocation getPluginUid () {
-        return ResourceLocation.fromNamespaceAndPath(CagedMobsReborn.MOD_ID, "jei");
+    public Identifier getPluginUid () {
+        return Identifier.fromNamespaceAndPath(CagedMobsReborn.MOD_ID, "jei");
     }
 
 
@@ -66,25 +66,25 @@ public class CagedMobsRebornPlugin implements IModPlugin {
 
     // Subtype interpreter for samplers
 
-    private static class DnaSamplerSubtypeInterpreter implements IIngredientSubtypeInterpreter<ItemStack> {
+    private static class DnaSamplerSubtypeInterpreter implements ISubtypeInterpreter<ItemStack> {
         @Override
-        public String apply(ItemStack ingredient, UidContext context) {
+        public Object getSubtypeData(ItemStack ingredient, UidContext context) {
             if (ingredient.getItem() instanceof DnaSamplerItem sampler) {
                 EntityType<?> entityType = sampler.getEntityType(ingredient);
                 if (entityType != null) {
                     return sampler.getEntityType(ingredient).toString();
                 }
             }
-            return this.NONE;
+            return null;
         }
     }
 
     @Override
     public void registerItemSubtypes(ISubtypeRegistration registration) {
         DnaSamplerSubtypeInterpreter interpreter = new DnaSamplerSubtypeInterpreter();
-        registration.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, CagedItems.NETHERITE_DNA_SAMPLER.get(), interpreter);
-        registration.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, CagedItems.DIAMOND_DNA_SAMPLER.get(), interpreter);
-        registration.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, CagedItems.DNA_SAMPLER.get(), interpreter);
+        registration.registerSubtypeInterpreter(CagedItems.NETHERITE_DNA_SAMPLER.get(), interpreter);
+        registration.registerSubtypeInterpreter(CagedItems.DIAMOND_DNA_SAMPLER.get(), interpreter);
+        registration.registerSubtypeInterpreter(CagedItems.DNA_SAMPLER.get(), interpreter);
     }
 
 }

@@ -1,0 +1,13 @@
+{
+  "type": "cagedmobsreborn:additional_loot_data",
+  "neoforge:conditions": [{ "type": "neoforge:mod_loaded", "modid": "bountifulbaubles" }],
+  "entity": "minecraft:shulker",
+  "results": [
+    {
+      "chance": 0.005,
+      "output": "bountifulbaubles:shulker_heart",
+      "minAmount": 1,
+      "maxAmount": 1
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "XXX",
+    "XXX",
+    "XXX"
+  ],
+  "key": {
+    "X": "cagedmobsreborn:dragon_scale"
+  },
+  "result": {
+    "id": "minecraft:dragon_egg"
+  }
+}

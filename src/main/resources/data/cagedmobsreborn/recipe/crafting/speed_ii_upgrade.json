@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " XX",
+    "rBb",
+    "bQb"
+  ],
+  "key": {
+    "X": "#forge:nuggets/nether_star",
+    "r": "#forge:dusts/redstone",
+    "B": "cagedmobsreborn:speed_i_upgrade",
+    "b": "minecraft:blackstone",
+    "Q": "minecraft:nether_star"
+  },
+  "result": {
+    "id": "cagedmobsreborn:speed_ii_upgrade"
+  }
+}

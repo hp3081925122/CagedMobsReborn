@@ -1,0 +1,20 @@
+{
+  "type": "cagedmobsreborn:entity_data",
+  "neoforge:conditions": [{ "type": "neoforge:mod_loaded", "modid": "cagedmobsreborn" }],
+  "entity": "minecraft:wandering_trader",
+  "samplerTier": 2,
+  "environments": [
+    "farm"
+  ],
+  "growTicks": 1200,
+  "results": [
+    {
+      "chance": 0.08,
+      "output": "minecraft:potion",
+      "nbtName": "Potion",
+      "nbtData": "minecraft:invisibility",
+      "minAmount": 1,
+      "maxAmount": 1
+    }
+  ]
+}

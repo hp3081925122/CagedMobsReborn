@@ -1,26 +1,26 @@
 modLoader="javafml"
-loaderVersion="${loader_version_range}"
-license="${mod_license}"
+loaderVersion="[4,)"
+license="GNU Lesser General Public License version 2.1"
 issueTrackerURL="https://github.com/Corgam/CagedMobs/issues"
 
 [[mods]]
-modId="${mod_id}"
+modId="cagedmobsreborn"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/caged-mobs"
-version="${mod_version}"
-displayName="${mod_name}"
-authors="${mod_authors}"
-description='''${mod_description}'''
+version="26.1.2-1.0.0"
+displayName="Caged Mobs Reborn"
+authors="Corgam; Reborn Port"
+description='''Caged Mobs 的 26.1.2 NeoForge 高版本重生版。'''
 
-[[dependencies.${mod_id}]]
+[[dependencies.cagedmobsreborn]]
 modId="neoforge"
 type="required"
-versionRange="${neo_version_range}"
+versionRange="[26.1.2.99,)"
 ordering="NONE"
 side="BOTH"
 
-[[dependencies.${mod_id}]]
+[[dependencies.cagedmobsreborn]]
 modId="minecraft"
 type="required"
-versionRange="${minecraft_version_range}"
+versionRange="[26.1.2,)"
 ordering="NONE"
 side="BOTH"

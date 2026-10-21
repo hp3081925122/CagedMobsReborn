@@ -12,13 +12,13 @@ import com.corgam.cagedmobsreborn.serializers.entity.AdditionalLootData;
 import com.corgam.cagedmobsreborn.serializers.entity.LootData;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
-import mezz.jei.api.gui.ingredient.IRecipeSlotTooltipCallback;
+import mezz.jei.api.gui.ingredient.IRecipeSlotRichTooltipCallback;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.extensions.IRecipeCategoryExtension;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -56,7 +56,7 @@ public class EntityDataWrapper implements IRecipeCategoryExtension<EntityData> {
         // Read valid envs based on entity
         for(EnvironmentData env : RecipesHelper.getEnvironmentRecipesList()){
             if(RecipesHelper.isEnvValidForEntity(entityData,env)){
-                this.envs.addAll(Arrays.asList(env.getInputItem().getItems()));
+                this.envs.add(SerializationHelper.ingredientStack(env.getInputItem()));
             }
         }
         // Add DNA samplers to the recipe based on the tier of recipe
@@ -75,7 +75,7 @@ public class EntityDataWrapper implements IRecipeCategoryExtension<EntityData> {
         List<Item> blacklistedItems = RecipesHelper.getItemsFromConfigList();
         for(LootData data : entityData.getResults()){
             if(!CagedMobsReborn.SERVER_CONFIG.isItemsListInWhitelistMode()){
-                if(!blacklistedItems.contains(data.getItem().getItems()[0].getItem())){
+                if(!blacklistedItems.contains(SerializationHelper.ingredientStack(data.getItem()).getItem())){
                     if(!this.drops.contains(data)) {
                         this.drops.add(data);
                         lootIndex++;
@@ -89,7 +89,7 @@ public class EntityDataWrapper implements IRecipeCategoryExtension<EntityData> {
                     }
                 }
             }else{
-                if(blacklistedItems.contains(data.getItem().getItems()[0].getItem())){
+                if(blacklistedItems.contains(SerializationHelper.ingredientStack(data.getItem()).getItem())){
                     if(!this.drops.contains(data)) {
                         this.drops.add(data);
                         lootIndex++;
@@ -117,7 +117,7 @@ public class EntityDataWrapper implements IRecipeCategoryExtension<EntityData> {
                             // Add loot
                             if(!additionalLootData.isRemoveFromEntity()){
                                 if(!CagedMobsReborn.SERVER_CONFIG.isItemsListInWhitelistMode()){
-                                    if(!blacklistedItems.contains(data.getItem().getItems()[0].getItem())){
+                                    if(!blacklistedItems.contains(SerializationHelper.ingredientStack(data.getItem()).getItem())){
                                         if(!this.drops.contains(data)){
                                             this.drops.add(data);
                                             lootIndex++;
@@ -131,7 +131,7 @@ public class EntityDataWrapper implements IRecipeCategoryExtension<EntityData> {
                                         }
                                     }
                                 }else{
-                                    if(blacklistedItems.contains(data.getItem().getItems()[0].getItem())){
+                                    if(blacklistedItems.contains(SerializationHelper.ingredientStack(data.getItem()).getItem())){
                                         if(!this.drops.contains(data)){
                                             this.drops.add(data);
                                             lootIndex++;
@@ -147,7 +147,7 @@ public class EntityDataWrapper implements IRecipeCategoryExtension<EntityData> {
                                 }
                             // Remove loot
                             }else{
-                                this.drops.removeIf(drop -> drop.getItem().getItems()[0].getItem().equals(data.getItem().getItems()[0].getItem()));
+                                this.drops.removeIf(drop -> SerializationHelper.ingredientStack(drop.getItem()).getItem().equals(SerializationHelper.ingredientStack(data.getItem()).getItem()));
                             }
                         }
                     }
@@ -200,7 +200,7 @@ public class EntityDataWrapper implements IRecipeCategoryExtension<EntityData> {
         final IRecipeSlotBuilder samplersSlot = builder.addSlot(RecipeIngredientRole.INPUT, 15, 62+20);
         samplersSlot.addItemStacks(this.getSampledSamplers()).setSlotName("samplers");
         if(!CagedMobsReborn.SERVER_CONFIG.areSpawnEggsDisabled()){
-            SpawnEggItem spawnEgg = SpawnEggItem.byId(entityData.getEntityType());
+            SpawnEggItem spawnEgg = SpawnEggItem.byId(entityData.getEntityType()).map(holder -> holder.value()).filter(SpawnEggItem.class::isInstance).map(SpawnEggItem.class::cast).orElse(null);
             if(spawnEgg != null){
                 samplersSlot.addItemStack(spawnEgg.getDefaultInstance());
             }
@@ -209,43 +209,43 @@ public class EntityDataWrapper implements IRecipeCategoryExtension<EntityData> {
         // Soil Inputs
         final IRecipeSlotBuilder environmentsSlot = builder.addSlot(RecipeIngredientRole.INPUT, 15 + 20, 62+20);
         environmentsSlot.addItemStacks(this.getEnvsItems()).setSlotName("environments");
-        environmentsSlot.addTooltipCallback(this.getEnvTooltip());
+        environmentsSlot.addRichTooltipCallback(this.getEnvTooltip());
 
         int nextSlotId = 2;
         List<Item> blacklistedItems = RecipesHelper.getItemsFromConfigList();
         for (final LootData entry : this.getDrops()) {
             // If items not blacklisted draw them
             if(!CagedMobsReborn.SERVER_CONFIG.isItemsListInWhitelistMode()){
-                if(!blacklistedItems.contains(entry.getItem().getItems()[0].getItem())){
+                if(!blacklistedItems.contains(SerializationHelper.ingredientStack(entry.getItem()).getItem())){
                     int relativeSlotId = nextSlotId - 2;
                     final IRecipeSlotBuilder lootSlot = builder.addSlot(RecipeIngredientRole.OUTPUT, 101 + 19 * (relativeSlotId % 4), 6 + 19 * (relativeSlotId / 4));
                     if(entry.isCooking() && this.getCookedIDs().contains(relativeSlotId)){
-                        lootSlot.addItemStack(entry.getCookedItem().getItems()[0]);
+                        lootSlot.addItemStack(SerializationHelper.ingredientStack(entry.getCookedItem()));
                     }else{
-                        lootSlot.addItemStack(entry.getItem().getItems()[0]);
+                        lootSlot.addItemStack(SerializationHelper.ingredientStack(entry.getItem()));
                     }
                     nextSlotId++;
                     // Add tooltip
-                    lootSlot.addTooltipCallback(this.getLootTooltip(entry));
+                    lootSlot.addRichTooltipCallback(this.getLootTooltip(entry));
                 }
             }else{
-                if(blacklistedItems.contains(entry.getItem().getItems()[0].getItem())){
+                if(blacklistedItems.contains(SerializationHelper.ingredientStack(entry.getItem()).getItem())){
                     int relativeSlotId = nextSlotId - 2;
                     final IRecipeSlotBuilder lootSlot = builder.addSlot(RecipeIngredientRole.OUTPUT, 100 + 19 * (relativeSlotId % 4), 5 + 19 * (relativeSlotId / 4));
                     if(entry.isCooking() && this.getCookedIDs().contains(relativeSlotId)){
-                        lootSlot.addItemStack(entry.getCookedItem().getItems()[0]);
+                        lootSlot.addItemStack(SerializationHelper.ingredientStack(entry.getCookedItem()));
                     }else{
-                        lootSlot.addItemStack(entry.getItem().getItems()[0]);
+                        lootSlot.addItemStack(SerializationHelper.ingredientStack(entry.getItem()));
                     }
                     nextSlotId++;
                     // Add tooltip
-                    lootSlot.addTooltipCallback(this.getLootTooltip(entry));
+                    lootSlot.addRichTooltipCallback(this.getLootTooltip(entry));
                 }
             }
         }
     }
 
-    public void draw(GuiGraphics pGuiGraphics, IGuiHelper guiHelper) {
+    public void draw(GuiGraphicsExtractor pGuiGraphics, IGuiHelper guiHelper) {
         // Draw Seed & Soil
         guiHelper.getSlotDrawable().draw(pGuiGraphics, 14, 62+19);
         guiHelper.getSlotDrawable().draw(pGuiGraphics, 14+20, 62 + 19);
@@ -266,13 +266,13 @@ public class EntityDataWrapper implements IRecipeCategoryExtension<EntityData> {
         }
         // Draw entity name
         if(this.getEntityData() != null && this.getEntityData().getEntityType() != null) {
-            pGuiGraphics.drawString(Minecraft.getInstance().font, this.getEntityData().getEntityType().getDescription(), 5, 2, 8, false);
+            pGuiGraphics.text(Minecraft.getInstance().font, this.getEntityData().getEntityType().getDescription(), 5, 2, 8, false);
         }
         // Draw required ticks
-        pGuiGraphics.drawString(Minecraft.getInstance().font, Component.translatable("jei.tooltip.cagedmobsreborn.entity.ticks", this.getSeconds()), 10, 102, 8, false);
+        pGuiGraphics.text(Minecraft.getInstance().font, Component.translatable("jei.tooltip.cagedmobsreborn.entity.ticks", this.getSeconds()), 10, 102, 8, false);
         // Draw waterlogged info if it requires water
         if(this.ifRequiresWater()){
-            pGuiGraphics.drawString(Minecraft.getInstance().font, Component.translatable("jei.tooltip.cagedmobsreborn.entity.requiresWater", this.getSeconds()).withStyle(ChatFormatting.BLUE), 5, 112, 8, false);
+            pGuiGraphics.text(Minecraft.getInstance().font, Component.translatable("jei.tooltip.cagedmobsreborn.entity.requiresWater", this.getSeconds()).withStyle(ChatFormatting.BLUE), 5, 112, 8, false);
         }
     }
 
@@ -290,7 +290,7 @@ public class EntityDataWrapper implements IRecipeCategoryExtension<EntityData> {
         return ret;
     }
 
-    private IRecipeSlotTooltipCallback getEnvTooltip() {
+    private IRecipeSlotRichTooltipCallback getEnvTooltip() {
         return (view, tooltip) -> {
             if(view.getDisplayedItemStack().isPresent()){
                 ItemStack displayedItem = view.getDisplayedItemStack().get();
@@ -302,7 +302,7 @@ public class EntityDataWrapper implements IRecipeCategoryExtension<EntityData> {
         };
     }
 
-    private IRecipeSlotTooltipCallback getLootTooltip(LootData entry) {
+    private IRecipeSlotRichTooltipCallback getLootTooltip(LootData entry) {
         return (view, tooltip) -> {
             if (view.getDisplayedItemStack().isPresent()){
                 ItemStack displayedItem = view.getDisplayedItemStack().get();
@@ -315,7 +315,7 @@ public class EntityDataWrapper implements IRecipeCategoryExtension<EntityData> {
                 if(entry.isLighting()){
                     tooltip.add(Component.translatable("jei.tooltip.cagedmobsreborn.entity.lightning_upgrade").withStyle(ChatFormatting.YELLOW));
                 }
-                if(entry.isCooking() && displayedItem.getItem().equals(entry.getCookedItem().getItems()[0].getItem())){
+                if(entry.isCooking() && displayedItem.getItem().equals(SerializationHelper.ingredientStack(entry.getCookedItem()).getItem())){
                     tooltip.add(Component.translatable("jei.tooltip.cagedmobsreborn.entity.cooking_upgrade").withStyle(ChatFormatting.YELLOW));
                 }
                 if(entry.isArrow()){

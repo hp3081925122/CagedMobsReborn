@@ -10,6 +10,9 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.RecipeInput;
+import net.minecraft.world.item.crafting.PlacementInfo;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
+import net.minecraft.world.item.crafting.RecipeBookCategories;
 import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
@@ -40,16 +43,14 @@ public class AdditionalLootData implements Recipe<RecipeInput> {
     }
 
     @Override
-    public ItemStack assemble(RecipeInput pContainer, HolderLookup.Provider pRegistryAccess) {
+    public ItemStack assemble(RecipeInput pContainer) {
         return ItemStack.EMPTY;
     }
 
-    @Override
     public boolean canCraftInDimensions(int width, int height) {
         return false;
     }
 
-    @Override
     public ItemStack getResultItem(HolderLookup.Provider pRegistryAccess) {
         return ItemStack.EMPTY;
     }
@@ -66,7 +67,7 @@ public class AdditionalLootData implements Recipe<RecipeInput> {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<? extends Recipe<RecipeInput>> getSerializer() {
         return CagedRecipeSerializers.ADDITIONAL_LOOT_RECIPE_SERIALIZER.get();
     }
 
@@ -83,7 +84,7 @@ public class AdditionalLootData implements Recipe<RecipeInput> {
     }
 
     @Override
-    public RecipeType<?> getType() {
+    public RecipeType<? extends Recipe<RecipeInput>> getType() {
         return CagedRecipeTypes.ADDITIONAL_LOOT_RECIPE.get();
     }
 
@@ -106,6 +107,26 @@ public class AdditionalLootData implements Recipe<RecipeInput> {
     @Override
     public boolean isSpecial() {
         return true;
+    }
+
+    @Override
+    public boolean showNotification() {
+        return false;
+    }
+
+    @Override
+    public String group() {
+        return "";
+    }
+
+    @Override
+    public PlacementInfo placementInfo() {
+        return PlacementInfo.NOT_PLACEABLE;
+    }
+
+    @Override
+    public RecipeBookCategory recipeBookCategory() {
+        return RecipeBookCategories.CRAFTING_MISC;
     }
 
 }

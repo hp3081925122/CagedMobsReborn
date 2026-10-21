@@ -9,28 +9,22 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.core.registries.BuiltInRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class EnvironmentDataSerializer implements RecipeSerializer<EnvironmentData>{
+public final class EnvironmentDataSerializer {
 
-    private static final MapCodec<EnvironmentData> CODEC = RecordCodecBuilder.mapCodec((codecInstance) -> codecInstance.group(
-            Ingredient.CODEC_NONEMPTY.fieldOf("input").forGetter(EnvironmentData::getInputItem),
+    public static final MapCodec<EnvironmentData> CODEC = RecordCodecBuilder.mapCodec((codecInstance) -> codecInstance.group(
+            Ingredient.CODEC.fieldOf("input").forGetter(EnvironmentData::getInputItem),
             BuiltInRegistries.BLOCK.byNameCodec().fieldOf("render").forGetter(EnvironmentData::getRenderBlock),
             Codec.FLOAT.fieldOf("growModifier").forGetter(EnvironmentData::getGrowModifier),
             Codec.list(Codec.STRING).fieldOf("categories").forGetter(EnvironmentData::getCategories))
             .apply(codecInstance, EnvironmentData::new));
 
-    @Override
-    public MapCodec<EnvironmentData> codec() {
-        return CODEC;
-    }
-
-    public EnvironmentData fromNetwork(RegistryFriendlyByteBuf buffer) {
+    private static EnvironmentData fromNetwork(RegistryFriendlyByteBuf buffer) {
         try {
             // Input item
             final Ingredient inputItem = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
@@ -49,7 +43,7 @@ public class EnvironmentDataSerializer implements RecipeSerializer<EnvironmentDa
         }
     }
 
-    public void toNetwork(RegistryFriendlyByteBuf buffer, EnvironmentData recipe) {
+    private static void toNetwork(RegistryFriendlyByteBuf buffer, EnvironmentData recipe) {
         try{
             // Input item
             Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.getInputItem());
@@ -65,8 +59,5 @@ public class EnvironmentDataSerializer implements RecipeSerializer<EnvironmentDa
         }
     }
 
-    @Override
-    public StreamCodec<RegistryFriendlyByteBuf, EnvironmentData> streamCodec() {
-        return StreamCodec.of(this::toNetwork, this::fromNetwork);
-    }
+    public static final StreamCodec<RegistryFriendlyByteBuf, EnvironmentData> STREAM_CODEC = StreamCodec.of(EnvironmentDataSerializer::toNetwork, EnvironmentDataSerializer::fromNetwork);
 }

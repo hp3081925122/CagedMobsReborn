@@ -3,16 +3,17 @@ package com.corgam.cagedmobsreborn.helpers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.animal.AbstractFish;
-import net.minecraft.world.entity.animal.Dolphin;
-import net.minecraft.world.entity.animal.Squid;
-import net.minecraft.world.entity.animal.Turtle;
+import net.minecraft.world.entity.animal.fish.AbstractFish;
+import net.minecraft.world.entity.animal.dolphin.Dolphin;
+import net.minecraft.world.entity.animal.squid.Squid;
+import net.minecraft.world.entity.animal.turtle.Turtle;
 import net.minecraft.world.entity.animal.sniffer.Sniffer;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.monster.ElderGuardian;
@@ -44,7 +45,8 @@ public class EntityRendererHelper {
             startingNbt.putString("id", EntityType.getKey(entityType).toString());
             // Create the entity
             if(level != null && level.isClientSide()){
-                entity = EntityType.create(startingNbt, level);
+                Entity created = EntityType.loadEntityRecursive(startingNbt, level, net.minecraft.world.entity.EntitySpawnReason.LOAD, value -> value);
+                entity = Optional.ofNullable(created);
             }
         }catch(Exception e){
             LOGGER.error("[CagedMobsReborn] Rendering entity in the JEI failed!", e);
@@ -55,34 +57,14 @@ public class EntityRendererHelper {
     /**
      * Renders entity inside GUI.
      */
-    public static void renderEntity(GuiGraphics graphics, int x, int y, double yaw, double pitch, float rotation, Entity entity) {
-        // Push pose
-        PoseStack matrixStack = graphics.pose();
-        matrixStack.pushPose();
-        // Get offset and scale
+    public static void renderEntity(GuiGraphicsExtractor graphics, int x, int y, double yaw, double pitch, float rotation, Entity entity) {
         float scale = EntityRendererHelper.getScaleForEntityType(entity);
-        y -= EntityRendererHelper.getOffsetForEntityType(entity);
-        rotation -= EntityRendererHelper.getOffsetForEntityType(entity);
-        // Translate the entity to right position
-        matrixStack.translate(x, y, 50F);
-        // Scale the entity
-        matrixStack.scale(-scale, scale, scale);
-        // Rotate the entity so it's not upside down
-        matrixStack.mulPose(Axis.ZP.rotationDegrees(180));
-        // Rotate the entity around
-        matrixStack.mulPose(Axis.YP.rotationDegrees(rotation));
-        // Render the entity
-        MultiBufferSource.BufferSource buff = Minecraft.getInstance().renderBuffers().bufferSource();
-        try{
-            Minecraft.getInstance().getEntityRenderDispatcher().render(entity,0.0D,0.0D,0.0D,0.0F,0.0F,matrixStack,buff,15728880);
-        }catch (Exception e){
-            matrixStack.translate(x, y, -50F);
-            matrixStack.scale(scale, -scale, -scale);
-            matrixStack.mulPose(Axis.ZP.rotationDegrees(180));
-            LOGGER.error("[CagedMobsReborn] Rendering entity in the JEI failed!", e);
-        }
-        buff.endBatch();
-        matrixStack.popPose();
+        int offset = EntityRendererHelper.getOffsetForEntityType(entity);
+        EntityRenderState state = Minecraft.getInstance().getEntityRenderDispatcher().extractEntity(entity, 0.0F);
+        org.joml.Vector3f translation = new org.joml.Vector3f(x, y - offset, 50.0F);
+        org.joml.Quaternionf renderRotation = Axis.ZP.rotationDegrees(180.0F);
+        renderRotation.mul(Axis.YP.rotationDegrees(rotation));
+        graphics.entity(state, scale, translation, renderRotation, null, x - 40, y - 80, x + 40, y + 10);
     }
 
     /**

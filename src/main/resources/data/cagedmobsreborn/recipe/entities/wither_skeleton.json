@@ -1,0 +1,30 @@
+{
+  "type": "cagedmobsreborn:entity_data",
+  "neoforge:conditions": [{ "type": "neoforge:mod_loaded", "modid": "cagedmobsreborn" }],
+  "entity": "minecraft:wither_skeleton",
+  "samplerTier": 2,
+  "environments": [
+    "nether"
+  ],
+  "growTicks": 1800,
+  "results": [
+    {
+      "chance": 0.5,
+      "output": "minecraft:coal",
+      "minAmount": 1,
+      "maxAmount": 1
+    },
+    {
+      "chance": 0.7,
+      "output": "minecraft:bone",
+      "minAmount": 1,
+      "maxAmount": 2
+    },
+    {
+      "chance": 0.2,
+      "output": "minecraft:wither_skeleton_skull",
+      "minAmount": 1,
+      "maxAmount": 1
+    }
+  ]
+}

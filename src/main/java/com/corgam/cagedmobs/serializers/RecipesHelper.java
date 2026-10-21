@@ -7,7 +7,7 @@ import com.corgam.cagedmobsreborn.serializers.environment.EnvironmentData;
 import com.corgam.cagedmobsreborn.serializers.entity.AdditionalLootData;
 import com.corgam.cagedmobsreborn.serializers.entity.EntityData;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -25,7 +25,7 @@ public class RecipesHelper {
     public static List<EntityData> getEntitiesRecipesList() {
         RecipeManager manager = getRecipeManager();
         if (manager != null) {
-            return manager.getAllRecipesFor(CagedRecipeTypes.ENTITY_RECIPE.get()).stream().map(RecipeHolder::value).toList();
+            return manager.getRecipes().stream().map(RecipeHolder::value).filter(EntityData.class::isInstance).map(EntityData.class::cast).toList();
         }
         return Collections.emptyList();
     }
@@ -33,7 +33,7 @@ public class RecipesHelper {
     public static List<EnvironmentData> getEnvironmentRecipesList() {
         RecipeManager manager = getRecipeManager();
         if (manager != null) {
-            return manager.getAllRecipesFor(CagedRecipeTypes.ENVIRONMENT_RECIPE.get()).stream().map(RecipeHolder::value).toList();
+            return manager.getRecipes().stream().map(RecipeHolder::value).filter(EnvironmentData.class::isInstance).map(EnvironmentData.class::cast).toList();
         }
         return Collections.emptyList();
     }
@@ -41,7 +41,7 @@ public class RecipesHelper {
     public static List<AdditionalLootData> getAdditionalLootRecipesList() {
         RecipeManager manager = getRecipeManager();
         if (manager != null) {
-            return manager.getAllRecipesFor(CagedRecipeTypes.ADDITIONAL_LOOT_RECIPE.get()).stream().map(RecipeHolder::value).toList();
+            return manager.getRecipes().stream().map(RecipeHolder::value).filter(AdditionalLootData.class::isInstance).map(AdditionalLootData.class::cast).toList();
         }
         return Collections.emptyList();
     }
@@ -60,7 +60,7 @@ public class RecipesHelper {
 
     private static RecipeManager getRecipeManagerClient() {
         if(Minecraft.getInstance().player != null){
-            return Minecraft.getInstance().player.connection.getRecipeManager();
+            return null;
         }
         return null;
     }
@@ -103,8 +103,8 @@ public class RecipesHelper {
         List<Item> blacklisted = new java.util.ArrayList<>(Collections.emptyList());
         List<? extends String> blacklistedItems = CagedMobsReborn.SERVER_CONFIG.getItemsList();
         for(String s : blacklistedItems){
-            Item i = BuiltInRegistries.ITEM.get(ResourceLocation.parse(s));
-            if(i != Items.AIR || i != null){
+            Item i = BuiltInRegistries.ITEM.get(Identifier.parse(s)).map(holder -> holder.value()).orElse(Items.AIR);
+            if(i != Items.AIR){
                 blacklisted.add(i);
             }
         }

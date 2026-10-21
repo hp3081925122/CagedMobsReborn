@@ -6,12 +6,11 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdditionalLootDataSerializer implements RecipeSerializer<AdditionalLootData> {
+public final class AdditionalLootDataSerializer {
 
     public static final MapCodec<AdditionalLootData> CODEC = RecordCodecBuilder.mapCodec((entityDataInstance) -> entityDataInstance.group(
             // EntityID
@@ -22,12 +21,7 @@ public class AdditionalLootDataSerializer implements RecipeSerializer<Additional
             Codec.BOOL.fieldOf("removeFromEntity").orElse(false).forGetter(AdditionalLootData::isRemoveFromEntity)
     ).apply(entityDataInstance, AdditionalLootData::new));
 
-    @Override
-    public MapCodec<AdditionalLootData> codec() {
-        return CODEC;
-    }
-
-    public AdditionalLootData fromNetwork(RegistryFriendlyByteBuf buffer) {
+    private static AdditionalLootData fromNetwork(RegistryFriendlyByteBuf buffer) {
         try {
             // EntityId
             final String entityId = buffer.readUtf();
@@ -47,7 +41,7 @@ public class AdditionalLootDataSerializer implements RecipeSerializer<Additional
         }
     }
 
-    public void toNetwork(RegistryFriendlyByteBuf buffer, AdditionalLootData recipe) {
+    private static void toNetwork(RegistryFriendlyByteBuf buffer, AdditionalLootData recipe) {
         try {
             // EntityId
             buffer.writeUtf(recipe.getEntityId());
@@ -64,8 +58,5 @@ public class AdditionalLootDataSerializer implements RecipeSerializer<Additional
         }
     }
 
-    @Override
-    public StreamCodec<RegistryFriendlyByteBuf, AdditionalLootData> streamCodec() {
-        return StreamCodec.of(this::toNetwork, this::fromNetwork);
-    }
+    public static final StreamCodec<RegistryFriendlyByteBuf, AdditionalLootData> STREAM_CODEC = StreamCodec.of(AdditionalLootDataSerializer::toNetwork, AdditionalLootDataSerializer::fromNetwork);
 }

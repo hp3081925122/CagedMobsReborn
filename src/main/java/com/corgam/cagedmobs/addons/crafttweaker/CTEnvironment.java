@@ -5,7 +5,10 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.corgam.cagedmobsreborn.CagedMobsReborn;
 import com.corgam.cagedmobsreborn.serializers.environment.EnvironmentData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.Registries;
+import com.corgam.cagedmobsreborn.serializers.SerializationHelper;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -68,12 +71,12 @@ public class CTEnvironment {
     }
 
     public RecipeHolder<EnvironmentData> getEnvironmentData () {
-        ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(this.environmentData.getInputItem().getItems()[0].getItem());
+        Identifier itemId = BuiltInRegistries.ITEM.getKey(SerializationHelper.ingredientStack(this.environmentData.getInputItem()).getItem());
         if(itemId != null){
-            return new RecipeHolder<>(itemId.withPrefix("environment_data_"), this.environmentData);
+            return new RecipeHolder<>(ResourceKey.create(Registries.RECIPE, itemId.withPrefix("environment_data_")), this.environmentData);
         }else{
             String categories = String.join("_", this.environmentData.getCategories());
-            return new RecipeHolder<>(ResourceLocation.fromNamespaceAndPath(CagedMobsReborn.MOD_ID, "environment_data_" + categories), this.environmentData);
+            return new RecipeHolder<>(ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(CagedMobsReborn.MOD_ID, "environment_data_" + categories)), this.environmentData);
         }
     }
 }

@@ -7,7 +7,7 @@ import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.corgam.cagedmobsreborn.registers.CagedRecipeSerializers;
 import com.corgam.cagedmobsreborn.registers.CagedRecipeTypes;
 import com.corgam.cagedmobsreborn.serializers.entity.EntityData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -31,7 +31,7 @@ public class EntitiesManager implements IRecipeManager<EntityData> {
 
     @ZenCodeType.Method
     public CTEntity getEntity(String id){
-        ResourceLocation resource = ResourceLocation.tryParse(id);
+        Identifier resource = Identifier.tryParse(id);
         if(resource != null) {
             final EntityData recipe = this.getRecipes().stream().filter(holder -> holder.id().equals(resource)).findFirst().orElseThrow().value();
             return new CTEntity(recipe);
@@ -39,12 +39,10 @@ public class EntitiesManager implements IRecipeManager<EntityData> {
         throw new IllegalStateException("[CagedMobsReborn] Invalid CraftTweaker Entity recipe ID: " + id);
     }
 
-    @Override
-    public ResourceLocation getBracketResourceLocation () {
+    public Identifier getBracketIdentifier () {
         return CagedRecipeSerializers.ENTITY_RECIPE_SERIALIZER.getId();
     }
 
-    @Override
     public RecipeType<EntityData> getRecipeType () {
         return CagedRecipeTypes.ENTITY_RECIPE.get();
     }

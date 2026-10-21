@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "X X",
+    "rBb",
+    "bQb"
+  ],
+  "key": {
+    "X": "cagedmobsreborn:warden_receptor",
+    "r": "#forge:dusts/redstone",
+    "B": "cagedmobsreborn:speed_ii_upgrade",
+    "b": "minecraft:blackstone",
+    "Q": "#cagedmobsreborn:ingots/star_infused_netherite"
+  },
+  "result": {
+    "id": "cagedmobsreborn:speed_iii_upgrade"
+  }
+}

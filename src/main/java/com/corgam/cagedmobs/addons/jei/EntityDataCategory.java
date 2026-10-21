@@ -10,14 +10,14 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 public class EntityDataCategory implements IRecipeCategory<EntityDataWrapper> {
 
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(CagedMobsReborn.MOD_ID, "entity");
+    public static final Identifier ID = Identifier.fromNamespaceAndPath(CagedMobsReborn.MOD_ID, "entity");
 
     private static final int BG_PADDING = 5, BG_WIDTH = 166, BG_HEIGHT = 111;
     private final IDrawable icon;
@@ -29,7 +29,7 @@ public class EntityDataCategory implements IRecipeCategory<EntityDataWrapper> {
     public EntityDataCategory(IGuiHelper gui, RecipeType<EntityDataWrapper> type){
         this.guiHelper = gui;
         this.icon = gui.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(CagedItems.MOB_CAGE.get()));
-        ResourceLocation backgroundRL = ResourceLocation.fromNamespaceAndPath(CagedMobsReborn.MOD_ID, "textures/gui/jei_recipe.png");
+        Identifier backgroundRL = Identifier.fromNamespaceAndPath(CagedMobsReborn.MOD_ID, "textures/gui/jei_recipe.png");
         this.background = gui.createDrawable(backgroundRL,0,0,BG_WIDTH+BG_PADDING*2,BG_HEIGHT+BG_PADDING*2);
         this.type = type;
         this.title = Component.translatable("jei.category.cagedmobsreborn.entity");
@@ -46,9 +46,10 @@ public class EntityDataCategory implements IRecipeCategory<EntityDataWrapper> {
     }
 
     @Override
-    public IDrawable getBackground() {
-        return this.background;
-    }
+    public int getWidth() { return BG_WIDTH + BG_PADDING * 2; }
+
+    @Override
+    public int getHeight() { return BG_HEIGHT + BG_PADDING * 2; }
 
     @Override
     public IDrawable getIcon() {
@@ -61,7 +62,7 @@ public class EntityDataCategory implements IRecipeCategory<EntityDataWrapper> {
     }
 
     @Override
-    public void draw(EntityDataWrapper recipe, IRecipeSlotsView view, GuiGraphics graphics, double mouseX, double mouseY) {
+    public void draw(EntityDataWrapper recipe, IRecipeSlotsView view, GuiGraphicsExtractor graphics, double mouseX, double mouseY) {
         recipe.draw(graphics, this.guiHelper);
     }
 }

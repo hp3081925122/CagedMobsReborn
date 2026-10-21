@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "X X",
+    "rBb",
+    "bQb"
+  ],
+  "key": {
+    "X": "#forge:ingots/netherite",
+    "r": "#forge:dusts/redstone",
+    "B": "#forge:storage_blocks/coal",
+    "b": "minecraft:blackstone",
+    "Q": "#forge:storage_blocks/quartz"
+  },
+  "result": {
+    "id": "cagedmobsreborn:speed_i_upgrade"
+  }
+}

@@ -2,7 +2,7 @@ package com.corgam.cagedmobsreborn.addons.jade;
 
 import com.corgam.cagedmobsreborn.CagedMobsReborn;
 import com.corgam.cagedmobsreborn.blocks.mob_cage.MobCageBlockEntity;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import snownee.jade.api.Accessor;
@@ -13,7 +13,7 @@ import java.util.List;
 
 public class HideContainerItemsProvider implements IServerExtensionProvider<ItemStack> {
 
-    public static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(CagedMobsReborn.MOD_ID,"hide_container_items");
+    public static final Identifier UID = Identifier.fromNamespaceAndPath(CagedMobsReborn.MOD_ID,"hide_container_items");
 
     @Override
     public @Nullable List<ViewGroup<ItemStack>> getGroups(Accessor<?> accessor) {
@@ -21,7 +21,7 @@ public class HideContainerItemsProvider implements IServerExtensionProvider<Item
     }
 
     @Override
-    public ResourceLocation getUid() {
+    public Identifier getUid() {
         return UID;
     }
 

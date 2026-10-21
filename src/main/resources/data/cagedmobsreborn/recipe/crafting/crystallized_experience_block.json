@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": "#cagedmobsreborn:nuggets/crystallized_experience"
+  },
+  "result": {
+    "id": "cagedmobsreborn:crystallized_experience_block"
+  }
+}

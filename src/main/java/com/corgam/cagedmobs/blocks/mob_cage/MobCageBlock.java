@@ -20,7 +20,7 @@ import net.minecraft.network.chat.Component;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Inventory;
@@ -30,12 +30,13 @@ import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
-import net.minecraft.world.item.SwordItem;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
@@ -89,10 +90,10 @@ public class MobCageBlock extends BaseEntityBlock implements SimpleWaterloggedBl
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) {
+    protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) {
         // If on client side, skip.
         if(level.isClientSide()) {
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         BlockEntity be = level.getBlockEntity(pos);
         if (be instanceof MobCageBlockEntity cageBE){
@@ -106,7 +107,7 @@ public class MobCageBlock extends BaseEntityBlock implements SimpleWaterloggedBl
                     if(!player.isCreative()){
                         heldItem.shrink(1);
                     }
-                    return ItemInteractionResult.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 }
             }
             // Try to add upgrades
@@ -116,7 +117,7 @@ public class MobCageBlock extends BaseEntityBlock implements SimpleWaterloggedBl
                     if(!player.isCreative()){
                         heldItem.shrink(1);
                     }
-                    return ItemInteractionResult.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 }
             }
             // Add or remove entity
@@ -135,37 +136,37 @@ public class MobCageBlock extends BaseEntityBlock implements SimpleWaterloggedBl
                                 // If single use samplers config is enabled, destroy the sampler. If not, just use its DNA.
                                 if (CagedMobsReborn.SERVER_CONFIG.areSamplersSingleUse()) {
                                     if (player instanceof ServerPlayer serverPlayer) {
-                                        serverPlayer.onEquippedItemBroken(heldItem.getItem(), Player.getSlotForHand(hand));
+                                        serverPlayer.onEquippedItemBroken(heldItem.getItem(), hand.asEquipmentSlot());
                                     }
                                     heldItem.shrink(1);
                                 } else {
                                     sampler.removeEntityType(heldItem);
                                 }
                             }
-                            return ItemInteractionResult.SUCCESS;
+                            return InteractionResult.SUCCESS;
                         }
-                        return ItemInteractionResult.FAIL;
+                        return InteractionResult.FAIL;
                     // Retrieve entity from the cage
                     } else {
                         if (!DnaSamplerItem.containsEntityType(heldItem) && cageBE.getEntity().isPresent()) {
                             // Check if sampler's tier is sufficient
                             if (cageBE.getEntity().get().getSamplerTier() >= 3 && !(heldItem.getItem() instanceof DnaSamplerNetheriteItem)) {
-                                player.displayClientMessage(Component.translatable("block.cagedmobsreborn.mob_cage.samplerNotSufficient").withStyle(ChatFormatting.RED), true);
-                                return ItemInteractionResult.FAIL;
+                                player.sendOverlayMessage(Component.translatable("block.cagedmobsreborn.mob_cage.samplerNotSufficient").withStyle(ChatFormatting.RED));
+                                return InteractionResult.FAIL;
                             }
                             if (cageBE.getEntity().get().getSamplerTier() >= 2 && !((heldItem.getItem() instanceof DnaSamplerNetheriteItem) || (heldItem.getItem() instanceof DnaSamplerDiamondItem))) {
-                                player.displayClientMessage(Component.translatable("block.cagedmobsreborn.mob_cage.samplerNotSufficient").withStyle(ChatFormatting.RED), true);
-                                return ItemInteractionResult.FAIL;
+                                player.sendOverlayMessage(Component.translatable("block.cagedmobsreborn.mob_cage.samplerNotSufficient").withStyle(ChatFormatting.RED));
+                                return InteractionResult.FAIL;
                             }
                             // Get back the entity
                             sampler.setEntityTypeFromCage(cageBE, heldItem, player, hand);
                             cageBE.setChanged();
                         } else {
-                            player.displayClientMessage(Component.translatable("block.cagedmobsreborn.mob_cage.cageAlreadyUsed").withStyle(ChatFormatting.RED), true);
-                            return ItemInteractionResult.FAIL;
+                            player.sendOverlayMessage(Component.translatable("block.cagedmobsreborn.mob_cage.cageAlreadyUsed").withStyle(ChatFormatting.RED));
+                            return InteractionResult.FAIL;
                         }
                         cageBE.removeEntity();
-                        return ItemInteractionResult.SUCCESS;
+                        return InteractionResult.SUCCESS;
                     }
                 }
             }
@@ -186,45 +187,45 @@ public class MobCageBlock extends BaseEntityBlock implements SimpleWaterloggedBl
                                 heldItem.shrink(1);
                                 player.addItem(new ItemStack(CagedItems.EMPTY_SPAWN_EGG.get()));
                             }
-                            return ItemInteractionResult.SUCCESS;
+                            return InteractionResult.SUCCESS;
                         }
                     } else {
-                        player.displayClientMessage(Component.translatable("block.cagedmobsreborn.mob_cage.cageAlreadyUsed").withStyle(ChatFormatting.RED), true);
+                        player.sendOverlayMessage(Component.translatable("block.cagedmobsreborn.mob_cage.cageAlreadyUsed").withStyle(ChatFormatting.RED));
                     }
                 }else{
-                    player.displayClientMessage(Component.translatable("block.cagedmobsreborn.mob_cage.spawnEggsDisabled").withStyle(ChatFormatting.RED), true);
+                    player.sendOverlayMessage(Component.translatable("block.cagedmobsreborn.mob_cage.spawnEggsDisabled").withStyle(ChatFormatting.RED));
                 }
-                return ItemInteractionResult.CONSUME;
+                return InteractionResult.CONSUME;
             }
             // Retrieve entity from the cage with empty spawn egg
             if(heldItem.getItem() instanceof EmptySpawnEggItem){
                 if(!CagedMobsReborn.SERVER_CONFIG.areSpawnEggsDisabled()){
                     if(cageBE.hasEntity()){
-                        SpawnEggItem spawnEgg = SpawnEggItem.byId(cageBE.getEntityType());
+                        SpawnEggItem spawnEgg = SpawnEggItem.byId(cageBE.getEntityType()).map(holder -> holder.value()).filter(SpawnEggItem.class::isInstance).map(SpawnEggItem.class::cast).orElse(null);
                         if(spawnEgg != null){
                             if(!player.isCreative()){
                                 player.addItem(new ItemStack(spawnEgg));
                                 heldItem.shrink(1);
                             }
                             cageBE.removeEntity();
-                            return ItemInteractionResult.SUCCESS;
+                            return InteractionResult.SUCCESS;
                         }
-                       return ItemInteractionResult.FAIL;
+                       return InteractionResult.FAIL;
                     }
                 }else{
-                    player.displayClientMessage(Component.translatable("block.cagedmobsreborn.mob_cage.spawnEggsDisabled").withStyle(ChatFormatting.RED), true);
-                    return ItemInteractionResult.FAIL;
+                    player.sendOverlayMessage(Component.translatable("block.cagedmobsreborn.mob_cage.spawnEggsDisabled").withStyle(ChatFormatting.RED));
+                    return InteractionResult.FAIL;
                 }
             }
             // Try to harvest the cage with sword
-            if(heldItem.getItem() instanceof SwordItem){
+            if(heldItem.has(DataComponents.WEAPON)){
                 if((!state.getValue(HOPPING) || CagedMobsReborn.SERVER_CONFIG.ifHoppingCagesDisabled()) && cageBE.isWaitingForHarvest()){
                     cageBE.onPlayerHarvest(cageBE.getBlockState());
                     if(!player.isCreative() && !level.isClientSide()){
                         ServerPlayer serverPlayer = (ServerPlayer) player;
-                        heldItem.hurtAndBreak(1, (net.minecraft.server.level.ServerLevel) level, serverPlayer, broken -> serverPlayer.onEquippedItemBroken(broken, Player.getSlotForHand(hand)));
+                        heldItem.hurtAndBreak(1, (net.minecraft.server.level.ServerLevel) level, serverPlayer, broken -> serverPlayer.onEquippedItemBroken(broken, hand.asEquipmentSlot()));
                     }
-                    return ItemInteractionResult.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 }
             }
             // If crouching remove entity
@@ -232,7 +233,7 @@ public class MobCageBlock extends BaseEntityBlock implements SimpleWaterloggedBl
                 if(cageBE.hasEntity()){
                     cageBE.removeEntity();
                     cageBE.setChanged();
-                    return ItemInteractionResult.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 }
             }
             // Open the GUI
@@ -261,7 +262,7 @@ public class MobCageBlock extends BaseEntityBlock implements SimpleWaterloggedBl
             // Open the GUI
             ServerPlayer serverPlayer = (ServerPlayer) player;
             serverPlayer.openMenu(containerProvider, cageBE.getBlockPos());
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         } else {
         throw new IllegalStateException("Mob Cage container provider is missing!");
         }
@@ -276,18 +277,15 @@ public class MobCageBlock extends BaseEntityBlock implements SimpleWaterloggedBl
      * Called on block remove, should drop all items in the inventory.
      */
     @Override
-    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
-        if (!pState.is(pNewState.getBlock())) {
-            BlockEntity blockentity = pLevel.getBlockEntity(pPos);
-            if (blockentity instanceof final MobCageBlockEntity tile) {
-                tile.dropInventory();
-            }
-            super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
+    protected void affectNeighborsAfterRemoval(BlockState state, net.minecraft.server.level.ServerLevel level, BlockPos pos, boolean movedByPiston) {
+        BlockEntity blockentity = level.getBlockEntity(pos);
+        if (blockentity instanceof final MobCageBlockEntity tile) {
+            tile.dropInventory();
         }
+        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
     }
 
     // Block item description
-    @Override
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack item, Item.TooltipContext getter, List<Component> tooltip, TooltipFlag flag) {
         tooltip.add(Component.translatable("block.cagedmobsreborn.mob_cage.mainInfo").withStyle(ChatFormatting.GRAY));
@@ -318,11 +316,11 @@ public class MobCageBlock extends BaseEntityBlock implements SimpleWaterloggedBl
     /**
      * Called when placed or when neighbour is updated.
      */
-    public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {
+    protected BlockState updateShape(BlockState pState, LevelReader pLevel, net.minecraft.world.level.ScheduledTickAccess ticks, BlockPos pCurrentPos, Direction pFacing, BlockPos pFacingPos, BlockState pFacingState, net.minecraft.util.RandomSource random) {
         if (pState.getValue(WATERLOGGED)) {
-            pLevel.scheduleTick(pCurrentPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
+            ticks.scheduleTick(pCurrentPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
         }
-        return super.updateShape(pState, pFacing, pFacingState, pLevel, pCurrentPos, pFacingPos);
+        return super.updateShape(pState, pLevel, ticks, pCurrentPos, pFacing, pFacingPos, pFacingState, random);
     }
 
     public FluidState getFluidState(BlockState pState) {

@@ -1,0 +1,32 @@
+{
+  "type": "cagedmobsreborn:entity_data",
+  "neoforge:conditions": [{ "type": "neoforge:mod_loaded", "modid": "cagedmobsreborn" }],
+  "entity": "minecraft:frog",
+  "samplerTier": 2,
+  "environments": [
+    "farm",
+    "sand",
+    "snow"
+  ],
+  "growTicks": 1200,
+  "results": [
+    {
+      "chance": 0.4,
+      "output": "minecraft:pearlescent_froglight",
+      "minAmount": 1,
+      "maxAmount": 1
+    },
+    {
+      "chance": 0.4,
+      "output": "minecraft:verdant_froglight",
+      "minAmount": 1,
+      "maxAmount": 1
+    },
+    {
+      "chance": 0.4,
+      "output": "minecraft:ochre_froglight",
+      "minAmount": 1,
+      "maxAmount": 1
+    }
+  ]
+}

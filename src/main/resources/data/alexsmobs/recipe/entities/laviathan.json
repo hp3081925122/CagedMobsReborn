@@ -1,0 +1,30 @@
+{
+  "type": "cagedmobsreborn:entity_data",
+  "neoforge:conditions": [{ "type": "neoforge:mod_loaded", "modid": "alexsmobs" }],
+  "entity": "alexsmobs:laviathan",
+  "samplerTier": 2,
+  "environments": [
+    "nether"
+  ],
+  "growTicks": 1800,
+  "results": [
+    {
+      "chance": 0.5,
+      "output": "minecraft:magma_block",
+      "minAmount": 1,
+      "maxAmount": 3
+    },
+    {
+      "chance": 0.5,
+      "output": "minecraft:blackstone",
+      "minAmount": 1,
+      "maxAmount": 3
+    },
+    {
+      "chance": 0.3,
+      "output": "minecraft:obsidian",
+      "minAmount": 1,
+      "maxAmount": 1
+    }
+  ]
+}

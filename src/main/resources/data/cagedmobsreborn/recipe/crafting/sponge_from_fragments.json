@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "XXX",
+    "XXX",
+    "XXX"
+  ],
+  "key": {
+    "X": "#forge:nuggets/sponge"
+  },
+  "result": {
+    "id": "minecraft:sponge"
+  }
+}

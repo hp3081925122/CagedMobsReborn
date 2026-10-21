@@ -11,16 +11,18 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.Sheep;
+import net.minecraft.world.entity.animal.sheep.Sheep;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
+import java.util.function.Consumer;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
@@ -36,9 +38,9 @@ public class DnaSamplerItem extends Item {
 
     // Called on left-click on an entity to get it's sample
     @Override
-    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+    public void hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         if(!CagedMobsReborn.SERVER_CONFIG.areSamplersDisabled()) {
-            if (target.level().isClientSide() || !(attacker instanceof Player)) return false;
+            if (target.level().isClientSide() || !(attacker instanceof Player)) return;
             Player player = (Player) attacker;
             // Select the hand where the sampler is
             InteractionHand hand;
@@ -47,7 +49,7 @@ public class DnaSamplerItem extends Item {
             } else if (player.getOffhandItem().equals(stack)) {
                 hand = InteractionHand.OFF_HAND;
             } else {
-                return false;
+                return;
             }
             // Try to sample the target
             if (canBeCached(target) && !RecipesHelper.isEntityTypeBlacklisted(target.getType())) {
@@ -62,15 +64,15 @@ public class DnaSamplerItem extends Item {
                     }
                     SerializationHelper.setCustomData(stack, nbt);
                     player.setItemInHand(hand, stack);
-                    return true;
+                    return;
                 } else {
-                    player.displayClientMessage(Component.translatable("item.cagedmobsreborn.dna_sampler.not_sufficient").withStyle(ChatFormatting.RED), true);
+                    player.sendOverlayMessage(Component.translatable("item.cagedmobsreborn.dna_sampler.not_sufficient").withStyle(ChatFormatting.RED));
                 }
             } else {
-                player.displayClientMessage(Component.translatable("item.cagedmobsreborn.dna_sampler.not_cachable").withStyle(ChatFormatting.RED), true);
+                player.sendOverlayMessage(Component.translatable("item.cagedmobsreborn.dna_sampler.not_cachable").withStyle(ChatFormatting.RED));
             }
         }
-        return false;
+        return;
     }
 
     // Checks if a sampler's tier is sufficient to sample given entity
@@ -118,26 +120,26 @@ public class DnaSamplerItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
         if(player.isCrouching() && SerializationHelper.hasCustomData(itemstack)) {
             removeEntityType(itemstack);
             player.swing(hand);
-            InteractionResultHolder.success(itemstack);
+            return InteractionResult.SUCCESS;
         }
-        return InteractionResultHolder.fail(itemstack);
+        return InteractionResult.FAIL;
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable Item.TooltipContext worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        super.appendHoverText(stack, worldIn, tooltip, flagIn);
-        tooltip.add(getTooltip(stack));
-        tooltip.add(getInformationForTier().withStyle(ChatFormatting.GRAY));
-        tooltip.add(Component.translatable("item.cagedmobsreborn.dna_sampler.makeEmpty").withStyle(ChatFormatting.GRAY));
-        tooltip.add(Component.translatable("item.cagedmobsreborn.dna_sampler.getBackEntity").withStyle(ChatFormatting.GRAY));
+    public void appendHoverText(ItemStack stack, @Nullable Item.TooltipContext worldIn, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, display, tooltip, flagIn);
+        tooltip.accept(getTooltip(stack));
+        tooltip.accept(getInformationForTier().withStyle(ChatFormatting.GRAY));
+        tooltip.accept(Component.translatable("item.cagedmobsreborn.dna_sampler.makeEmpty").withStyle(ChatFormatting.GRAY));
+        tooltip.accept(Component.translatable("item.cagedmobsreborn.dna_sampler.getBackEntity").withStyle(ChatFormatting.GRAY));
         if(CagedMobsReborn.SERVER_CONFIG.areSamplersDisabled()){
-            tooltip.add(Component.translatable("item.cagedmobsreborn.dna_sampler.disabled").withStyle(ChatFormatting.RED));
+            tooltip.accept(Component.translatable("item.cagedmobsreborn.dna_sampler.disabled").withStyle(ChatFormatting.RED));
         }
     }
 

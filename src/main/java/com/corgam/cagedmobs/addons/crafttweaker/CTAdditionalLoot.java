@@ -6,7 +6,10 @@ import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.corgam.cagedmobsreborn.CagedMobsReborn;
 import com.corgam.cagedmobsreborn.serializers.entity.AdditionalLootData;
 import com.corgam.cagedmobsreborn.serializers.entity.LootData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.Registries;
+import com.corgam.cagedmobsreborn.serializers.SerializationHelper;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -54,15 +57,15 @@ public class CTAdditionalLoot {
     public CTAdditionalLoot addLoot(IItemStack item, IItemStack cookedItem, float chance, int min, int max, boolean lighting, boolean arrow, int color, boolean randomDurability, String nbtName, String nbtData){
         // To prevent adding the same item twice, look if it's already there
         for(LootData loot : this.additionalLootData.getResults()){
-            if(ItemStack.isSameItemSameComponents(loot.getItem().getItems()[0], item.getInternal())){
+            if(ItemStack.isSameItemSameComponents(SerializationHelper.ingredientStack(loot.getItem()), item.getInternal())){
                 return this;
             }
         }
         // If there is a cooked variant
         if(cookedItem == null || cookedItem.getInternal().getItem().equals(Items.AIR)){
-            this.additionalLootData.getResults().add(new LootData(Ingredient.of(item.getInternal()), Ingredient.EMPTY, chance, min, max, lighting, arrow, color, randomDurability, nbtName, nbtData));
+            this.additionalLootData.getResults().add(new LootData(Ingredient.of(item.getInternal().getItem()), null, chance, min, max, lighting, arrow, color, randomDurability, nbtName, nbtData));
         }else{
-            this.additionalLootData.getResults().add(new LootData(Ingredient.of(item.getInternal()), Ingredient.of(cookedItem.getInternal()), chance, min, max, lighting, arrow, color, randomDurability, nbtName, nbtData));
+            this.additionalLootData.getResults().add(new LootData(Ingredient.of(item.getInternal().getItem()), Ingredient.of(cookedItem.getInternal().getItem()), chance, min, max, lighting, arrow, color, randomDurability, nbtName, nbtData));
         }
         return this;
     }
@@ -77,7 +80,7 @@ public class CTAdditionalLoot {
     public CTAdditionalLoot removeLoot(IIngredient remove){
         final Ingredient ing = remove.asVanillaIngredient();
         HashSet<LootData> loots = new HashSet<>(this.additionalLootData.getResults());
-        loots.removeIf(drop -> ing.test(drop.getItem().getItems()[0]));
+        loots.removeIf(drop -> ing.test(SerializationHelper.ingredientStack(drop.getItem())));
         this.additionalLootData.setResults(new ArrayList<>(loots));
         return this;
     }
@@ -95,7 +98,7 @@ public class CTAdditionalLoot {
     }
 
     public RecipeHolder<AdditionalLootData> getAdditionalLootData () {
-        return new RecipeHolder<>(ResourceLocation.fromNamespaceAndPath(CagedMobsReborn.MOD_ID, "additional_loot_data_" + this.additionalLootData.getEntityId()), this.additionalLootData);
+        return new RecipeHolder<>(ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(CagedMobsReborn.MOD_ID, "additional_loot_data_" + this.additionalLootData.getEntityId())), this.additionalLootData);
     }
 
 }

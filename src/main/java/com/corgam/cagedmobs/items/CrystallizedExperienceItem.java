@@ -5,11 +5,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
+import java.util.function.Consumer;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -25,25 +27,25 @@ public class CrystallizedExperienceItem extends Item {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable Item.TooltipContext worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        tooltip.add(Component.translatable("item.cagedmobsreborn.crystallized_experience.info").withStyle(ChatFormatting.GRAY));
-        tooltip.add(Component.translatable("item.cagedmobsreborn.crystallized_experience.info2").withStyle(ChatFormatting.GRAY));
-        tooltip.add(Component.translatable("item.cagedmobsreborn.crystallized_experience.info3").withStyle(ChatFormatting.GRAY));
+    public void appendHoverText(ItemStack stack, @Nullable Item.TooltipContext worldIn, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flagIn) {
+        tooltip.accept(Component.translatable("item.cagedmobsreborn.crystallized_experience.info").withStyle(ChatFormatting.GRAY));
+        tooltip.accept(Component.translatable("item.cagedmobsreborn.crystallized_experience.info2").withStyle(ChatFormatting.GRAY));
+        tooltip.accept(Component.translatable("item.cagedmobsreborn.crystallized_experience.info3").withStyle(ChatFormatting.GRAY));
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public net.minecraft.world.InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
         if(itemStack.getItem() instanceof CrystallizedExperienceItem){
             // If on client side, just play the sound
             if(level.isClientSide()){
-                level.playSound(player, player.getX(), player.getY()+0.5,player.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, (level.random.nextFloat() - level.random.nextFloat()) * 0.35F + 0.9F);
+                level.playSound(player, player.getX(), player.getY()+0.5,player.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.35F + 0.9F);
             // Do the logic on server side
             }else{
                 // Consume the whole stack
                 if (player.isCrouching()) {
                     for(int i = 0; i < itemStack.getCount(); i++){
-                        player.giveExperiencePoints(level.random.nextInt(2) + 1);
+                        player.giveExperiencePoints(level.getRandom().nextInt(2) + 1);
                     }
                     if(!player.isCreative()) {
                         itemStack.setCount(0);
@@ -53,12 +55,12 @@ public class CrystallizedExperienceItem extends Item {
                     if(!player.isCreative()) {
                         itemStack.shrink(1);
                     }
-                    player.giveExperiencePoints(level.random.nextInt(2) + 1);
+                    player.giveExperiencePoints(level.getRandom().nextInt(2) + 1);
                 }
             }
-            InteractionResultHolder.success(itemStack);
+            return net.minecraft.world.InteractionResult.SUCCESS;
         }
-        return InteractionResultHolder.fail(itemStack);
+        return net.minecraft.world.InteractionResult.FAIL;
     }
 
 }

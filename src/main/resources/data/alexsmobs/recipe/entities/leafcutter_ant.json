@@ -1,0 +1,60 @@
+{
+  "type": "cagedmobsreborn:entity_data",
+  "neoforge:conditions": [{ "type": "neoforge:mod_loaded", "modid": "alexsmobs" }],
+  "entity": "alexsmobs:leafcutter_ant",
+  "samplerTier": 2,
+  "environments": [
+    "ant"
+  ],
+  "growTicks": 1200,
+  "results": [
+    {
+      "chance": 0.1,
+      "output": "alexsmobs:leafcutter_ant_pupa",
+      "minAmount": 1,
+      "maxAmount": 1
+    },
+    {
+      "chance": 0.5,
+      "output": "alexsmobs:gongylidia",
+      "minAmount": 1,
+      "maxAmount": 1
+    },
+    {
+      "chance": 0.2,
+      "output": "minecraft:oak_sapling",
+      "minAmount": 1,
+      "maxAmount": 1
+    },
+    {
+      "chance": 0.1,
+      "output": "minecraft:spruce_sapling",
+      "minAmount": 1,
+      "maxAmount": 1
+    },
+    {
+      "chance": 0.1,
+      "output": "minecraft:birch_sapling",
+      "minAmount": 1,
+      "maxAmount": 1
+    },
+    {
+      "chance": 0.1,
+      "output": "minecraft:jungle_sapling",
+      "minAmount": 1,
+      "maxAmount": 1
+    },
+    {
+      "chance": 0.1,
+      "output": "minecraft:acacia_sapling",
+      "minAmount": 1,
+      "maxAmount": 1
+    },
+    {
+      "chance": 0.1,
+      "output": "minecraft:dark_oak_sapling",
+      "minAmount": 1,
+      "maxAmount": 1
+    }
+  ]
+}

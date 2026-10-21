@@ -1,0 +1,13 @@
+{
+  "type": "cagedmobsreborn:additional_loot_data",
+  "neoforge:conditions": [{ "type": "neoforge:mod_loaded", "modid": "reliquary" }],
+  "entity": "minecraft:wither_skeleton",
+  "results": [
+    {
+      "chance": 0.1,
+      "output": "reliquary:withered_rib",
+      "minAmount": 1,
+      "maxAmount": 1
+    }
+  ]
+}

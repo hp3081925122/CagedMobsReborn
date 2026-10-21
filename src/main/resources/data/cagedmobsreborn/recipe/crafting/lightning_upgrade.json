@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " X ",
+    "cBc",
+    "bQb"
+  ],
+  "key": {
+    "X": "minecraft:end_rod",
+    "c": "#forge:dusts/redstone",
+    "B": "minecraft:shulker_shell",
+    "b": "minecraft:phantom_membrane",
+    "Q": "#forge:storage_blocks/quartz"
+  },
+  "result": {
+    "id": "cagedmobsreborn:lightning_upgrade"
+  }
+}
