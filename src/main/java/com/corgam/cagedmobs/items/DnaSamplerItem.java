@@ -3,6 +3,7 @@ package com.corgam.cagedmobsreborn.items;
 import com.corgam.cagedmobsreborn.CagedMobsReborn;
 import com.corgam.cagedmobsreborn.blocks.mob_cage.MobCageBlockEntity;
 import com.corgam.cagedmobsreborn.registers.CagedRecipeTypes;
+import com.corgam.cagedmobsreborn.serializers.AutoEntityDataHelper;
 import com.corgam.cagedmobsreborn.serializers.RecipesHelper;
 import com.corgam.cagedmobsreborn.serializers.SerializationHelper;
 import com.corgam.cagedmobsreborn.serializers.entity.EntityData;
@@ -81,7 +82,7 @@ public class DnaSamplerItem extends Item {
             if(recipe != null) {
                 // Check for null exception
                 if(recipe.getEntityType() == null){continue;}
-                if(recipe.getEntityType().equals(type) && recipe.getSamplerTier() <= getSamplerTierInt(stack.getItem())) {
+                if(recipe.getEntityType().equals(type) && AutoEntityDataHelper.getRequiredSamplerTier(recipe, target) <= getSamplerTierInt(stack.getItem())) {
                     sufficient = true;
                     break;
                 }

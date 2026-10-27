@@ -25,7 +25,8 @@ public class RecipesHelper {
     public static List<EntityData> getEntitiesRecipesList() {
         RecipeManager manager = getRecipeManager();
         if (manager != null) {
-            List<EntityData> recipes = manager.getAllRecipesFor(CagedRecipeTypes.ENTITY_RECIPE.get()).stream().map(RecipeHolder::value).toList();
+            List<EntityData> recipes = new ArrayList<>(manager.getAllRecipesFor(CagedRecipeTypes.ENTITY_RECIPE.get()).stream().map(RecipeHolder::value).toList());
+            recipes.addAll(AutoEntityDataHelper.createAutoEntityData(recipes));
             CagedMobsReborn.LOGGER.debug("Entity recipe lookup returned {} recipes", recipes.size());
             return recipes;
         }
@@ -72,7 +73,16 @@ public class RecipesHelper {
         return ServerLifecycleHooks.getCurrentServer().getRecipeManager();
     }
 
+    public static final String UNIVERSAL_ENVIRONMENT = "universal";
+
+    public static boolean isUniversalEnvironmentAllowed(EntityType<?> entityType) {
+        return !CagedMobsReborn.SERVER_CONFIG.getUniversalEnvironmentBlacklist().contains(String.valueOf(EntityType.getKey(entityType)));
+    }
+
     public static boolean isEnvValidForEntity(EntityData entity, EnvironmentData env) {
+        if(env.getCategories().contains(UNIVERSAL_ENVIRONMENT) && isUniversalEnvironmentAllowed(entity.getEntityType())){
+            return true;
+        }
         for(String s : entity.getEnvironments()){
             for(String s2 : env.getCategories()){
                 if(s.matches(s2)){

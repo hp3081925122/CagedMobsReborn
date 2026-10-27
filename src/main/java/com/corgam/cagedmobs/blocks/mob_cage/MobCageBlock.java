@@ -28,6 +28,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.SwordItem;
@@ -91,6 +92,9 @@ public class MobCageBlock extends BaseEntityBlock implements SimpleWaterloggedBl
     @Override
     protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) {
         // If on client side, skip.
+        if(heldItem.is(Items.WATER_BUCKET) || heldItem.is(Items.BUCKET)) {
+            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+        }
         if(level.isClientSide()) {
             return ItemInteractionResult.SUCCESS;
         }
@@ -319,10 +323,18 @@ public class MobCageBlock extends BaseEntityBlock implements SimpleWaterloggedBl
      * Called when placed or when neighbour is updated.
      */
     public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {
-        if (pState.getValue(WATERLOGGED)) {
-            pLevel.scheduleTick(pCurrentPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
-        }
         return super.updateShape(pState, pFacing, pFacingState, pLevel, pCurrentPos, pFacingPos);
+    }
+
+    @Override
+    public boolean placeLiquid(LevelAccessor level, BlockPos pos, BlockState state, FluidState fluidState) {
+        if (!state.getValue(WATERLOGGED) && fluidState.getType() == Fluids.WATER) {
+            if (!level.isClientSide()) {
+                level.setBlock(pos, state.setValue(WATERLOGGED, Boolean.TRUE), 3);
+            }
+            return true;
+        }
+        return false;
     }
 
     public FluidState getFluidState(BlockState pState) {

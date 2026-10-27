@@ -46,6 +46,7 @@
     "item.cagedmobsreborn.sponge_fragment": "海绵碎片",
     "item.cagedmobsreborn.honey_drop": "蜂蜜滴",
     "item.cagedmobsreborn.milk_drop": "牛奶滴",
+    "item.cagedmobsreborn.universal_environment": "通用环境",
     "item.cagedmobsreborn.crystallized_experience": "结晶经验",
     "item.cagedmobsreborn.empty_spawn_egg": "空的刷怪蛋",
     "item.cagedmobsreborn.star_infused_netherite_ingot": "注星下界合金锭",
@@ -60,6 +61,7 @@
     "block.cagedmobsreborn.star_infused_netherite_block": "注星下界合金块",
     "block.cagedmobsreborn.crystallized_experience_block": "结晶经验块",
     "block.cagedmobsreborn.mob_cage.envNotSuitable": "笼中的环境不适合该生物。",
+    "block.cagedmobsreborn.mob_cage.universalBlacklisted": "该生物无法使用通用环境。",
     "block.cagedmobsreborn.mob_cage.mainInfo": "可以根据储存的DNA样本去复制生物的掉落物",
     "block.cagedmobsreborn.mob_cage.envInfo": "需要内设一处适合生物的环境",
     "block.cagedmobsreborn.mob_cage.hoppingInfo": "产生的掉落物将放入下方容器中",
@@ -78,7 +80,7 @@
 
     "jei.category.cagedmobsreborn.entity": "笼中生物掉落物",
     "jei.tooltip.cagedmobsreborn.entity.chance": "概率：%d%%",
-    "jei.tooltip.cagedmobsreborn.entity.growModifier": "生长速度调整：+%d%%",
+    "jei.tooltip.cagedmobsreborn.entity.growModifier": "生长速度调整：%s%%",
     "jei.tooltip.cagedmobsreborn.entity.amountEqual": "数量：%d",
     "jei.tooltip.cagedmobsreborn.entity.amount": "数量：%d-%d",
     "jei.tooltip.cagedmobsreborn.entity.ticks": "%d秒",
@@ -87,6 +89,7 @@
     "jei.tooltip.cagedmobsreborn.entity.arrow_upgrade": "需要笼升级：箭矢",
     "jei.tooltip.cagedmobsreborn.entity.colorItem": "仅由被染色的生物掉落",
     "jei.tooltip.cagedmobsreborn.entity.requiresWater": "需要含水的生物笼",
+    "jei.tooltip.cagedmobsreborn.entity.autoLoot": "产物按该生物自身的战利品表生成。",
 
     "JADE.tooltip.cagedmobsreborn.cage.entity": "生物：",
     "JADE.tooltip.cagedmobsreborn.cage.environment": "环境：",

@@ -33,6 +33,9 @@ public class CagedItems {
     public final static DeferredHolder<Item, Item> EXPERIENCE_UPGRADE = CAGED_ITEMS_REGISTER.register("experience_upgrade", () -> new ExperienceUpgradeItem(new Item.Properties()));
     public final static DeferredHolder<Item, Item> CREATIVE_UPGRADE = CAGED_ITEMS_REGISTER.register("creative_upgrade", () -> new CreativeUpgradeItem(new Item.Properties()));
 
+    // ENVIRONMENTS
+    public final static DeferredHolder<Item, Item> UNIVERSAL_ENVIRONMENT = CAGED_ITEMS_REGISTER.register("universal_environment", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
+
     // MISC
     public final static DeferredHolder<Item, Item> DRAGON_SCALE = CAGED_ITEMS_REGISTER.register("dragon_scale", () -> new Item(new Item.Properties().rarity(Rarity.EPIC)));
     public final static DeferredHolder<Item, Item> NETHER_STAR_FRAGMENT = CAGED_ITEMS_REGISTER.register("nether_star_fragment", () -> new FoiledItem(new Item.Properties().rarity(Rarity.UNCOMMON)));
