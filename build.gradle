@@ -7,6 +7,7 @@ plugins {
 }
 
 repositories {
+    maven { url = 'https://maven.blamejared.com' }
     maven {
         url = 'https://www.cursemaven.com'
         content {
@@ -63,6 +64,7 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
+    compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-1.20.1:14.0.60")
     minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
     implementation fg.deobf("curse.maven:jei-238222:8778011")
     implementation fg.deobf("curse.maven:just-enough-characters-250702:8771525")
@@ -111,6 +113,7 @@ publishing {
         }
     }
     repositories {
+    maven { url = 'https://maven.blamejared.com' }
         maven {
             url "file://${project.projectDir}/mcmodsrepo"
         }

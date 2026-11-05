@@ -33,7 +33,7 @@ public class EntitiesManager implements IRecipeManager<EntityData> {
     public CTEntity getEntity(String id){
         ResourceLocation resource = ResourceLocation.tryParse(id);
         if(resource != null) {
-            final EntityData recipe = this.getRecipes().stream().filter(holder -> holder.id().equals(resource)).findFirst().orElseThrow().value();
+            final EntityData recipe = java.util.Objects.requireNonNull(this.getRecipes().get(resource), "Unknown recipe: " + resource);
             return new CTEntity(recipe);
         }
         throw new IllegalStateException("[CagedMobsReborn] Invalid CraftTweaker Entity recipe ID: " + id);

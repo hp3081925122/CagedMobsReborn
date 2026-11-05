@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.client.event.RegisterMenuScreensEvent;
+import net.minecraft.client.gui.screens.MenuScreens;
 
 public class ClientSetup {
     // Set the render type of blocks
@@ -22,8 +22,8 @@ public class ClientSetup {
         BlockEntityRenderers.register(CagedBlockEntities.MOB_CAGE_BLOCK_ENTITY.get(), MobCageRenderer::new);
     }
 
-    public static void registerScreens(RegisterMenuScreensEvent event) {
-        event.register(CagedContainers.CAGE_CONTAINER.get(), MobCageScreen::new);
+    public static void registerScreens(FMLClientSetupEvent event) {
+        event.enqueueWork(() -> MenuScreens.register(CagedContainers.CAGE_CONTAINER.get(), MobCageScreen::new));
     }
 }
 

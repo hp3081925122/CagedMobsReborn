@@ -33,7 +33,7 @@ public class EnvironmentsManager implements IRecipeManager<EnvironmentData> {
     public CTEnvironment getEnvironment(String id) {
         ResourceLocation resource = ResourceLocation.tryParse(id);
         if(resource != null){
-            final EnvironmentData recipe = this.getRecipes().stream().filter(holder -> holder.id().equals(resource)).findFirst().orElseThrow().value();
+            final EnvironmentData recipe = java.util.Objects.requireNonNull(this.getRecipes().get(resource), "Unknown recipe: " + resource);
             return new CTEnvironment(recipe);
         }
         throw new IllegalStateException("[CagedMobsReborn] Invalid CraftTweaker Environment recipe ID: " + id);

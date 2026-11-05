@@ -31,7 +31,9 @@ public final class CagedMobsReborn {
     public static final ClientConfig CLIENT_CONFIG = new ClientConfig();
     public static final ServerConfig SERVER_CONFIG = new ServerConfig();
 
-    public CagedMobsReborn(IEventBus modEventBus, ModContainer modContainer) {
+    public CagedMobsReborn() {
+        IEventBus modEventBus = net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext.get().getModEventBus();
+        net.minecraftforge.fml.ModLoadingContext modContainer = net.minecraftforge.fml.ModLoadingContext.get();
         CagedBlocks.CAGED_BLOCKS_REGISTER.register(modEventBus);
         CagedItems.CAGED_ITEMS_REGISTER.register(modEventBus);
         CagedBlockEntities.CAGED_BLOCK_ENTITIES_REGISTER.register(modEventBus);

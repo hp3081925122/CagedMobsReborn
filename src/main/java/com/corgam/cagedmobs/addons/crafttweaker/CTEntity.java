@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeHolder;
+
 import org.openzen.zencode.java.ZenCodeType;
 
 import java.util.ArrayList;
@@ -127,8 +127,9 @@ public class CTEntity {
         return this;
     }
 
-    public RecipeHolder<EntityData> getEntityData() {
-        return new RecipeHolder<>(new ResourceLocation(CagedMobsReborn.MOD_ID, "entity_data_" + this.entityData.getEntityId()), this.entityData);
+    public EntityData getEntityData() {
+        this.entityData.setRecipeId(new ResourceLocation(CagedMobsReborn.MOD_ID, "entity_data_" + this.entityData.getEntityId().replace(':', '/')));
+        return this.entityData;
     }
 }
 

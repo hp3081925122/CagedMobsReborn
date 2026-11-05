@@ -4,7 +4,7 @@ import net.minecraft.core.registries.Registries;
 import com.corgam.cagedmobsreborn.CagedMobsReborn;
 import com.corgam.cagedmobsreborn.blocks.mob_cage.MobCageContainer;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraftforge.common.extensions.IMenuTypeExtension;
+import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -15,7 +15,7 @@ public class CagedContainers {
 
     // Mob Cages
     public static final RegistryObject<MenuType<MobCageContainer>> CAGE_CONTAINER = CAGED_MENU_TYPES_REGISTER.register("mob_cage",
-            ()-> IMenuTypeExtension.create(((windowId, inv, extraData) -> new MobCageContainer(windowId, inv.player, extraData.readBlockPos()))));
+            ()-> IForgeMenuType.create(((windowId, inv, extraData) -> new MobCageContainer(windowId, inv.player, extraData.readBlockPos()))));
 }
 
 

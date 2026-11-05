@@ -27,7 +27,7 @@ public class AdditionalLootsManager implements IRecipeManager<AdditionalLootData
     public CTAdditionalLoot getAdditionalLoot(String id){
         ResourceLocation resource = ResourceLocation.tryParse(id);
         if(resource != null){
-            final AdditionalLootData recipe = this.getRecipes().stream().filter(holder -> holder.id().equals(resource)).findFirst().orElseThrow().value();
+            final AdditionalLootData recipe = java.util.Objects.requireNonNull(this.getRecipes().get(resource), "Unknown recipe: " + resource);
             return new CTAdditionalLoot(recipe);
         }
         throw new IllegalStateException("[CagedMobsReborn] Invalid CraftTweaker Additional Loot Data recipe ID: " + id);
