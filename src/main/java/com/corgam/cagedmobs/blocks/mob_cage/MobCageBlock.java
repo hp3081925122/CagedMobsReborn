@@ -171,7 +171,7 @@ public MobCageBlock(Properties pProperties) {
             if(heldItem.getItem() instanceof SpawnEggItem spawnEggItem){
                 if(!CagedMobsReborn.SERVER_CONFIG.areSpawnEggsDisabled()) {
                     if (!cageBE.hasEntity()) {
-                        EntityType<?> entityType = spawnEggItem.getType(heldItem);
+                        EntityType<?> entityType = spawnEggItem.getType(heldItem.getTag());
                         // Check if there exists a recipe for a given entity type,
                         // if the environment is suitable for that entity and if it is not blacklisted.
                         if (cageBE.existsEntityDataFromType(entityType)

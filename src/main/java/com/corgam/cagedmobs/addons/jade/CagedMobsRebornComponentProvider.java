@@ -31,7 +31,7 @@ public class CagedMobsRebornComponentProvider implements IBlockComponentProvider
             tooltip.add(helper.progress(tile.getGrowthPercentage(),
                     Component.literal(String.format("%3.0f%%", tile.getGrowthPercentage() * 100)),
                     helper.progressStyle().color(0xff44AA44, 0xff44AA44),
-                    BoxStyle.GradientBorder.TRANSPARENT,
+                    snownee.jade.api.ui.IBoxStyle.Empty.INSTANCE,
                     true
             ));
         }

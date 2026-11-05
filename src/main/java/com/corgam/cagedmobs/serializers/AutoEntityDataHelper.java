@@ -120,14 +120,14 @@ public class AutoEntityDataHelper {
         if(!(lootEntity instanceof LivingEntity living)){
             return List.of();
         }
-        LootTable table = level.getServer().reloadableRegistries().getLootTable(living.getLootTable());
+        LootTable table = level.getServer().getLootData().getLootTable(living.getLootTable());
         if(table == LootTable.EMPTY){
             return List.of();
         }
         FakePlayer player = FakePlayerFactory.getMinecraft(level);
         ItemStack weapon = new ItemStack(Items.IRON_SWORD);
         if(lootingLevel > 0){
-            Holder<Enchantment> looting = level.registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.LOOTING);
+            Enchantment looting = Enchantments.MOB_LOOTING;
             weapon.enchant(looting, lootingLevel);
         }
         ItemStack previousItem = player.getMainHandItem();
@@ -138,12 +138,12 @@ public class AutoEntityDataHelper {
                     .withParameter(LootContextParams.THIS_ENTITY, living)
                     .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
                     .withParameter(LootContextParams.DAMAGE_SOURCE, level.damageSources().playerAttack(player))
-                    .withOptionalParameter(LootContextParams.ATTACKING_ENTITY, player)
-                    .withOptionalParameter(LootContextParams.DIRECT_ATTACKING_ENTITY, player)
+                    .withOptionalParameter(LootContextParams.KILLER_ENTITY, player)
+                    .withOptionalParameter(LootContextParams.DIRECT_KILLER_ENTITY, player)
                     .withOptionalParameter(LootContextParams.LAST_DAMAGE_PLAYER, player)
                     .create(LootContextParamSets.ENTITY);
             List<ItemStack> drops = table.getRandomItems(params);
-            CagedMobsReborn.LOGGER.debug("[AUTO-ENTITY] Rolled loot table {} for {} (looting {}, onFire {}): {}", living.getLootTable().location(), EntityType.getKey(living.getType()), lootingLevel, onFire, drops);
+            CagedMobsReborn.LOGGER.debug("[AUTO-ENTITY] Rolled loot table {} for {} (looting {}, onFire {}): {}", living.getLootTable(), EntityType.getKey(living.getType()), lootingLevel, onFire, drops);
             return drops;
         }finally{
             player.setItemInHand(InteractionHand.MAIN_HAND, previousItem);

@@ -36,7 +36,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-public class EntityDataWrapper implements IRecipeCategoryExtension<EntityData> {
+public class EntityDataWrapper implements IRecipeCategoryExtension {
 
     public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##");
     public static final DecimalFormat SIGNED_DECIMAL_FORMAT = new DecimalFormat("+#.##;-#.##");

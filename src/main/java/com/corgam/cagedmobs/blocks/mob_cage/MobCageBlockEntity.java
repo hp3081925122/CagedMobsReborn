@@ -17,7 +17,7 @@ import com.corgam.cagedmobsreborn.serializers.entity.LootData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
+
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
@@ -483,7 +483,7 @@ public class MobCageBlockEntity extends BlockEntity {
             if(this.renderedEntity == null){
                 CompoundTag nbt = new CompoundTag();
                 nbt.putString("id", EntityType.getKey(this.entityType).toString());
-                this.renderedEntity = new SpawnData(nbt, Optional.empty(), Optional.empty());
+                this.renderedEntity = new SpawnData(nbt, Optional.empty());
             }
             this.cachedEntity = EntityType.loadEntityRecursive(this.renderedEntity.getEntityToSpawn(), level, Function.identity());
         }
@@ -967,14 +967,14 @@ public class MobCageBlockEntity extends BlockEntity {
      * @param tag the nbt tag to save to
      */
     @Override
-    protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider provider){
-        super.saveAdditional(tag, provider);
-        this.saveTag(tag, provider);
+    protected void saveAdditional(@NotNull CompoundTag tag){
+        super.saveAdditional(tag);
+        this.saveTag(tag);
     }
 
-    private void saveTag(@NotNull CompoundTag tag, HolderLookup.Provider provider){
+    private void saveTag(@NotNull CompoundTag tag){
         // Item capability
-        tag.put(ITEMS_TAG, items.serializeNBT(provider));
+        tag.put(ITEMS_TAG, items.serializeNBT());
         // Put entity type
         if(this.hasEntity()){
             SerializationHelper.serializeEntityTypeNBT(tag, this.entityType);
@@ -991,22 +991,22 @@ public class MobCageBlockEntity extends BlockEntity {
      * @param tag the nbt tag to load from
      */
     @Override
-    protected void loadAdditional(@NotNull CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
-        this.loadTag(tag, provider);
+    public void load(@NotNull CompoundTag tag) {
+        super.load(tag);
+        this.loadTag(tag);
     }
 
     /**
      * Loads the block entity data from the tag.
      * @param tag the tag to load
      */
-    private void loadTag(@NotNull CompoundTag tag, HolderLookup.Provider provider){
+    private void loadTag(@NotNull CompoundTag tag){
         // Store old env and entity type
         ItemStack oldEnv = this.items.getStackInSlot(ENVIRONMENT_SLOT);
         EntityType<?> oldEntityType = this.entityType;
         // Item capability
         if (tag.contains(ITEMS_TAG)) {
-            items.deserializeNBT(provider, tag.getCompound(ITEMS_TAG));
+            items.deserializeNBT(tag.getCompound(ITEMS_TAG));
         }
         // Read the env
         this.environmentData = MobCageBlockEntity.getEnvironmentDataFromItemStack(this.items.getStackInSlot(ENVIRONMENT_SLOT));
@@ -1042,9 +1042,9 @@ public class MobCageBlockEntity extends BlockEntity {
      * @return the update nbt tag to send
      */
     @Override
-    public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider provider) {
-        CompoundTag tag = super.getUpdateTag(provider);
-        this.saveTag(tag, provider);
+    public @NotNull CompoundTag getUpdateTag() {
+        CompoundTag tag = super.getUpdateTag();
+        this.saveTag(tag);
         return tag;
     }
 
@@ -1053,10 +1053,10 @@ public class MobCageBlockEntity extends BlockEntity {
      * @param tag The {@link CompoundTag} sent from {@link BlockEntity#getUpdateTag()}
      */
     @Override
-    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
-        super.handleUpdateTag(tag, provider);
+    public void handleUpdateTag(CompoundTag tag) {
+        super.handleUpdateTag(tag);
         if(tag != null){
-            this.loadTag(tag, provider);
+            this.loadTag(tag);
         }
     }
 
@@ -1076,10 +1076,10 @@ public class MobCageBlockEntity extends BlockEntity {
      * @param pkt The data packet
      */
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider provider) {
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         CompoundTag tag = pkt.getTag();
         if (tag != null) {
-            handleUpdateTag(tag, provider);
+            handleUpdateTag(tag);
         }
     }
 }

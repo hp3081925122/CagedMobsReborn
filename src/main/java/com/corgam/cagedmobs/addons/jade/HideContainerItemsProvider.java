@@ -11,12 +11,12 @@ import snownee.jade.api.view.ViewGroup;
 
 import java.util.List;
 
-public class HideContainerItemsProvider implements IServerExtensionProvider<ItemStack> {
+public class HideContainerItemsProvider implements IServerExtensionProvider<MobCageBlockEntity, ItemStack> {
 
     public static final ResourceLocation UID = new ResourceLocation(CagedMobsReborn.MOD_ID, "hide_container_items");
 
     @Override
-    public @Nullable List<ViewGroup<ItemStack>> getGroups(Accessor<?> accessor) {
+    public @Nullable List<ViewGroup<ItemStack>> getGroups(net.minecraft.server.level.ServerPlayer player, net.minecraft.server.level.ServerLevel level, MobCageBlockEntity cage, boolean showDetails) {
         return List.of();
     }
 

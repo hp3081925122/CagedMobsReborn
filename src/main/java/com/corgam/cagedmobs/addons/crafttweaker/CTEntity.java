@@ -75,7 +75,7 @@ public class CTEntity {
     public CTEntity addLoot(IItemStack item, IItemStack cookedItem, float chance, int min, int max, boolean lighting, boolean arrow, int color, boolean randomDurability, String nbtName, String nbtData){
         // To prevent adding the same item twice, look if it's already there
         for(LootData loot : this.entityData.getResults()){
-            if(ItemStack.isSameItemSameComponents(loot.getItem().getItems()[0], item.getInternal())){
+            if(ItemStack.isSameItemSameTags(loot.getItem().getItems()[0], item.getInternal())){
                 return this;
             }
         }
