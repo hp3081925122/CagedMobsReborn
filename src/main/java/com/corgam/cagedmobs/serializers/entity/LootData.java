@@ -1,10 +1,10 @@
-package com.corgam.cagedmobsreborn.serializers.entity;
+package com.corgam.cagedmobs.serializers.entity;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -63,7 +63,7 @@ public class LootData {
         }
     }
 
-    public static void serializeBuffer(RegistryFriendlyByteBuf buffer, LootData lootData) {
+    public static void serializeBuffer(FriendlyByteBuf buffer, LootData lootData) {
         // Chance
         buffer.writeFloat(lootData.getChance());
         // Item
@@ -92,7 +92,7 @@ public class LootData {
         buffer.writeUtf(lootData.getNbtData());
     }
 
-    public static LootData deserializeBuffer(RegistryFriendlyByteBuf buffer) {
+    public static LootData deserializeBuffer(FriendlyByteBuf buffer) {
         // Chance
         final float chance = buffer.readFloat();
         // Item
@@ -131,7 +131,7 @@ public class LootData {
     public static ItemStack writeNBTtoItem(String nbtName, String nbtData, ItemStack stack){
         CompoundTag nbt = new CompoundTag();
         nbt.putString(nbtName,nbtData);
-        com.corgam.cagedmobsreborn.serializers.SerializationHelper.setCustomData(stack, nbt);
+        com.corgam.cagedmobs.serializers.SerializationHelper.setCustomData(stack, nbt);
         return stack;
     }
 
@@ -190,3 +190,5 @@ public class LootData {
         return this.nbtData;
     }
 }
+
+

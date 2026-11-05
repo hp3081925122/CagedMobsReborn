@@ -1,12 +1,12 @@
-package com.corgam.cagedmobsreborn.serializers.environment;
+package com.corgam.cagedmobs.serializers.environment;
 
 import net.minecraft.core.registries.Registries;
-import com.corgam.cagedmobsreborn.CagedMobsReborn;
-import com.corgam.cagedmobsreborn.serializers.SerializationHelper;
+import com.corgam.cagedmobs.CagedMobsReborn;
+import com.corgam.cagedmobs.serializers.SerializationHelper;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -30,7 +30,7 @@ public class EnvironmentDataSerializer implements RecipeSerializer<EnvironmentDa
         return CODEC;
     }
 
-    public EnvironmentData fromNetwork(RegistryFriendlyByteBuf buffer) {
+    public EnvironmentData fromNetwork(FriendlyByteBuf buffer) {
         try {
             // Input item
             final Ingredient inputItem = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
@@ -49,7 +49,7 @@ public class EnvironmentDataSerializer implements RecipeSerializer<EnvironmentDa
         }
     }
 
-    public void toNetwork(RegistryFriendlyByteBuf buffer, EnvironmentData recipe) {
+    public void toNetwork(FriendlyByteBuf buffer, EnvironmentData recipe) {
         try{
             // Input item
             Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.getInputItem());
@@ -66,7 +66,9 @@ public class EnvironmentDataSerializer implements RecipeSerializer<EnvironmentDa
     }
 
     @Override
-    public StreamCodec<RegistryFriendlyByteBuf, EnvironmentData> streamCodec() {
+    public StreamCodec<FriendlyByteBuf, EnvironmentData> streamCodec() {
         return StreamCodec.of(this::toNetwork, this::fromNetwork);
     }
 }
+
+

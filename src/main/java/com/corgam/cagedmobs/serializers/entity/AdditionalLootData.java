@@ -1,8 +1,8 @@
-package com.corgam.cagedmobsreborn.serializers.entity;
+package com.corgam.cagedmobs.serializers.entity;
 
-import com.corgam.cagedmobsreborn.CagedMobsReborn;
-import com.corgam.cagedmobsreborn.registers.CagedRecipeSerializers;
-import com.corgam.cagedmobsreborn.registers.CagedRecipeTypes;
+import com.corgam.cagedmobs.CagedMobsReborn;
+import com.corgam.cagedmobs.registers.CagedRecipeSerializers;
+import com.corgam.cagedmobs.registers.CagedRecipeTypes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
@@ -109,3 +109,4 @@ public class AdditionalLootData implements Recipe<RecipeInput> {
     }
 
 }
+

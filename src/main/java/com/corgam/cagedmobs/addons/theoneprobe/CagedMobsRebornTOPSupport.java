@@ -1,6 +1,6 @@
-package com.corgam.cagedmobsreborn.addons.theoneprobe;
+package com.corgam.cagedmobs.addons.theoneprobe;
 
-//import com.corgam.cagedmobsreborn.CagedMobsReborn;
+//import com.corgam.cagedmobs.CagedMobsReborn;
 //import com.google.common.base.Function;
 //import mcjty.theoneprobe.api.*;
 //import net.minecraft.resources.ResourceLocation;
@@ -19,7 +19,7 @@ public class CagedMobsRebornTOPSupport  {}
 //        probe.registerProvider(new IProbeInfoProvider() {
 //            @Override
 //            public ResourceLocation getID() {
-//                return ResourceLocation.fromNamespaceAndPath(CagedMobsReborn.MOD_ID,"default");
+//                return new ResourceLocation(CagedMobsReborn.MOD_ID, "default");
 //            }
 //
 //            @Override
@@ -34,3 +34,5 @@ public class CagedMobsRebornTOPSupport  {}
 //    }
 //
 //}
+
+

@@ -1,4 +1,4 @@
-package com.corgam.cagedmobsreborn.items;
+package com.corgam.cagedmobs.items;
 
 import net.minecraft.world.item.ItemStack;
 
@@ -11,3 +11,4 @@ public class DnaSamplerNetheriteItem extends DnaSamplerItem{
         return true;
     }
 }
+

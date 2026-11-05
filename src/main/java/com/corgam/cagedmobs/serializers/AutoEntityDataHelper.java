@@ -1,7 +1,7 @@
-package com.corgam.cagedmobsreborn.serializers;
+package com.corgam.cagedmobs.serializers;
 
-import com.corgam.cagedmobsreborn.CagedMobsReborn;
-import com.corgam.cagedmobsreborn.serializers.entity.EntityData;
+import com.corgam.cagedmobs.CagedMobsReborn;
+import com.corgam.cagedmobs.serializers.entity.EntityData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -25,9 +25,9 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.util.FakePlayer;
-import net.neoforged.neoforge.common.util.FakePlayerFactory;
+import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.common.util.FakePlayerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -151,3 +151,5 @@ public class AutoEntityDataHelper {
         }
     }
 }
+
+

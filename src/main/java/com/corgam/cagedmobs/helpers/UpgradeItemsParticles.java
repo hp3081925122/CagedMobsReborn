@@ -1,12 +1,12 @@
-package com.corgam.cagedmobsreborn.helpers;
+package com.corgam.cagedmobs.helpers;
 
-import com.corgam.cagedmobsreborn.blocks.mob_cage.MobCageBlockEntity;
+import com.corgam.cagedmobs.blocks.mob_cage.MobCageBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Helper class for emitting cage upgrades' particles on client side.
@@ -144,3 +144,5 @@ public class UpgradeItemsParticles {
         }
     }
 }
+
+

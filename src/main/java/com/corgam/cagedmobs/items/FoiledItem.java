@@ -1,4 +1,4 @@
-package com.corgam.cagedmobsreborn.items;
+package com.corgam.cagedmobs.items;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -13,3 +13,4 @@ public class FoiledItem extends Item {
         return true;
     }
 }
+

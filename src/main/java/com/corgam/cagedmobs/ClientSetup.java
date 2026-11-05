@@ -1,15 +1,15 @@
-package com.corgam.cagedmobsreborn;
+package com.corgam.cagedmobs;
 
-import com.corgam.cagedmobsreborn.blocks.mob_cage.MobCageRenderer;
-import com.corgam.cagedmobsreborn.blocks.mob_cage.MobCageScreen;
-import com.corgam.cagedmobsreborn.registers.CagedBlockEntities;
-import com.corgam.cagedmobsreborn.registers.CagedBlocks;
-import com.corgam.cagedmobsreborn.registers.CagedContainers;
+import com.corgam.cagedmobs.blocks.mob_cage.MobCageRenderer;
+import com.corgam.cagedmobs.blocks.mob_cage.MobCageScreen;
+import com.corgam.cagedmobs.registers.CagedBlockEntities;
+import com.corgam.cagedmobs.registers.CagedBlocks;
+import com.corgam.cagedmobs.registers.CagedContainers;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.client.event.RegisterMenuScreensEvent;
 
 public class ClientSetup {
     // Set the render type of blocks
@@ -26,3 +26,5 @@ public class ClientSetup {
         event.register(CagedContainers.CAGE_CONTAINER.get(), MobCageScreen::new);
     }
 }
+
+

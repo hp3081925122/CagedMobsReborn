@@ -1,6 +1,6 @@
-package com.corgam.cagedmobsreborn.configs;
+package com.corgam.cagedmobs.configs;
 
-import net.neoforged.neoforge.common.ModConfigSpec;
+import net.minecraftforge.common.ModConfigSpec;
 
 import java.util.Collections;
 import java.util.List;
@@ -179,3 +179,5 @@ public class ServerConfig {
         return this.universalEnvironmentBlacklist.get();
     }
 }
+
+

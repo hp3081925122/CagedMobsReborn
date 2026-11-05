@@ -1,15 +1,15 @@
-package com.corgam.cagedmobsreborn.addons.jei;
+package com.corgam.cagedmobs.addons.jei;
 
-import com.corgam.cagedmobsreborn.CagedMobsReborn;
-import com.corgam.cagedmobsreborn.blocks.mob_cage.MobCageBlockEntity;
-import com.corgam.cagedmobsreborn.helpers.EntityRendererHelper;
-import com.corgam.cagedmobsreborn.registers.CagedItems;
-import com.corgam.cagedmobsreborn.serializers.RecipesHelper;
-import com.corgam.cagedmobsreborn.serializers.SerializationHelper;
-import com.corgam.cagedmobsreborn.serializers.entity.EntityData;
-import com.corgam.cagedmobsreborn.serializers.environment.EnvironmentData;
-import com.corgam.cagedmobsreborn.serializers.entity.AdditionalLootData;
-import com.corgam.cagedmobsreborn.serializers.entity.LootData;
+import com.corgam.cagedmobs.CagedMobsReborn;
+import com.corgam.cagedmobs.blocks.mob_cage.MobCageBlockEntity;
+import com.corgam.cagedmobs.helpers.EntityRendererHelper;
+import com.corgam.cagedmobs.registers.CagedItems;
+import com.corgam.cagedmobs.serializers.RecipesHelper;
+import com.corgam.cagedmobs.serializers.SerializationHelper;
+import com.corgam.cagedmobs.serializers.entity.EntityData;
+import com.corgam.cagedmobs.serializers.environment.EnvironmentData;
+import com.corgam.cagedmobs.serializers.entity.AdditionalLootData;
+import com.corgam.cagedmobs.serializers.entity.LootData;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotTooltipCallback;
@@ -291,7 +291,7 @@ public class EntityDataWrapper implements IRecipeCategoryExtension<EntityData> {
             EntityType<?> type = entityData.getEntityType();
             CompoundTag nbt = new CompoundTag();
             SerializationHelper.serializeEntityTypeNBT(nbt, type);
-            com.corgam.cagedmobsreborn.serializers.SerializationHelper.setCustomData(stack, nbt);
+            com.corgam.cagedmobs.serializers.SerializationHelper.setCustomData(stack, nbt);
 
             ret.add(stack);
         }
@@ -336,4 +336,6 @@ public class EntityDataWrapper implements IRecipeCategoryExtension<EntityData> {
         };
     }
 }
+
+
 

@@ -1,7 +1,7 @@
-package com.corgam.cagedmobsreborn.addons.jei;
+package com.corgam.cagedmobs.addons.jei;
 
-import com.corgam.cagedmobsreborn.CagedMobsReborn;
-import com.corgam.cagedmobsreborn.registers.CagedItems;
+import com.corgam.cagedmobs.CagedMobsReborn;
+import com.corgam.cagedmobs.registers.CagedItems;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -17,7 +17,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class EntityDataCategory implements IRecipeCategory<EntityDataWrapper> {
 
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(CagedMobsReborn.MOD_ID, "entity");
+    public static final ResourceLocation ID = new ResourceLocation(CagedMobsReborn.MOD_ID, "entity");
 
     private static final int BG_PADDING = 5, BG_WIDTH = 166, BG_HEIGHT = 111;
     private final IDrawable icon;
@@ -29,7 +29,7 @@ public class EntityDataCategory implements IRecipeCategory<EntityDataWrapper> {
     public EntityDataCategory(IGuiHelper gui, RecipeType<EntityDataWrapper> type){
         this.guiHelper = gui;
         this.icon = gui.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(CagedItems.MOB_CAGE.get()));
-        ResourceLocation backgroundRL = ResourceLocation.fromNamespaceAndPath(CagedMobsReborn.MOD_ID, "textures/gui/jei_recipe.png");
+        ResourceLocation backgroundRL = new ResourceLocation(CagedMobsReborn.MOD_ID, "textures/gui/jei_recipe.png");
         this.background = gui.createDrawable(backgroundRL,0,0,BG_WIDTH+BG_PADDING*2,BG_HEIGHT+BG_PADDING*2);
         this.type = type;
         this.title = Component.translatable("jei.category.cagedmobsreborn.entity");
@@ -65,3 +65,4 @@ public class EntityDataCategory implements IRecipeCategory<EntityDataWrapper> {
         recipe.draw(graphics, this.guiHelper);
     }
 }
+

@@ -1,7 +1,7 @@
-package com.corgam.cagedmobsreborn.configs;
+package com.corgam.cagedmobs.configs;
 
-import net.neoforged.neoforge.common.ModConfigSpec;
-import net.neoforged.neoforge.common.ModConfigSpec.BooleanValue;
+import net.minecraftforge.common.ModConfigSpec;
+import net.minecraftforge.common.ModConfigSpec.BooleanValue;
 
 public class ClientConfig {
 
@@ -53,3 +53,5 @@ public class ClientConfig {
         return !disableUpgradesParticles.get();
     }
 }
+
+

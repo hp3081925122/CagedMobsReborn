@@ -1,7 +1,7 @@
-package com.corgam.cagedmobsreborn.blocks.mob_cage;
+package com.corgam.cagedmobs.blocks.mob_cage;
 
-import com.corgam.cagedmobsreborn.CagedMobsReborn;
-import com.corgam.cagedmobsreborn.registers.CagedItems;
+import com.corgam.cagedmobs.CagedMobsReborn;
+import com.corgam.cagedmobs.registers.CagedItems;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -15,8 +15,8 @@ import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.monster.*;
 import net.minecraft.world.entity.monster.hoglin.Hoglin;
 import net.minecraft.world.item.DyeColor;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class MobCageRenderer implements BlockEntityRenderer<MobCageBlockEntity> {
@@ -110,3 +110,5 @@ public class MobCageRenderer implements BlockEntityRenderer<MobCageBlockEntity> 
     }
 
 }
+
+

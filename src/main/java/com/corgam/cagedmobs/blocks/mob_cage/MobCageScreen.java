@@ -1,7 +1,7 @@
-package com.corgam.cagedmobsreborn.blocks.mob_cage;
+package com.corgam.cagedmobs.blocks.mob_cage;
 
-import com.corgam.cagedmobsreborn.CagedMobsReborn;
-import com.corgam.cagedmobsreborn.helpers.EntityRendererHelper;
+import com.corgam.cagedmobs.CagedMobsReborn;
+import com.corgam.cagedmobs.helpers.EntityRendererHelper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.nbt.CompoundTag;
@@ -18,9 +18,9 @@ import java.util.Optional;
 public class MobCageScreen extends AbstractContainerScreen<MobCageContainer> {
 
     // The path to the GUI image
-    private final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(CagedMobsReborn.MOD_ID, "textures/gui/mob_cage.png");
-    private final ResourceLocation UPGRADE_SLOT_OUTLINE = ResourceLocation.fromNamespaceAndPath(CagedMobsReborn.MOD_ID, "textures/gui/upgrade_slot.png");
-    private final ResourceLocation ENVIRONMENT_SLOT_OUTLINE = ResourceLocation.fromNamespaceAndPath(CagedMobsReborn.MOD_ID, "textures/gui/environment_slot.png");
+    private final ResourceLocation GUI = new ResourceLocation(CagedMobsReborn.MOD_ID, "textures/gui/mob_cage.png");
+    private final ResourceLocation UPGRADE_SLOT_OUTLINE = new ResourceLocation(CagedMobsReborn.MOD_ID, "textures/gui/upgrade_slot.png");
+    private final ResourceLocation ENVIRONMENT_SLOT_OUTLINE = new ResourceLocation(CagedMobsReborn.MOD_ID, "textures/gui/environment_slot.png");
 
     private static float rotation = 0.0f;
     private static double yaw = 0;
@@ -98,3 +98,5 @@ public class MobCageScreen extends AbstractContainerScreen<MobCageContainer> {
         }
     }
 }
+
+

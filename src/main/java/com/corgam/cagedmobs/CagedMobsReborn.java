@@ -1,26 +1,26 @@
-package com.corgam.cagedmobsreborn;
+package com.corgam.cagedmobs;
 
-import com.corgam.cagedmobsreborn.configs.ClientConfig;
-import com.corgam.cagedmobsreborn.configs.ServerConfig;
-import com.corgam.cagedmobsreborn.items.DnaSamplerDiamondItem;
-import com.corgam.cagedmobsreborn.items.DnaSamplerItem;
-import com.corgam.cagedmobsreborn.items.DnaSamplerNetheriteItem;
-import com.corgam.cagedmobsreborn.registers.CagedBlockEntities;
-import com.corgam.cagedmobsreborn.registers.CagedBlocks;
-import com.corgam.cagedmobsreborn.registers.CagedContainers;
-import com.corgam.cagedmobsreborn.registers.CagedCreativeTabs;
-import com.corgam.cagedmobsreborn.registers.CagedItems;
-import com.corgam.cagedmobsreborn.registers.CagedRecipeSerializers;
-import com.corgam.cagedmobsreborn.registers.CagedRecipeTypes;
+import com.corgam.cagedmobs.configs.ClientConfig;
+import com.corgam.cagedmobs.configs.ServerConfig;
+import com.corgam.cagedmobs.items.DnaSamplerDiamondItem;
+import com.corgam.cagedmobs.items.DnaSamplerItem;
+import com.corgam.cagedmobs.items.DnaSamplerNetheriteItem;
+import com.corgam.cagedmobs.registers.CagedBlockEntities;
+import com.corgam.cagedmobs.registers.CagedBlocks;
+import com.corgam.cagedmobs.registers.CagedContainers;
+import com.corgam.cagedmobs.registers.CagedCreativeTabs;
+import com.corgam.cagedmobs.registers.CagedItems;
+import com.corgam.cagedmobs.registers.CagedRecipeSerializers;
+import com.corgam.cagedmobs.registers.CagedRecipeTypes;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.capabilities.Capabilities;
+import net.minecraftforge.capabilities.RegisterCapabilitiesEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -53,9 +53,11 @@ public final class CagedMobsReborn {
 
     private void addPropertiesToItems(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
-            ItemProperties.register(CagedItems.DNA_SAMPLER.get(), ResourceLocation.fromNamespaceAndPath(MOD_ID, "full"), (stack, level, entity, seed) -> DnaSamplerItem.containsEntityType(stack) ? 1.0F : 0.0F);
-            ItemProperties.register(CagedItems.DIAMOND_DNA_SAMPLER.get(), ResourceLocation.fromNamespaceAndPath(MOD_ID, "full"), (stack, level, entity, seed) -> DnaSamplerDiamondItem.containsEntityType(stack) ? 1.0F : 0.0F);
-            ItemProperties.register(CagedItems.NETHERITE_DNA_SAMPLER.get(), ResourceLocation.fromNamespaceAndPath(MOD_ID, "full"), (stack, level, entity, seed) -> DnaSamplerNetheriteItem.containsEntityType(stack) ? 1.0F : 0.0F);
+            ItemProperties.register(CagedItems.DNA_SAMPLER.get(), new ResourceLocation(MOD_ID, "full"), (stack, level, entity, seed) -> DnaSamplerItem.containsEntityType(stack) ? 1.0F : 0.0F);
+            ItemProperties.register(CagedItems.DIAMOND_DNA_SAMPLER.get(), new ResourceLocation(MOD_ID, "full"), (stack, level, entity, seed) -> DnaSamplerDiamondItem.containsEntityType(stack) ? 1.0F : 0.0F);
+            ItemProperties.register(CagedItems.NETHERITE_DNA_SAMPLER.get(), new ResourceLocation(MOD_ID, "full"), (stack, level, entity, seed) -> DnaSamplerNetheriteItem.containsEntityType(stack) ? 1.0F : 0.0F);
         });
     }
 }
+
+

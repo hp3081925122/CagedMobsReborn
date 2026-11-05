@@ -1,21 +1,21 @@
-package com.corgam.cagedmobsreborn.serializers;
+package com.corgam.cagedmobs.serializers;
 
 import net.minecraft.core.registries.Registries;
-import com.corgam.cagedmobsreborn.CagedMobsReborn;
-import com.corgam.cagedmobsreborn.registers.CagedRecipeTypes;
-import com.corgam.cagedmobsreborn.serializers.environment.EnvironmentData;
-import com.corgam.cagedmobsreborn.serializers.entity.AdditionalLootData;
-import com.corgam.cagedmobsreborn.serializers.entity.EntityData;
+import com.corgam.cagedmobs.CagedMobsReborn;
+import com.corgam.cagedmobs.registers.CagedRecipeTypes;
+import com.corgam.cagedmobs.serializers.environment.EnvironmentData;
+import com.corgam.cagedmobs.serializers.entity.AdditionalLootData;
+import com.corgam.cagedmobs.serializers.entity.EntityData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.RecipeHolder;
+
 import net.minecraft.world.item.crafting.RecipeManager;
-import net.neoforged.fml.util.thread.EffectiveSide;
+import net.minecraftforge.fml.util.thread.EffectiveSide;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 import java.util.*;
 
@@ -25,7 +25,7 @@ public class RecipesHelper {
     public static List<EntityData> getEntitiesRecipesList() {
         RecipeManager manager = getRecipeManager();
         if (manager != null) {
-            List<EntityData> recipes = new ArrayList<>(manager.getAllRecipesFor(CagedRecipeTypes.ENTITY_RECIPE.get()).stream().map(RecipeHolder::value).toList());
+            List<EntityData> recipes = new ArrayList<>(manager.getAllRecipesFor(CagedRecipeTypes.ENTITY_RECIPE.get()).stream().toList());
             recipes.addAll(AutoEntityDataHelper.createAutoEntityData(recipes));
             CagedMobsReborn.LOGGER.debug("Entity recipe lookup returned {} recipes", recipes.size());
             return recipes;
@@ -37,7 +37,7 @@ public class RecipesHelper {
     public static List<EnvironmentData> getEnvironmentRecipesList() {
         RecipeManager manager = getRecipeManager();
         if (manager != null) {
-            return manager.getAllRecipesFor(CagedRecipeTypes.ENVIRONMENT_RECIPE.get()).stream().map(RecipeHolder::value).toList();
+            return manager.getAllRecipesFor(CagedRecipeTypes.ENVIRONMENT_RECIPE.get()).stream().toList();
         }
         return Collections.emptyList();
     }
@@ -45,7 +45,7 @@ public class RecipesHelper {
     public static List<AdditionalLootData> getAdditionalLootRecipesList() {
         RecipeManager manager = getRecipeManager();
         if (manager != null) {
-            return manager.getAllRecipesFor(CagedRecipeTypes.ADDITIONAL_LOOT_RECIPE.get()).stream().map(RecipeHolder::value).toList();
+            return manager.getAllRecipesFor(CagedRecipeTypes.ADDITIONAL_LOOT_RECIPE.get()).stream().toList();
         }
         return Collections.emptyList();
     }
@@ -124,3 +124,6 @@ public class RecipesHelper {
         return blacklisted;
     }
 }
+
+
+

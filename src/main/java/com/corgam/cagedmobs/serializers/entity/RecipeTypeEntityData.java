@@ -1,4 +1,4 @@
-package com.corgam.cagedmobsreborn.serializers.entity;
+package com.corgam.cagedmobs.serializers.entity;
 
 import net.minecraft.world.item.crafting.RecipeType;
 
@@ -8,4 +8,5 @@ public class RecipeTypeEntityData implements RecipeType<EntityData> {
         return "cagedmobsreborn:entity_data";
     }
 }
+
 

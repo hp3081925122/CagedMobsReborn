@@ -121,3 +121,6 @@ gradle/*
 !gradle/wrapper/
 !gradle/wrapper/gradle-wrapper.jar
 !gradle/wrapper/gradle-wrapper.properties
+
+docs/迁移/
+.gradle-local/

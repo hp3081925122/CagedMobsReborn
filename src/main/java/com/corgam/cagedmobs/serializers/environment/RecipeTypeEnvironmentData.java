@@ -1,4 +1,4 @@
-package com.corgam.cagedmobsreborn.serializers.environment;
+package com.corgam.cagedmobs.serializers.environment;
 
 import net.minecraft.world.item.crafting.RecipeType;
 
@@ -9,4 +9,5 @@ public class RecipeTypeEnvironmentData implements RecipeType<EnvironmentData> {
         return "cagedmobsreborn:env_data";
     }
 }
+
 

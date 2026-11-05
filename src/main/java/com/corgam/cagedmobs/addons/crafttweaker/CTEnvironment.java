@@ -1,10 +1,10 @@
-package com.corgam.cagedmobsreborn.addons.crafttweaker;
+package com.corgam.cagedmobs.addons.crafttweaker;
 
 import net.minecraft.core.registries.Registries;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
-import com.corgam.cagedmobsreborn.CagedMobsReborn;
-import com.corgam.cagedmobsreborn.serializers.environment.EnvironmentData;
+import com.corgam.cagedmobs.CagedMobsReborn;
+import com.corgam.cagedmobs.serializers.environment.EnvironmentData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
@@ -73,7 +73,9 @@ public class CTEnvironment {
             return new RecipeHolder<>(itemId.withPrefix("environment_data_"), this.environmentData);
         }else{
             String categories = String.join("_", this.environmentData.getCategories());
-            return new RecipeHolder<>(ResourceLocation.fromNamespaceAndPath(CagedMobsReborn.MOD_ID, "environment_data_" + categories), this.environmentData);
+            return new RecipeHolder<>(new ResourceLocation(CagedMobsReborn.MOD_ID, "environment_data_" + categories), this.environmentData);
         }
     }
 }
+
+

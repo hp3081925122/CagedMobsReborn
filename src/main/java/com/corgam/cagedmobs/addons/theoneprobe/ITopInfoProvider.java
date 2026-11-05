@@ -1,4 +1,4 @@
-package com.corgam.cagedmobsreborn.addons.theoneprobe;
+package com.corgam.cagedmobs.addons.theoneprobe;
 
 //import mcjty.theoneprobe.api.IProbeHitData;
 //import mcjty.theoneprobe.api.IProbeInfo;
@@ -10,3 +10,4 @@ import net.minecraft.world.level.block.state.BlockState;
 public interface  ITopInfoProvider {
 //    void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data);
 }
+

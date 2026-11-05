@@ -1,11 +1,11 @@
-package com.corgam.cagedmobsreborn.addons.crafttweaker;
+package com.corgam.cagedmobs.addons.crafttweaker;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.corgam.cagedmobsreborn.CagedMobsReborn;
-import com.corgam.cagedmobsreborn.serializers.entity.AdditionalLootData;
-import com.corgam.cagedmobsreborn.serializers.entity.LootData;
+import com.corgam.cagedmobs.CagedMobsReborn;
+import com.corgam.cagedmobs.serializers.entity.AdditionalLootData;
+import com.corgam.cagedmobs.serializers.entity.LootData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
@@ -95,7 +95,9 @@ public class CTAdditionalLoot {
     }
 
     public RecipeHolder<AdditionalLootData> getAdditionalLootData () {
-        return new RecipeHolder<>(ResourceLocation.fromNamespaceAndPath(CagedMobsReborn.MOD_ID, "additional_loot_data_" + this.additionalLootData.getEntityId()), this.additionalLootData);
+        return new RecipeHolder<>(new ResourceLocation(CagedMobsReborn.MOD_ID, "additional_loot_data_" + this.additionalLootData.getEntityId()), this.additionalLootData);
     }
 
 }
+
+

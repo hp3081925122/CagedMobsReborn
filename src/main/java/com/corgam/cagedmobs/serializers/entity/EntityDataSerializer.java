@@ -1,12 +1,12 @@
-package com.corgam.cagedmobsreborn.serializers.entity;
+package com.corgam.cagedmobs.serializers.entity;
 
-import com.corgam.cagedmobsreborn.CagedMobsReborn;
-import com.corgam.cagedmobsreborn.serializers.SerializationHelper;
+import com.corgam.cagedmobs.CagedMobsReborn;
+import com.corgam.cagedmobs.serializers.SerializationHelper;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
@@ -39,7 +39,7 @@ public class EntityDataSerializer implements RecipeSerializer<EntityData> {
         return CODEC;
     }
 
-    public EntityData fromNetwork(RegistryFriendlyByteBuf buffer) {
+    public EntityData fromNetwork(FriendlyByteBuf buffer) {
         try {
             // EntityId
             final String entityId = buffer.readUtf();
@@ -66,7 +66,7 @@ public class EntityDataSerializer implements RecipeSerializer<EntityData> {
         }
     }
 
-    public void toNetwork(RegistryFriendlyByteBuf buffer, EntityData recipe) {
+    public void toNetwork(FriendlyByteBuf buffer, EntityData recipe) {
         try {
             // EntityId
             buffer.writeUtf(recipe.getEntityId());
@@ -90,8 +90,10 @@ public class EntityDataSerializer implements RecipeSerializer<EntityData> {
     }
 
     @Override
-    public StreamCodec<RegistryFriendlyByteBuf, EntityData> streamCodec() {
+    public StreamCodec<FriendlyByteBuf, EntityData> streamCodec() {
         return StreamCodec.of(this::toNetwork, this::fromNetwork);
     }
 
 }
+
+

@@ -1,9 +1,9 @@
-package com.corgam.cagedmobsreborn.helpers;
+package com.corgam.cagedmobs.helpers;
 
-import com.corgam.cagedmobsreborn.blocks.mob_cage.MobCageBlockEntity;
+import com.corgam.cagedmobs.blocks.mob_cage.MobCageBlockEntity;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.SlotItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 
 public class EnvironmentItemSlotHandler extends SlotItemHandler {
@@ -31,3 +31,5 @@ public class EnvironmentItemSlotHandler extends SlotItemHandler {
         return 1;
     }
 }
+
+

@@ -1,9 +1,9 @@
-package com.corgam.cagedmobsreborn.helpers;
+package com.corgam.cagedmobs.helpers;
 
-import com.corgam.cagedmobsreborn.items.upgrades.UpgradeItem;
+import com.corgam.cagedmobs.items.upgrades.UpgradeItem;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.SlotItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 
 public class UpgradeItemSlotHandler extends SlotItemHandler {
@@ -31,3 +31,5 @@ public class UpgradeItemSlotHandler extends SlotItemHandler {
         return 1;
     }
 }
+
+

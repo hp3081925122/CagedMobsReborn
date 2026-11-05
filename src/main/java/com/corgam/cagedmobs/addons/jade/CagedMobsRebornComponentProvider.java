@@ -1,7 +1,7 @@
-package com.corgam.cagedmobsreborn.addons.jade;
+package com.corgam.cagedmobs.addons.jade;
 
-import com.corgam.cagedmobsreborn.CagedMobsReborn;
-import com.corgam.cagedmobsreborn.blocks.mob_cage.MobCageBlockEntity;
+import com.corgam.cagedmobs.CagedMobsReborn;
+import com.corgam.cagedmobs.blocks.mob_cage.MobCageBlockEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -72,6 +72,8 @@ public class CagedMobsRebornComponentProvider implements IBlockComponentProvider
 
     @Override
     public ResourceLocation getUid() {
-        return ResourceLocation.fromNamespaceAndPath(CagedMobsReborn.MOD_ID, "cagedmobsreborn_jade");
+        return new ResourceLocation(CagedMobsReborn.MOD_ID, "cagedmobsreborn_jade");
     }
 }
+
+

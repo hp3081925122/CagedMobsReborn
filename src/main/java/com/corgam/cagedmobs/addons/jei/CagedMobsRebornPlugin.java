@@ -1,10 +1,10 @@
-package com.corgam.cagedmobsreborn.addons.jei;
+package com.corgam.cagedmobs.addons.jei;
 
-import com.corgam.cagedmobsreborn.CagedMobsReborn;
-import com.corgam.cagedmobsreborn.items.DnaSamplerItem;
-import com.corgam.cagedmobsreborn.registers.CagedItems;
-import com.corgam.cagedmobsreborn.serializers.RecipesHelper;
-import com.corgam.cagedmobsreborn.serializers.entity.EntityData;
+import com.corgam.cagedmobs.CagedMobsReborn;
+import com.corgam.cagedmobs.items.DnaSamplerItem;
+import com.corgam.cagedmobs.registers.CagedItems;
+import com.corgam.cagedmobs.serializers.RecipesHelper;
+import com.corgam.cagedmobs.serializers.entity.EntityData;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
@@ -32,7 +32,7 @@ public class CagedMobsRebornPlugin implements IModPlugin {
 
     @Override
     public ResourceLocation getPluginUid () {
-        return ResourceLocation.fromNamespaceAndPath(CagedMobsReborn.MOD_ID, "jei");
+        return new ResourceLocation(CagedMobsReborn.MOD_ID, "jei");
     }
 
 
@@ -88,3 +88,4 @@ public class CagedMobsRebornPlugin implements IModPlugin {
     }
 
 }
+
