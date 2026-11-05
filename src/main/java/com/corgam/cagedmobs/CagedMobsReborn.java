@@ -19,8 +19,8 @@ import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.capabilities.Capabilities;
-import net.minecraftforge.capabilities.RegisterCapabilitiesEvent;
+
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -46,14 +46,10 @@ public final class CagedMobsReborn {
         modEventBus.addListener(ClientSetup::renderLayerSetup);
         modEventBus.addListener(ClientSetup::registerScreens);
         modEventBus.addListener(this::addPropertiesToItems);
-        modEventBus.addListener(this::registerCapabilities);
+
     }
 
-    private void registerCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CagedBlockEntities.MOB_CAGE_BLOCK_ENTITY.get(), (cage, side) -> side == null ? cage.getInventoryHandler() : cage.getRestrictedItemHandler());
-    }
-
-    private void addPropertiesToItems(FMLClientSetupEvent event) {
+private void addPropertiesToItems(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
             ItemProperties.register(CagedItems.DNA_SAMPLER.get(), new ResourceLocation(MOD_ID, "full"), (stack, level, entity, seed) -> DnaSamplerItem.containsEntityType(stack) ? 1.0F : 0.0F);
             ItemProperties.register(CagedItems.DIAMOND_DNA_SAMPLER.get(), new ResourceLocation(MOD_ID, "full"), (stack, level, entity, seed) -> DnaSamplerDiamondItem.containsEntityType(stack) ? 1.0F : 0.0F);

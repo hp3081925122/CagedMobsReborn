@@ -43,7 +43,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.capabilities.Capabilities;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
@@ -147,6 +147,31 @@ public class MobCageBlockEntity extends BlockEntity {
      */
     public ItemStackHandler getInventoryHandler(){
         return this.items;
+    }
+
+    private net.minecraftforge.common.util.LazyOptional<IItemHandler> inventoryCapability = net.minecraftforge.common.util.LazyOptional.of(this::getInventoryHandler);
+    private net.minecraftforge.common.util.LazyOptional<IItemHandler> restrictedCapability = net.minecraftforge.common.util.LazyOptional.of(this::getRestrictedItemHandler);
+
+    @Override
+    public <T> net.minecraftforge.common.util.LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @javax.annotation.Nullable Direction side) {
+        if (!this.isRemoved() && capability == ForgeCapabilities.ITEM_HANDLER) {
+            return (side == null ? this.inventoryCapability : this.restrictedCapability).cast();
+        }
+        return super.getCapability(capability, side);
+    }
+
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        this.inventoryCapability.invalidate();
+        this.restrictedCapability.invalidate();
+    }
+
+    @Override
+    public void reviveCaps() {
+        super.reviveCaps();
+        this.inventoryCapability = net.minecraftforge.common.util.LazyOptional.of(this::getInventoryHandler);
+        this.restrictedCapability = net.minecraftforge.common.util.LazyOptional.of(this::getRestrictedItemHandler);
     }
 
     public IItemHandler getRestrictedItemHandler() {
@@ -713,7 +738,7 @@ public class MobCageBlockEntity extends BlockEntity {
         final BlockEntity te = world.getBlockEntity(pos);
         // Capability system
         if(te != null){
-            final IItemHandler invCap = Capabilities.ItemHandler.BLOCK.getCapability(world, pos, world.getBlockState(pos), te, side);
+            final IItemHandler invCap = te.getCapability(ForgeCapabilities.ITEM_HANDLER, side).orElse(null);
             return invCap == null ? EMPTY_HANDLER : invCap;
         }else{
             // When block doesn't use capability system

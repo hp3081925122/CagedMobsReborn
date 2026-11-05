@@ -27,7 +27,7 @@ public class CrystallizedExperienceBlockItem extends BlockItem {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable Item.TooltipContext worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable net.minecraft.world.level.Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         tooltip.add(Component.translatable("item.cagedmobsreborn.crystallized_experience.info2").withStyle(ChatFormatting.GRAY));
         tooltip.add(Component.translatable("item.cagedmobsreborn.crystallized_experience.info3").withStyle(ChatFormatting.GRAY));
     }

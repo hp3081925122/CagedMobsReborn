@@ -20,7 +20,7 @@ public class EmptySpawnEggItem extends Item {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable Item.TooltipContext worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable net.minecraft.world.level.Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         tooltip.add(Component.translatable("item.cagedmobsreborn.dna_sampler.getBackEntity").withStyle(ChatFormatting.GRAY));
         if(CagedMobsReborn.SERVER_CONFIG.areSpawnEggsDisabled()){
             tooltip.add(Component.translatable("item.cagedmobsreborn.dna_sampler.disabled").withStyle(ChatFormatting.RED));

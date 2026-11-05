@@ -19,7 +19,7 @@ public class CrystallizedExperienceBlock extends SlimeBlock {
     }
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack item, Item.TooltipContext getter, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack item, net.minecraft.world.level.BlockGetter getter, List<Component> tooltip, TooltipFlag flag) {
         tooltip.add(Component.translatable("item.cagedmobsreborn.crystallized_experience.info2").withStyle(ChatFormatting.GRAY));
         tooltip.add(Component.translatable("item.cagedmobsreborn.crystallized_experience.info3").withStyle(ChatFormatting.GRAY));
     }

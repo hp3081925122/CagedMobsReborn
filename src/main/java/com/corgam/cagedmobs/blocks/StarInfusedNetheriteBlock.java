@@ -19,7 +19,7 @@ public class StarInfusedNetheriteBlock extends Block {
     }
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack item, Item.TooltipContext getter, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack item, net.minecraft.world.level.BlockGetter getter, List<Component> tooltip, TooltipFlag flag) {
         tooltip.add(Component.translatable("block.cagedmobsreborn.star_infused_netherite_block.beacon").withStyle(ChatFormatting.GRAY));
     }
 }

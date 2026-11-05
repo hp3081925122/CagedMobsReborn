@@ -19,7 +19,7 @@ public abstract class UpgradeItem extends Item {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable Item.TooltipContext worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable net.minecraft.world.level.Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         tooltip.add(Component.translatable("item.cagedmobsreborn.upgrades.attach").withStyle(ChatFormatting.GRAY));
         tooltip.add(Component.translatable("item.cagedmobsreborn.upgrades.stack").withStyle(ChatFormatting.GRAY));
         super.appendHoverText(stack, worldIn, tooltip, flagIn);

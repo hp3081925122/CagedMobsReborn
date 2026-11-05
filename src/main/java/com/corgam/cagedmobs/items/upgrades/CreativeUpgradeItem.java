@@ -20,7 +20,7 @@ public class CreativeUpgradeItem extends UpgradeItem{
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable Item.TooltipContext worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable net.minecraft.world.level.Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         tooltip.add(Component.translatable("item.cagedmobsreborn.creative_upgrade.info").withStyle(ChatFormatting.GRAY));
         tooltip.add(Component.translatable("item.cagedmobsreborn.upgrades.attach").withStyle(ChatFormatting.GRAY));
         tooltip.add(Component.translatable("item.cagedmobsreborn.creative_upgrade.info2").withStyle(ChatFormatting.YELLOW));
