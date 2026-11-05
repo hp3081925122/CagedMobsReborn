@@ -1,6 +1,6 @@
 {
 	"type": "cagedmobsreborn:environment_data",
-	"forge:conditions": [{ "type": "forge:mod_loaded", "modid": "iceandfire" }],
+	"conditions": [{ "type": "forge:mod_loaded", "modid": "iceandfire" }],
 	"input": {
 		"item": "iceandfire:dragonforge_ice_core_disabled"
 	},

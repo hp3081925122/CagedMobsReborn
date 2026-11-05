@@ -1,6 +1,6 @@
 {
 	"type": "cagedmobsreborn:entity_data",
-	"forge:conditions": [{ "type": "forge:mod_loaded", "modid": "twilightforest" }],
+	"conditions": [{ "type": "forge:mod_loaded", "modid": "twilightforest" }],
 	"entity": "twilightforest:armored_giant",
 	"samplerTier": 2,
 	"environments": ["cave"],

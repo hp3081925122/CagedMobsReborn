@@ -1,6 +1,6 @@
 {
 	"type": "cagedmobsreborn:entity_data",
-	"forge:conditions": [{ "type": "forge:mod_loaded", "modid": "thermal" }],
+	"conditions": [{ "type": "forge:mod_loaded", "modid": "thermal" }],
 	"entity": "thermal:blitz",
 	"samplerTier": 2,
 	"environments": ["cave"],

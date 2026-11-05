@@ -1,6 +1,6 @@
 {
 	"type": "cagedmobsreborn:entity_data",
-	"forge:conditions": [{ "type": "forge:mod_loaded", "modid": "mowziesmobs" }],
+	"conditions": [{ "type": "forge:mod_loaded", "modid": "mowziesmobs" }],
 	"entity": "mowziesmobs:lantern",
 	"samplerTier": 1,
 	"environments": ["farm"],

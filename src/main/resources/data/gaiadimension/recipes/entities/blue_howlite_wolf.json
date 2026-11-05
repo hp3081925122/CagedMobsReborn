@@ -1,6 +1,6 @@
 {
 	"type": "cagedmobsreborn:entity_data",
-	"forge:conditions": [{ "type": "forge:mod_loaded", "modid": "gaiadimension" }],
+	"conditions": [{ "type": "forge:mod_loaded", "modid": "gaiadimension" }],
 	"entity": "gaiadimension:blue_howlite_wolf",
 	"samplerTier": 2,
 	"environments": ["gaia"],

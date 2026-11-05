@@ -1,6 +1,6 @@
 {
 	"type": "cagedmobsreborn:additional_loot_data",
-	"forge:conditions": [{ "type": "forge:mod_loaded", "modid": "cagedmobsreborn" }],
+	"conditions": [{ "type": "forge:mod_loaded", "modid": "cagedmobsreborn" }],
 	"entity": "minecraft:mooshroom",
 	"results": [
 		{

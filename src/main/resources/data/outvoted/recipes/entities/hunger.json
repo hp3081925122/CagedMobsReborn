@@ -1,6 +1,6 @@
 {
 	"type": "cagedmobsreborn:entity_data",
-	"forge:conditions": [{ "type": "forge:mod_loaded", "modid": "outvoted" }],
+	"conditions": [{ "type": "forge:mod_loaded", "modid": "outvoted" }],
 	"entity": "outvoted:hunger",
 	"samplerTier": 3,
 	"environments": ["sand"],

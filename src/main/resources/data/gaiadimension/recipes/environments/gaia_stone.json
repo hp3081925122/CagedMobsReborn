@@ -1,6 +1,6 @@
 {
 	"type": "cagedmobsreborn:environment_data",
-	"forge:conditions": [{ "type": "forge:mod_loaded", "modid": "gaiadimension" }],
+	"conditions": [{ "type": "forge:mod_loaded", "modid": "gaiadimension" }],
 	"input": {
 		"item": "gaiadimension:gaia_stone"
 	},

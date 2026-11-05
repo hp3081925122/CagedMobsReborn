@@ -1,6 +1,6 @@
 {
 	"type": "cagedmobsreborn:entity_data",
-	"forge:conditions": [{ "type": "forge:mod_loaded", "modid": "mysticalworld" }],
+	"conditions": [{ "type": "forge:mod_loaded", "modid": "mysticalworld" }],
 	"entity": "mysticalworld:hell_sprout",
 	"samplerTier": 2,
 	"environments": ["nether"],

@@ -1,6 +1,6 @@
 {
 	"type": "cagedmobsreborn:entity_data",
-	"forge:conditions": [{ "type": "forge:mod_loaded", "modid": "betterdefaultbiomes" }],
+	"conditions": [{ "type": "forge:mod_loaded", "modid": "betterdefaultbiomes" }],
 	"entity": "betterdefaultbiomes:desert_bandit_master",
 	"samplerTier": 2,
 	"environments": ["sand"],

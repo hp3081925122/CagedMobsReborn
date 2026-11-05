@@ -1,6 +1,6 @@
 {
 	"type": "cagedmobsreborn:environment_data",
-	"forge:conditions": [{ "type": "forge:mod_loaded", "modid": "cagedmobsreborn" }],
+	"conditions": [{ "type": "forge:mod_loaded", "modid": "cagedmobsreborn" }],
 	"input": {
 		"item": "minecraft:gilded_blackstone"
 	},

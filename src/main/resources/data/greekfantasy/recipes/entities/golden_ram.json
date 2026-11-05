@@ -1,6 +1,6 @@
 {
 	"type": "cagedmobsreborn:entity_data",
-	"forge:conditions": [{ "type": "forge:mod_loaded", "modid": "greekfantasy" }],
+	"conditions": [{ "type": "forge:mod_loaded", "modid": "greekfantasy" }],
 	"entity": "greekfantasy:golden_ram",
 	"samplerTier": 1,
 	"environments": ["farm"],

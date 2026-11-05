@@ -1,6 +1,6 @@
 {
 	"type": "cagedmobsreborn:entity_data",
-	"forge:conditions": [{ "type": "forge:mod_loaded", "modid": "lava_monster" }],
+	"conditions": [{ "type": "forge:mod_loaded", "modid": "lava_monster" }],
 	"entity": "lava_monster:lava_monster",
 	"samplerTier": 2,
 	"environments": ["cave"],

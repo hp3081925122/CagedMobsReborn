@@ -1,6 +1,6 @@
 {
 	"type": "cagedmobsreborn:entity_data",
-	"forge:conditions": [{ "type": "forge:mod_loaded", "modid": "aquaculture" }],
+	"conditions": [{ "type": "forge:mod_loaded", "modid": "aquaculture" }],
 	"entity": "aquaculture:jellyfish",
 	"samplerTier": 1,
 	"environments": ["sand"],

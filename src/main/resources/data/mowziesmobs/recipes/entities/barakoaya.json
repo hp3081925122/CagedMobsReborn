@@ -1,6 +1,6 @@
 {
 	"type": "cagedmobsreborn:entity_data",
-	"forge:conditions": [{ "type": "forge:mod_loaded", "modid": "mowziesmobs" }],
+	"conditions": [{ "type": "forge:mod_loaded", "modid": "mowziesmobs" }],
 	"entity": "mowziesmobs:barakoaya",
 	"samplerTier": 2,
 	"environments": ["farm"],

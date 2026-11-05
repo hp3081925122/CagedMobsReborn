@@ -1,6 +1,6 @@
 {
     "type": "cagedmobsreborn:additional_loot_data",
-    "forge:conditions": [{ "type": "forge:mod_loaded", "modid": "bountifulbaubles" }],
+    "conditions": [{ "type": "forge:mod_loaded", "modid": "bountifulbaubles" }],
     "entity": "minecraft:elder_guardian",
     "results": [
       {

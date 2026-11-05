@@ -1,6 +1,6 @@
 {
 	"type": "cagedmobsreborn:entity_data",
-	"forge:conditions": [{ "type": "forge:mod_loaded", "modid": "autumnity" }],
+	"conditions": [{ "type": "forge:mod_loaded", "modid": "autumnity" }],
 	"entity": "autumnity:turkey",
 	"samplerTier": 1,
 	"environments": ["farm"],

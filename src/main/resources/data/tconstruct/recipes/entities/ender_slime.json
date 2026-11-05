@@ -1,6 +1,6 @@
 {
     "type": "cagedmobsreborn:entity_data",
-    "forge:conditions": [{ "type": "forge:mod_loaded", "modid": "tconstruct" }],
+    "conditions": [{ "type": "forge:mod_loaded", "modid": "tconstruct" }],
     "entity": "tconstruct:ender_slime",
     "samplerTier": 2,
     "environments": ["slime"],

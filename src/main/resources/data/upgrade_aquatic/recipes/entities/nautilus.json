@@ -1,6 +1,6 @@
 {
     "type": "cagedmobsreborn:entity_data",
-    "forge:conditions": [{ "type": "forge:mod_loaded", "modid": "upgrade_aquatic" }],
+    "conditions": [{ "type": "forge:mod_loaded", "modid": "upgrade_aquatic" }],
     "entity": "upgrade_aquatic:nautilus",
     "samplerTier": 2,
     "environments": ["sand"],

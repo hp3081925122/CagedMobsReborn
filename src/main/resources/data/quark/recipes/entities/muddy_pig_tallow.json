@@ -1,6 +1,6 @@
 {
 	"type": "cagedmobsreborn:additional_loot_data",
-	"forge:conditions": [{
+	"conditions": [{
 		"type": "forge:and",
 		"values": [
 			{
