@@ -1,0 +1,18 @@
+{
+  "projectId": 1757115,
+  "slug": "caged-mobs-reborn",
+  "url": "https://www.curseforge.com/minecraft/mc-mods/caged-mobs-reborn",
+  "fileId": 9448721,
+  "fileUrl": "https://www.curseforge.com/minecraft/mc-mods/caged-mobs-reborn/files/9448721",
+  "minecraft": "1.20.1",
+  "loader": "Forge",
+  "java": 17,
+  "version": "1.20.1-1.2.0",
+  "displayName": "1.20.1-forge-CagedMobsReborn-1.2.0",
+  "artifact": "cagedmobsreborn-1.20.1-forge-1.20.1-1.2.0.jar",
+  "sha256": "d00ad1245d09953ff79ba669c5151a56ff3fc0c743b7a3b6e5335869815f5d63",
+  "releaseType": "release",
+  "changelog": "",
+  "status": "upload accepted; public API returned data=null, approval not confirmed",
+  "sourceCommit": "0bc91f8"
+}
