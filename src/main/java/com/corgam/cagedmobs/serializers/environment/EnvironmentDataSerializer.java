@@ -19,7 +19,7 @@ import java.util.List;
 public class EnvironmentDataSerializer implements RecipeSerializer<EnvironmentData>{
 
     private static final Codec<EnvironmentData> CODEC = RecordCodecBuilder.create((codecInstance) -> codecInstance.group(
-            com.corgam.cagedmobsreborn.serializers.SerializationHelper.INGREDIENT_CODEC.fieldOf("input").forGetter(EnvironmentData::getInputItem),
+            com.corgam.cagedmobsreborn.serializers.SerializationHelper.NONEMPTY_INGREDIENT_CODEC.fieldOf("input").forGetter(EnvironmentData::getInputItem),
             BuiltInRegistries.BLOCK.byNameCodec().fieldOf("render").forGetter(EnvironmentData::getRenderBlock),
             Codec.FLOAT.fieldOf("growModifier").forGetter(EnvironmentData::getGrowModifier),
             Codec.list(Codec.STRING).fieldOf("categories").forGetter(EnvironmentData::getCategories))

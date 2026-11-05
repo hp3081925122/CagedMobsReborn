@@ -18,6 +18,10 @@ public class SerializationHelper {
             value -> net.minecraft.world.item.crafting.Ingredient.fromJson(value.convert(com.mojang.serialization.JsonOps.INSTANCE).getValue()),
             value -> new com.mojang.serialization.Dynamic<>(com.mojang.serialization.JsonOps.INSTANCE, value.toJson()));
 
+    public static final com.mojang.serialization.Codec<net.minecraft.world.item.crafting.Ingredient> NONEMPTY_INGREDIENT_CODEC = com.mojang.serialization.Codec.PASSTHROUGH.xmap(
+            value -> net.minecraft.world.item.crafting.Ingredient.fromJson(value.convert(com.mojang.serialization.JsonOps.INSTANCE).getValue(), false),
+            value -> new com.mojang.serialization.Dynamic<>(com.mojang.serialization.JsonOps.INSTANCE, value.toJson()));
+
     public static CompoundTag getCustomData(ItemStack stack) {
         return stack.getOrCreateTag().copy();
     }
