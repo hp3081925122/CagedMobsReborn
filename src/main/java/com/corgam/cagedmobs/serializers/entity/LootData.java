@@ -129,7 +129,7 @@ public class LootData {
      * @return the updated item stack reference
      */
     public static ItemStack writeNBTtoItem(String nbtName, String nbtData, ItemStack stack){
-        CompoundTag nbt = new CompoundTag();
+        CompoundTag nbt = com.corgam.cagedmobsreborn.serializers.SerializationHelper.getCustomData(stack);
         nbt.putString(nbtName,nbtData);
         com.corgam.cagedmobsreborn.serializers.SerializationHelper.setCustomData(stack, nbt);
         return stack;

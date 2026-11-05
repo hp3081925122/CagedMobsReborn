@@ -53,7 +53,8 @@ public class DnaSamplerItem extends Item {
             // Try to sample the target
             if (canBeCached(target) && !RecipesHelper.isEntityTypeBlacklisted(target.getType())) {
                 if (samplerTierSufficient(stack, target)) {
-                    CompoundTag nbt = new CompoundTag();
+                    CompoundTag nbt = SerializationHelper.getCustomData(stack);
+                    nbt.remove("Color");
                     SerializationHelper.serializeEntityTypeNBT(nbt, target.getType());
                     // If sheep add it's color to nbt
                     if (target instanceof Sheep) {
@@ -180,7 +181,8 @@ public class DnaSamplerItem extends Item {
 
     public void setEntityTypeFromCage(MobCageBlockEntity cage, ItemStack stack, Player player, InteractionHand hand){
         EntityType<?> type = cage.getEntityType();
-        CompoundTag nbt = new CompoundTag();
+        CompoundTag nbt = SerializationHelper.getCustomData(stack);
+                    nbt.remove("Color");
         SerializationHelper.serializeEntityTypeNBT(nbt, type);
         // If sheep add it's color to nbt
         if(type.toString().contains("sheep")){
