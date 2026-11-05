@@ -4,10 +4,10 @@ import net.minecraft.core.registries.Registries;
 import com.corgam.cagedmobsreborn.CagedMobsReborn;
 import com.corgam.cagedmobsreborn.serializers.SerializationHelper;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
+
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
+
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
@@ -18,22 +18,24 @@ import java.util.List;
 
 public class EnvironmentDataSerializer implements RecipeSerializer<EnvironmentData>{
 
-    private static final MapCodec<EnvironmentData> CODEC = RecordCodecBuilder.mapCodec((codecInstance) -> codecInstance.group(
-            Ingredient.CODEC_NONEMPTY.fieldOf("input").forGetter(EnvironmentData::getInputItem),
+    private static final Codec<EnvironmentData> CODEC = RecordCodecBuilder.create((codecInstance) -> codecInstance.group(
+            com.corgam.cagedmobsreborn.serializers.SerializationHelper.INGREDIENT_CODEC.fieldOf("input").forGetter(EnvironmentData::getInputItem),
             BuiltInRegistries.BLOCK.byNameCodec().fieldOf("render").forGetter(EnvironmentData::getRenderBlock),
             Codec.FLOAT.fieldOf("growModifier").forGetter(EnvironmentData::getGrowModifier),
             Codec.list(Codec.STRING).fieldOf("categories").forGetter(EnvironmentData::getCategories))
             .apply(codecInstance, EnvironmentData::new));
 
     @Override
-    public MapCodec<EnvironmentData> codec() {
-        return CODEC;
+    public EnvironmentData fromJson(net.minecraft.resources.ResourceLocation id, com.google.gson.JsonObject json) {
+        EnvironmentData recipe = CODEC.parse(com.mojang.serialization.JsonOps.INSTANCE, json).getOrThrow(false, message -> { throw new com.google.gson.JsonSyntaxException(message); });
+        recipe.setRecipeId(id);
+        return recipe;
     }
 
-    public EnvironmentData fromNetwork(FriendlyByteBuf buffer) {
+    public EnvironmentData fromNetwork(net.minecraft.resources.ResourceLocation id, FriendlyByteBuf buffer) {
         try {
             // Input item
-            final Ingredient inputItem = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
+            final Ingredient inputItem = Ingredient.fromNetwork(buffer);
             // Block to render
             final Block renderBlock = SerializationHelper.deserializeBlock(buffer);
             // Grow modifier
@@ -42,7 +44,9 @@ public class EnvironmentDataSerializer implements RecipeSerializer<EnvironmentDa
             final List<String> categories = new ArrayList<>();
             SerializationHelper.deserializeStringCollection(buffer, categories);
             // Create the environment data
-            return new EnvironmentData(inputItem, renderBlock, growModifier, categories);
+            EnvironmentData recipe = new EnvironmentData(inputItem, renderBlock, growModifier, categories);
+            recipe.setRecipeId(id);
+            return recipe;
         }catch(final Exception e){
             CagedMobsReborn.LOGGER.catching(e);
             throw new IllegalStateException("Failed to read environmentData recipe from packet buffer.");
@@ -52,7 +56,7 @@ public class EnvironmentDataSerializer implements RecipeSerializer<EnvironmentDa
     public void toNetwork(FriendlyByteBuf buffer, EnvironmentData recipe) {
         try{
             // Input item
-            Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.getInputItem());
+            recipe.getInputItem().toNetwork(buffer);
             // Block to render
             SerializationHelper.serializeBlock(buffer, recipe.getRenderBlock());
             // Grow modifier
@@ -65,10 +69,7 @@ public class EnvironmentDataSerializer implements RecipeSerializer<EnvironmentDa
         }
     }
 
-    @Override
-    public StreamCodec<FriendlyByteBuf, EnvironmentData> streamCodec() {
-        return StreamCodec.of(this::toNetwork, this::fromNetwork);
-    }
+    
 }
 
 

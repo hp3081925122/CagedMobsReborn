@@ -4,20 +4,26 @@ import net.minecraft.core.registries.Registries;
 import com.corgam.cagedmobsreborn.CagedMobsReborn;
 import com.corgam.cagedmobsreborn.registers.CagedRecipeSerializers;
 import com.corgam.cagedmobsreborn.registers.CagedRecipeTypes;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.RecipeInput;
+import net.minecraft.world.Container;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.core.registries.BuiltInRegistries;
 
 import java.util.List;
 
-public class EnvironmentData implements Recipe<RecipeInput> {
+public class EnvironmentData implements Recipe<Container> {
+    private net.minecraft.resources.ResourceLocation recipeId = new net.minecraft.resources.ResourceLocation(CagedMobsReborn.MOD_ID, "unregistered" );
+
+    public void setRecipeId(net.minecraft.resources.ResourceLocation id) { this.recipeId = id; }
+
+    @Override
+    public net.minecraft.resources.ResourceLocation getId() { return this.recipeId; }
 
     private Ingredient inputItem;
     private Block renderBlock;
@@ -36,12 +42,12 @@ public class EnvironmentData implements Recipe<RecipeInput> {
     }
 
     @Override
-    public boolean matches(RecipeInput inv, Level worldIn) {
+    public boolean matches(Container inv, Level worldIn) {
         return false;
     }
 
     @Override
-    public ItemStack assemble(RecipeInput pContainer, HolderLookup.Provider pRegistryAccess) {
+    public ItemStack assemble(Container pContainer, RegistryAccess pRegistryAccess) {
         return ItemStack.EMPTY;
     }
 
@@ -51,7 +57,7 @@ public class EnvironmentData implements Recipe<RecipeInput> {
     }
 
     @Override
-    public ItemStack getResultItem(HolderLookup.Provider pRegistryAccess) {
+    public ItemStack getResultItem(RegistryAccess pRegistryAccess) {
         return ItemStack.EMPTY;
     }
 

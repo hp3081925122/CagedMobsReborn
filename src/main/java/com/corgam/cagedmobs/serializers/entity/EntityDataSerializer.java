@@ -3,18 +3,18 @@ package com.corgam.cagedmobsreborn.serializers.entity;
 import com.corgam.cagedmobsreborn.CagedMobsReborn;
 import com.corgam.cagedmobsreborn.serializers.SerializationHelper;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
+
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
+
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import java.util.*;
 
 public class EntityDataSerializer implements RecipeSerializer<EntityData> {
 
-    public static final MapCodec<EntityData> CODEC = RecordCodecBuilder.mapCodec((entityDataInstance) -> entityDataInstance
+    public static final Codec<EntityData> CODEC = RecordCodecBuilder.create((entityDataInstance) -> entityDataInstance
             .group(
                 // EntityID
                 Codec.STRING.fieldOf("entity").forGetter(EntityData::getEntityId),
@@ -35,11 +35,13 @@ public class EntityDataSerializer implements RecipeSerializer<EntityData> {
             ).apply(entityDataInstance, EntityData::new));
 
     @Override
-    public MapCodec<EntityData> codec() {
-        return CODEC;
+    public EntityData fromJson(net.minecraft.resources.ResourceLocation id, com.google.gson.JsonObject json) {
+        EntityData recipe = CODEC.parse(com.mojang.serialization.JsonOps.INSTANCE, json).getOrThrow(false, message -> { throw new com.google.gson.JsonSyntaxException(message); });
+        recipe.setRecipeId(id);
+        return recipe;
     }
 
-    public EntityData fromNetwork(FriendlyByteBuf buffer) {
+    public EntityData fromNetwork(net.minecraft.resources.ResourceLocation id, FriendlyByteBuf buffer) {
         try {
             // EntityId
             final String entityId = buffer.readUtf();
@@ -59,7 +61,9 @@ public class EntityDataSerializer implements RecipeSerializer<EntityData> {
             // Sampler tier
             final int tier = buffer.readInt();
             // Create entity data
-            return new EntityData(entityId, validEnvs, growTicks, requiresWater, results, tier);
+            EntityData recipe = new EntityData(entityId, validEnvs, growTicks, requiresWater, results, tier);
+            recipe.setRecipeId(id);
+            return recipe;
         }catch(final Exception e){
             CagedMobsReborn.LOGGER.catching(e);
             throw new IllegalStateException("Failed to read entityData recipe from network buffer.", e);
@@ -89,10 +93,7 @@ public class EntityDataSerializer implements RecipeSerializer<EntityData> {
         }
     }
 
-    @Override
-    public StreamCodec<FriendlyByteBuf, EntityData> streamCodec() {
-        return StreamCodec.of(this::toNetwork, this::fromNetwork);
-    }
+    
 
 }
 

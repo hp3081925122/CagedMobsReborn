@@ -2,10 +2,10 @@ package com.corgam.cagedmobsreborn.serializers.entity;
 
 import com.corgam.cagedmobsreborn.CagedMobsReborn;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
+
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
+
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import java.util.List;
 
 public class AdditionalLootDataSerializer implements RecipeSerializer<AdditionalLootData> {
 
-    public static final MapCodec<AdditionalLootData> CODEC = RecordCodecBuilder.mapCodec((entityDataInstance) -> entityDataInstance.group(
+    public static final Codec<AdditionalLootData> CODEC = RecordCodecBuilder.create((entityDataInstance) -> entityDataInstance.group(
             // EntityID
             Codec.STRING.fieldOf("entity").orElse("minecraft:pig").forGetter(AdditionalLootData::getEntityId),
             // Loot
@@ -23,11 +23,13 @@ public class AdditionalLootDataSerializer implements RecipeSerializer<Additional
     ).apply(entityDataInstance, AdditionalLootData::new));
 
     @Override
-    public MapCodec<AdditionalLootData> codec() {
-        return CODEC;
+    public AdditionalLootData fromJson(net.minecraft.resources.ResourceLocation id, com.google.gson.JsonObject json) {
+        AdditionalLootData recipe = CODEC.parse(com.mojang.serialization.JsonOps.INSTANCE, json).getOrThrow(false, message -> { throw new com.google.gson.JsonSyntaxException(message); });
+        recipe.setRecipeId(id);
+        return recipe;
     }
 
-    public AdditionalLootData fromNetwork(FriendlyByteBuf buffer) {
+    public AdditionalLootData fromNetwork(net.minecraft.resources.ResourceLocation id, FriendlyByteBuf buffer) {
         try {
             // EntityId
             final String entityId = buffer.readUtf();
@@ -40,7 +42,9 @@ public class AdditionalLootDataSerializer implements RecipeSerializer<Additional
             // Remove from entity
             final boolean removeFromEntity = buffer.readBoolean();
             // Return final object
-            return new AdditionalLootData(entityId, results, removeFromEntity);
+            AdditionalLootData recipe = new AdditionalLootData(entityId, results, removeFromEntity);
+            recipe.setRecipeId(id);
+            return recipe;
         }catch(final Exception e){
             CagedMobsReborn.LOGGER.catching(e);
             throw new IllegalStateException("Failed to read additionalLootData recipe from network buffer.");
@@ -64,10 +68,7 @@ public class AdditionalLootDataSerializer implements RecipeSerializer<Additional
         }
     }
 
-    @Override
-    public StreamCodec<FriendlyByteBuf, AdditionalLootData> streamCodec() {
-        return StreamCodec.of(this::toNetwork, this::fromNetwork);
-    }
+    
 }
 
 

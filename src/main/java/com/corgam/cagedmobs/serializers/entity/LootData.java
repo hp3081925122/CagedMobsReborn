@@ -1,7 +1,7 @@
 package com.corgam.cagedmobsreborn.serializers.entity;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
+
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -12,8 +12,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 public class LootData {
 
     public static final Codec<LootData> CODEC = RecordCodecBuilder.create((builder) -> builder.group(
-            Ingredient.CODEC.fieldOf("output").forGetter(LootData::getItem),
-            Ingredient.CODEC.optionalFieldOf("output_cooked", Ingredient.of(Items.AIR)).forGetter(LootData::getCookedItem),
+            com.corgam.cagedmobsreborn.serializers.SerializationHelper.INGREDIENT_CODEC.fieldOf("output").forGetter(LootData::getItem),
+            com.corgam.cagedmobsreborn.serializers.SerializationHelper.INGREDIENT_CODEC.optionalFieldOf("output_cooked", Ingredient.of(Items.AIR)).forGetter(LootData::getCookedItem),
             Codec.FLOAT.fieldOf("chance").forGetter(LootData::getChance),
             Codec.INT.fieldOf("minAmount").forGetter(LootData::getMinAmount),
             Codec.INT.fieldOf("maxAmount").forGetter(LootData::getMaxAmount),
@@ -67,7 +67,7 @@ public class LootData {
         // Chance
         buffer.writeFloat(lootData.getChance());
         // Item
-        ItemStack.STREAM_CODEC.encode(buffer, lootData.getItem().getItems()[0]);
+        buffer.writeItem(lootData.getItem().getItems()[0]);
         // Min amount
         buffer.writeInt(lootData.getMinAmount());
         // Max amount
@@ -80,7 +80,7 @@ public class LootData {
         final boolean hasCookedItem = !lootData.getCookedItem().isEmpty();
         buffer.writeBoolean(hasCookedItem);
         if (hasCookedItem) {
-            ItemStack.STREAM_CODEC.encode(buffer, lootData.getCookedItem().getItems()[0]);
+            buffer.writeItem(lootData.getCookedItem().getItems()[0]);
         }
         // Color
         buffer.writeInt(lootData.getColor());
@@ -96,7 +96,7 @@ public class LootData {
         // Chance
         final float chance = buffer.readFloat();
         // Item
-        final Ingredient item = Ingredient.of(ItemStack.STREAM_CODEC.decode(buffer));
+        final Ingredient item = Ingredient.of(buffer.readItem());
         // Min amount
         final int min = buffer.readInt();
         // Max amount
@@ -107,7 +107,7 @@ public class LootData {
         final boolean isArrow = buffer.readBoolean();
         // Cooked item
         final Ingredient cookedItem = buffer.readBoolean()
-                ? Ingredient.of(ItemStack.STREAM_CODEC.decode(buffer))
+                ? Ingredient.of(buffer.readItem())
                 : Ingredient.EMPTY;
         // Color
         final int color = buffer.readInt();
