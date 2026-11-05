@@ -2,7 +2,7 @@
 
 本工作树从 1.21.1 NeoForge 分支迁移，使用 Forge 47.4.23、Java 17 和 Mojang 官方映射。模组 ID 为 `cagedmobsreborn`。
 
-包含三档 DNA 采样器、普通及漏斗生物笼、环境、升级、数据包掉落与自动实体掉落，以及 JEI、Jade 和 CraftTweaker 集成。
+包含三档 DNA 采样器、普通及漏斗生物笼、环境、升级、数据包掉落与自动实体掉落，以及 JEI 和 Jade 集成。
 
 ## 开发
 
