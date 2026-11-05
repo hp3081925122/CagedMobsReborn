@@ -113,7 +113,6 @@ publishing {
         }
     }
     repositories {
-    maven { url = 'https://maven.blamejared.com' }
         maven {
             url "file://${project.projectDir}/mcmodsrepo"
         }
