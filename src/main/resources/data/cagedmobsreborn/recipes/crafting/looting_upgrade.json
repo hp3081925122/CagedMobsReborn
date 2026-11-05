@@ -10,16 +10,16 @@
       "item": "minecraft:enchanting_table"
     },
     "r": {
-      "tag": "c:dusts/redstone"
+      "tag": "forge:dusts/redstone"
     },
     "B": {
-      "tag": "c:storage_blocks/emerald"
+      "tag": "forge:storage_blocks/emerald"
     },
     "b": {
       "item": "minecraft:blackstone"
     },
     "Q": {
-      "tag": "c:storage_blocks/quartz"
+      "tag": "forge:storage_blocks/quartz"
     }
   },
   "result": {

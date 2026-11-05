@@ -6,7 +6,7 @@ import com.corgam.cagedmobsreborn.registers.CagedRecipeTypes;
 import com.corgam.cagedmobsreborn.serializers.environment.EnvironmentData;
 import com.corgam.cagedmobsreborn.serializers.entity.AdditionalLootData;
 import com.corgam.cagedmobsreborn.serializers.entity.EntityData;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -53,7 +53,7 @@ public class RecipesHelper {
     public static RecipeManager getRecipeManager(){
         try{
             if(EffectiveSide.get().isClient()){
-                return RecipesHelper.getRecipeManagerClient();
+                return com.corgam.cagedmobsreborn.ClientSetup.getRecipeManager();
             }else{
                 return RecipesHelper.getRecipeManagerServer();
             }
@@ -62,14 +62,7 @@ public class RecipesHelper {
         }
     }
 
-    private static RecipeManager getRecipeManagerClient() {
-        if(Minecraft.getInstance().player != null){
-            return Minecraft.getInstance().player.connection.getRecipeManager();
-        }
-        return null;
-    }
-
-    private static RecipeManager getRecipeManagerServer() {
+private static RecipeManager getRecipeManagerServer() {
         return ServerLifecycleHooks.getCurrentServer().getRecipeManager();
     }
 

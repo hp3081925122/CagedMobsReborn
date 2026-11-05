@@ -10,7 +10,7 @@
       "item": "minecraft:end_rod"
     },
     "c": {
-      "tag": "c:dusts/redstone"
+      "tag": "forge:dusts/redstone"
     },
     "B": {
       "item": "minecraft:shulker_shell"
@@ -19,7 +19,7 @@
       "item": "minecraft:phantom_membrane"
     },
     "Q": {
-      "tag": "c:storage_blocks/quartz"
+      "tag": "forge:storage_blocks/quartz"
     }
   },
   "result": {

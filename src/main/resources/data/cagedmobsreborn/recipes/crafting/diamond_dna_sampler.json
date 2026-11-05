@@ -10,10 +10,10 @@
       "item": "minecraft:light_blue_stained_glass"
     },
     "X": {
-      "tag": "c:gems/diamond"
+      "tag": "forge:gems/diamond"
     },
     ".": {
-      "tag": "c:storage_blocks/diamond"
+      "tag": "forge:storage_blocks/diamond"
     }
   },
   "result": {

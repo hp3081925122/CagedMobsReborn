@@ -10,10 +10,10 @@
       "item": "minecraft:white_stained_glass"
     },
     "X": {
-      "tag": "c:ingots/iron"
+      "tag": "forge:ingots/iron"
     },
     ".": {
-      "tag": "c:storage_blocks/iron"
+      "tag": "forge:storage_blocks/iron"
     }
   },
   "result": {

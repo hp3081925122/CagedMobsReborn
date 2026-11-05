@@ -19,7 +19,7 @@
       "item": "minecraft:snow_block"
     },
     "D": {
-      "tag": "c:gems/diamond"
+      "tag": "forge:gems/diamond"
     },
     "C": {
       "item": "minecraft:stone"

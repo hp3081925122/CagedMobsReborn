@@ -10,7 +10,7 @@
       "item": "cagedmobsreborn:warden_receptor"
     },
     "r": {
-      "tag": "c:dusts/redstone"
+      "tag": "forge:dusts/redstone"
     },
     "B": {
       "item": "cagedmobsreborn:speed_ii_upgrade"
