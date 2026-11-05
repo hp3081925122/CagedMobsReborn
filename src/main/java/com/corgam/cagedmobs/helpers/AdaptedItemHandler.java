@@ -1,4 +1,4 @@
-package com.corgam.cagedmobs.helpers;
+package com.corgam.cagedmobsreborn.helpers;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;

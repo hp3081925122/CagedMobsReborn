@@ -1,0 +1,10 @@
+{
+	"type": "cagedmobsreborn:entity_data",
+	"forge:conditions": [{ "type": "forge:mod_loaded", "modid": "cagedmobsreborn" }],
+	"entity": "minecraft:vex",
+	"samplerTier": 2,
+	"environments": ["cave"],
+	"growTicks": 1200,
+	"results": [
+	]
+}

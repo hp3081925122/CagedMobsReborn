@@ -1,9 +1,9 @@
-package com.corgam.cagedmobs.serializers.entity;
+package com.corgam.cagedmobsreborn.serializers.entity;
 
-import com.corgam.cagedmobs.CagedMobsReborn;
-import com.corgam.cagedmobs.registers.CagedItems;
-import com.corgam.cagedmobs.registers.CagedRecipeSerializers;
-import com.corgam.cagedmobs.registers.CagedRecipeTypes;
+import com.corgam.cagedmobsreborn.CagedMobsReborn;
+import com.corgam.cagedmobsreborn.registers.CagedItems;
+import com.corgam.cagedmobsreborn.registers.CagedRecipeSerializers;
+import com.corgam.cagedmobsreborn.registers.CagedRecipeTypes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;

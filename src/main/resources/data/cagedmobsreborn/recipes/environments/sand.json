@@ -1,0 +1,10 @@
+{
+	"type": "cagedmobsreborn:environment_data",
+	"forge:conditions": [{ "type": "forge:mod_loaded", "modid": "cagedmobsreborn" }],
+	"input": {
+		"item": "minecraft:sand"
+	},
+	"render": "minecraft:sand",
+	"growModifier": 1.0,
+	"categories": ["sand"]
+}

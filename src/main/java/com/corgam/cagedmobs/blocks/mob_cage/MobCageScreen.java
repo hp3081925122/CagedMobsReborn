@@ -1,7 +1,7 @@
-package com.corgam.cagedmobs.blocks.mob_cage;
+package com.corgam.cagedmobsreborn.blocks.mob_cage;
 
-import com.corgam.cagedmobs.CagedMobsReborn;
-import com.corgam.cagedmobs.helpers.EntityRendererHelper;
+import com.corgam.cagedmobsreborn.CagedMobsReborn;
+import com.corgam.cagedmobsreborn.helpers.EntityRendererHelper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.nbt.CompoundTag;

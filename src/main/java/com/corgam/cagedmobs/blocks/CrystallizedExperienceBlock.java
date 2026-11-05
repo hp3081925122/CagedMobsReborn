@@ -1,4 +1,4 @@
-package com.corgam.cagedmobs.blocks;
+package com.corgam.cagedmobsreborn.blocks;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;

@@ -1,7 +1,7 @@
-package com.corgam.cagedmobs.blocks.mob_cage;
+package com.corgam.cagedmobsreborn.blocks.mob_cage;
 
-import com.corgam.cagedmobs.CagedMobsReborn;
-import com.corgam.cagedmobs.registers.CagedItems;
+import com.corgam.cagedmobsreborn.CagedMobsReborn;
+import com.corgam.cagedmobsreborn.registers.CagedItems;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;

@@ -1,4 +1,4 @@
-package com.corgam.cagedmobs.serializers;
+package com.corgam.cagedmobsreborn.serializers;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;

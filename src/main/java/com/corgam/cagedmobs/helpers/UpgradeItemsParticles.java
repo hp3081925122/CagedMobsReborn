@@ -1,6 +1,6 @@
-package com.corgam.cagedmobs.helpers;
+package com.corgam.cagedmobsreborn.helpers;
 
-import com.corgam.cagedmobs.blocks.mob_cage.MobCageBlockEntity;
+import com.corgam.cagedmobsreborn.blocks.mob_cage.MobCageBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.level.Level;

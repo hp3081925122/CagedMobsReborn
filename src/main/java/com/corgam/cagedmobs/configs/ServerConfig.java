@@ -1,42 +1,42 @@
-package com.corgam.cagedmobs.configs;
+package com.corgam.cagedmobsreborn.configs;
 
-import net.minecraftforge.common.ModConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.Collections;
 import java.util.List;
 
 public class ServerConfig {
 
-    private final ModConfigSpec spec;
+    private final ForgeConfigSpec spec;
 
-    private final ModConfigSpec.BooleanValue hoppingCagesDisabled;
+    private final ForgeConfigSpec.BooleanValue hoppingCagesDisabled;
 
-    private final ModConfigSpec.BooleanValue entitiesListInWhitelistMode;
-    private final ModConfigSpec.ConfigValue<List<? extends String>> entitiesList;
+    private final ForgeConfigSpec.BooleanValue entitiesListInWhitelistMode;
+    private final ForgeConfigSpec.ConfigValue<List<? extends String>> entitiesList;
 
-    private final ModConfigSpec.BooleanValue itemsListInWhitelistMode;
-    private final ModConfigSpec.ConfigValue<List<? extends String>> itemsList;
+    private final ForgeConfigSpec.BooleanValue itemsListInWhitelistMode;
+    private final ForgeConfigSpec.ConfigValue<List<? extends String>> itemsList;
 
-    private final ModConfigSpec.BooleanValue singleUseSamplers;
-    private final ModConfigSpec.BooleanValue disableSamplers;
-    private final ModConfigSpec.BooleanValue disableSpawnEggs;
+    private final ForgeConfigSpec.BooleanValue singleUseSamplers;
+    private final ForgeConfigSpec.BooleanValue disableSamplers;
+    private final ForgeConfigSpec.BooleanValue disableSpawnEggs;
 
-    private final ModConfigSpec.DoubleValue cagesSpeed;
+    private final ForgeConfigSpec.DoubleValue cagesSpeed;
 
-    private final ModConfigSpec.ConfigValue<List<? extends String>> universalEnvironmentBlacklist;
+    private final ForgeConfigSpec.ConfigValue<List<? extends String>> universalEnvironmentBlacklist;
 
-    private final ModConfigSpec.BooleanValue autoEntityDataEnabled;
-    private final ModConfigSpec.ConfigValue<List<? extends String>> autoEntityDataBlacklist;
-    private final ModConfigSpec.BooleanValue autoEntityDataExcludeBosses;
-    private final ModConfigSpec.BooleanValue samplerTierByCurrentHealth;
-    private final ModConfigSpec.DoubleValue normalSamplerMaxHealth;
-    private final ModConfigSpec.DoubleValue diamondSamplerMaxHealth;
-    private final ModConfigSpec.IntValue autoMinGrowTicks;
-    private final ModConfigSpec.IntValue autoMaxGrowTicks;
-    private final ModConfigSpec.DoubleValue autoGrowHealthScale;
+    private final ForgeConfigSpec.BooleanValue autoEntityDataEnabled;
+    private final ForgeConfigSpec.ConfigValue<List<? extends String>> autoEntityDataBlacklist;
+    private final ForgeConfigSpec.BooleanValue autoEntityDataExcludeBosses;
+    private final ForgeConfigSpec.BooleanValue samplerTierByCurrentHealth;
+    private final ForgeConfigSpec.DoubleValue normalSamplerMaxHealth;
+    private final ForgeConfigSpec.DoubleValue diamondSamplerMaxHealth;
+    private final ForgeConfigSpec.IntValue autoMinGrowTicks;
+    private final ForgeConfigSpec.IntValue autoMaxGrowTicks;
+    private final ForgeConfigSpec.DoubleValue autoGrowHealthScale;
 
     public ServerConfig(){
-        final ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+        final ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         builder.comment("Server side config for CagedMobsReborn. If changed it will affect the whole server!");
         builder.push("server");
 
@@ -125,7 +125,7 @@ public class ServerConfig {
         this.spec = builder.build();
     }
 
-    public ModConfigSpec getModConfigSpec() {
+    public ForgeConfigSpec getForgeConfigSpec() {
         return this.spec;
     }
 

@@ -1,6 +1,6 @@
-package com.corgam.cagedmobs.registers;
+package com.corgam.cagedmobsreborn.registers;
 
-import com.corgam.cagedmobs.CagedMobsReborn;
+import com.corgam.cagedmobsreborn.CagedMobsReborn;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -11,7 +11,7 @@ import net.minecraftforge.registries.RegistryObject;
 public class CagedCreativeTabs {
     public static final DeferredRegister<CreativeModeTab> CAGED_CREATIVE_TABS_REGISTER = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, CagedMobsReborn.MOD_ID);
 
-    public static final RegistryObject<CreativeModeTab, CreativeModeTab> MAIN_TAB = CAGED_CREATIVE_TABS_REGISTER.register("cagedmobsreborn_tab", () -> CreativeModeTab.builder()
+    public static final RegistryObject<CreativeModeTab> MAIN_TAB = CAGED_CREATIVE_TABS_REGISTER.register("cagedmobsreborn_tab", () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup.cagedmobsreborn_tab"))
             .icon(() -> new ItemStack(CagedItems.HOPPING_MOB_CAGE.get()))
             .displayItems(((pParameters, pOutput) -> {

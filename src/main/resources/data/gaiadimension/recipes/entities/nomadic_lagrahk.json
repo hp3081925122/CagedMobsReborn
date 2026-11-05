@@ -1,0 +1,11 @@
+{
+	"type": "cagedmobsreborn:entity_data",
+	"forge:conditions": [{ "type": "forge:mod_loaded", "modid": "gaiadimension" }],
+	"entity": "gaiadimension:nomadic_lagrahk",
+	"samplerTier": 2,
+	"environments": ["gaia"],
+	"growTicks": 1800,
+	"results": [
+	]
+	
+}

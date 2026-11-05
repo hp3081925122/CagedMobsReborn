@@ -1,4 +1,4 @@
-package com.corgam.cagedmobs.serializers.entity;
+package com.corgam.cagedmobsreborn.serializers.entity;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -131,7 +131,7 @@ public class LootData {
     public static ItemStack writeNBTtoItem(String nbtName, String nbtData, ItemStack stack){
         CompoundTag nbt = new CompoundTag();
         nbt.putString(nbtName,nbtData);
-        com.corgam.cagedmobs.serializers.SerializationHelper.setCustomData(stack, nbt);
+        com.corgam.cagedmobsreborn.serializers.SerializationHelper.setCustomData(stack, nbt);
         return stack;
     }
 

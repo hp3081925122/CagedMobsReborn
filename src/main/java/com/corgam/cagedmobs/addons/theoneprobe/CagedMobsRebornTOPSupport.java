@@ -1,6 +1,6 @@
-package com.corgam.cagedmobs.addons.theoneprobe;
+package com.corgam.cagedmobsreborn.addons.theoneprobe;
 
-//import com.corgam.cagedmobs.CagedMobsReborn;
+//import com.corgam.cagedmobsreborn.CagedMobsReborn;
 //import com.google.common.base.Function;
 //import mcjty.theoneprobe.api.*;
 //import net.minecraft.resources.ResourceLocation;

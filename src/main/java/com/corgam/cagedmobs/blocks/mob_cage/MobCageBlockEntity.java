@@ -1,19 +1,19 @@
-package com.corgam.cagedmobs.blocks.mob_cage;
+package com.corgam.cagedmobsreborn.blocks.mob_cage;
 
-import com.corgam.cagedmobs.CagedMobsReborn;
-import com.corgam.cagedmobs.helpers.AdaptedItemHandler;
-import com.corgam.cagedmobs.items.upgrades.SpeedIIIUpgradeItem;
-import com.corgam.cagedmobs.items.upgrades.SpeedIIUpgradeItem;
-import com.corgam.cagedmobs.items.upgrades.SpeedIUpgradeItem;
-import com.corgam.cagedmobs.registers.CagedBlockEntities;
-import com.corgam.cagedmobs.registers.CagedItems;
-import com.corgam.cagedmobs.serializers.AutoEntityDataHelper;
-import com.corgam.cagedmobs.serializers.RecipesHelper;
-import com.corgam.cagedmobs.serializers.SerializationHelper;
-import com.corgam.cagedmobs.serializers.entity.EntityData;
-import com.corgam.cagedmobs.serializers.environment.EnvironmentData;
-import com.corgam.cagedmobs.serializers.entity.AdditionalLootData;
-import com.corgam.cagedmobs.serializers.entity.LootData;
+import com.corgam.cagedmobsreborn.CagedMobsReborn;
+import com.corgam.cagedmobsreborn.helpers.AdaptedItemHandler;
+import com.corgam.cagedmobsreborn.items.upgrades.SpeedIIIUpgradeItem;
+import com.corgam.cagedmobsreborn.items.upgrades.SpeedIIUpgradeItem;
+import com.corgam.cagedmobsreborn.items.upgrades.SpeedIUpgradeItem;
+import com.corgam.cagedmobsreborn.registers.CagedBlockEntities;
+import com.corgam.cagedmobsreborn.registers.CagedItems;
+import com.corgam.cagedmobsreborn.serializers.AutoEntityDataHelper;
+import com.corgam.cagedmobsreborn.serializers.RecipesHelper;
+import com.corgam.cagedmobsreborn.serializers.SerializationHelper;
+import com.corgam.cagedmobsreborn.serializers.entity.EntityData;
+import com.corgam.cagedmobsreborn.serializers.environment.EnvironmentData;
+import com.corgam.cagedmobsreborn.serializers.entity.AdditionalLootData;
+import com.corgam.cagedmobsreborn.serializers.entity.LootData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -55,8 +55,8 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Function;
 
-import static com.corgam.cagedmobs.blocks.mob_cage.MobCageBlock.HOPPING;
-import static com.corgam.cagedmobs.helpers.UpgradeItemsParticles.*;
+import static com.corgam.cagedmobsreborn.blocks.mob_cage.MobCageBlock.HOPPING;
+import static com.corgam.cagedmobsreborn.helpers.UpgradeItemsParticles.*;
 
 public class MobCageBlockEntity extends BlockEntity {
 

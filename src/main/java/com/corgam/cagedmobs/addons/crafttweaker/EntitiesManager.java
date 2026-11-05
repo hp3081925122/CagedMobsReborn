@@ -1,12 +1,12 @@
-package com.corgam.cagedmobs.addons.crafttweaker;
+package com.corgam.cagedmobsreborn.addons.crafttweaker;
 
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.action.recipe.ActionAddRecipe;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
-import com.corgam.cagedmobs.registers.CagedRecipeSerializers;
-import com.corgam.cagedmobs.registers.CagedRecipeTypes;
-import com.corgam.cagedmobs.serializers.entity.EntityData;
+import com.corgam.cagedmobsreborn.registers.CagedRecipeSerializers;
+import com.corgam.cagedmobsreborn.registers.CagedRecipeTypes;
+import com.corgam.cagedmobsreborn.serializers.entity.EntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.openzen.zencode.java.ZenCodeType;

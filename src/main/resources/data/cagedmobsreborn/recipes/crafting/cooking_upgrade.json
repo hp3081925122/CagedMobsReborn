@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " X ",
+    "rBb",
+    "bQb"
+  ],
+  "key": {
+    "X": {
+      "item": "minecraft:campfire"
+    },
+    "r": {
+      "tag": "c:dusts/redstone"
+    },
+    "B": {
+      "tag": "c:storage_blocks/coal"
+    },
+    "b": {
+      "item": "minecraft:blackstone"
+    },
+    "Q": {
+      "tag": "c:storage_blocks/quartz"
+    }
+  },
+  "result": {
+    "item": "cagedmobsreborn:cooking_upgrade"
+  }
+}

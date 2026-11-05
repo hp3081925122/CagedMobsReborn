@@ -1,7 +1,7 @@
-package com.corgam.cagedmobs.serializers;
+package com.corgam.cagedmobsreborn.serializers;
 
-import com.corgam.cagedmobs.CagedMobsReborn;
-import com.corgam.cagedmobs.serializers.entity.EntityData;
+import com.corgam.cagedmobsreborn.CagedMobsReborn;
+import com.corgam.cagedmobsreborn.serializers.entity.EntityData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;

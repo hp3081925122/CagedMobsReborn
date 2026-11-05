@@ -1,6 +1,6 @@
-package com.corgam.cagedmobs.serializers.entity;
+package com.corgam.cagedmobsreborn.serializers.entity;
 
-import com.corgam.cagedmobs.CagedMobsReborn;
+import com.corgam.cagedmobsreborn.CagedMobsReborn;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

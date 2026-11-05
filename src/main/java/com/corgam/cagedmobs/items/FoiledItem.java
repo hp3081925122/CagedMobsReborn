@@ -1,4 +1,4 @@
-package com.corgam.cagedmobs.items;
+package com.corgam.cagedmobsreborn.items;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;

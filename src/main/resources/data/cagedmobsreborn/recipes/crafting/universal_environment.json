@@ -1,0 +1,41 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "HSN",
+    "WDC",
+    "MEK"
+  ],
+  "key": {
+    "H": {
+      "item": "minecraft:hay_block"
+    },
+    "S": {
+      "item": "minecraft:sand"
+    },
+    "N": {
+      "item": "minecraft:magma_block"
+    },
+    "W": {
+      "item": "minecraft:snow_block"
+    },
+    "D": {
+      "tag": "c:gems/diamond"
+    },
+    "C": {
+      "item": "minecraft:stone"
+    },
+    "M": {
+      "item": "minecraft:red_mushroom"
+    },
+    "E": {
+      "item": "minecraft:end_stone"
+    },
+    "K": {
+      "item": "minecraft:sculk"
+    }
+  },
+  "result": {
+    "item": "cagedmobsreborn:universal_environment",
+    "count": 4
+  }
+}

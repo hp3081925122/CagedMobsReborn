@@ -1,0 +1,9 @@
+{
+	"type": "cagedmobsreborn:entity_data",
+	"forge:conditions": [{ "type": "forge:mod_loaded", "modid": "cagedmobsreborn" }],
+	"entity": "minecraft:wolf",
+	"samplerTier": 1,
+	"environments": ["farm","snow"],
+	"growTicks": 1200,
+	"results": []
+}

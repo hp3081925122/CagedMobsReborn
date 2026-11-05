@@ -1,10 +1,10 @@
-package com.corgam.cagedmobs;
+package com.corgam.cagedmobsreborn;
 
-import com.corgam.cagedmobs.blocks.mob_cage.MobCageRenderer;
-import com.corgam.cagedmobs.blocks.mob_cage.MobCageScreen;
-import com.corgam.cagedmobs.registers.CagedBlockEntities;
-import com.corgam.cagedmobs.registers.CagedBlocks;
-import com.corgam.cagedmobs.registers.CagedContainers;
+import com.corgam.cagedmobsreborn.blocks.mob_cage.MobCageRenderer;
+import com.corgam.cagedmobsreborn.blocks.mob_cage.MobCageScreen;
+import com.corgam.cagedmobsreborn.registers.CagedBlockEntities;
+import com.corgam.cagedmobsreborn.registers.CagedBlocks;
+import com.corgam.cagedmobsreborn.registers.CagedContainers;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;

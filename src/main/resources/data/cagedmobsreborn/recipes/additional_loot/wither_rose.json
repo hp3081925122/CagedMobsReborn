@@ -1,0 +1,16 @@
+{
+	"type": "cagedmobsreborn:additional_loot_data",
+	"forge:conditions": [{ "type": "forge:mod_loaded", "modid": "cagedmobsreborn" }],
+	"entity": "minecraft:wither",
+	"results": [
+		{
+			"chance": 0.1,
+			"output": {
+				"item": "minecraft:wither_rose"
+			},
+			"minAmount": 1,
+			"maxAmount": 1
+		}
+	]
+
+}

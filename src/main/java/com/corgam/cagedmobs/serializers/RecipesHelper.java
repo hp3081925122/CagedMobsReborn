@@ -1,11 +1,11 @@
-package com.corgam.cagedmobs.serializers;
+package com.corgam.cagedmobsreborn.serializers;
 
 import net.minecraft.core.registries.Registries;
-import com.corgam.cagedmobs.CagedMobsReborn;
-import com.corgam.cagedmobs.registers.CagedRecipeTypes;
-import com.corgam.cagedmobs.serializers.environment.EnvironmentData;
-import com.corgam.cagedmobs.serializers.entity.AdditionalLootData;
-import com.corgam.cagedmobs.serializers.entity.EntityData;
+import com.corgam.cagedmobsreborn.CagedMobsReborn;
+import com.corgam.cagedmobsreborn.registers.CagedRecipeTypes;
+import com.corgam.cagedmobsreborn.serializers.environment.EnvironmentData;
+import com.corgam.cagedmobsreborn.serializers.entity.AdditionalLootData;
+import com.corgam.cagedmobsreborn.serializers.entity.EntityData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;

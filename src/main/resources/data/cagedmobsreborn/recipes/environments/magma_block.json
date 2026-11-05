@@ -1,0 +1,10 @@
+{
+	"type": "cagedmobsreborn:environment_data",
+	"forge:conditions": [{ "type": "forge:mod_loaded", "modid": "cagedmobsreborn" }],
+	"input": {
+		"item": "minecraft:magma_block"
+	},
+	"render": "minecraft:magma_block",
+	"growModifier": 1.0,
+	"categories": ["nether"]
+}

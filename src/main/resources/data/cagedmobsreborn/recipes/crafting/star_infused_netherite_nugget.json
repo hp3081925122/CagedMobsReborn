@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "cagedmobsreborn:ingots/star_infused_netherite"
+    }
+  ],
+  "result": {
+    "item": "cagedmobsreborn:star_infused_netherite_nugget",
+    "count": 9
+  }
+}

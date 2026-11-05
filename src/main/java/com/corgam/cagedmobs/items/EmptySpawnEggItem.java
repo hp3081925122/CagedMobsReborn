@@ -1,6 +1,6 @@
-package com.corgam.cagedmobs.items;
+package com.corgam.cagedmobsreborn.items;
 
-import com.corgam.cagedmobs.CagedMobsReborn;
+import com.corgam.cagedmobsreborn.CagedMobsReborn;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;

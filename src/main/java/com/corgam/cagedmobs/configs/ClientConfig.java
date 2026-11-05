@@ -1,11 +1,11 @@
-package com.corgam.cagedmobs.configs;
+package com.corgam.cagedmobsreborn.configs;
 
-import net.minecraftforge.common.ModConfigSpec;
-import net.minecraftforge.common.ModConfigSpec.BooleanValue;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 
 public class ClientConfig {
 
-    private final ModConfigSpec spec;
+    private final ForgeConfigSpec spec;
 
     private final BooleanValue disableEnvsRender;
     private final BooleanValue disableEntitiesRender;
@@ -13,7 +13,7 @@ public class ClientConfig {
     private final BooleanValue disableUpgradesParticles;
 
     public ClientConfig(){
-        final ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+        final ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         builder.comment("Client side config for CagedMobsReborn. Do not change when shipping in ModPacks!");
         builder.push("client");
 
@@ -33,7 +33,7 @@ public class ClientConfig {
         this.spec = builder.build();
     }
 
-    public ModConfigSpec getModConfigSpec() {
+    public ForgeConfigSpec getForgeConfigSpec() {
         return spec;
     }
 

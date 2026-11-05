@@ -1,0 +1,19 @@
+{
+	"type": "cagedmobsreborn:entity_data",
+	"forge:conditions": [{ "type": "forge:mod_loaded", "modid": "thermal" }],
+	"entity": "thermal:basalz",
+	"samplerTier": 2,
+	"environments": ["cave"],
+	"growTicks": 1800,
+	"results": [
+		{
+			"chance": 0.5,
+			"output": {
+				"item": "thermal:basalz_rod"
+			},
+			"minAmount": 1,
+			"maxAmount": 1
+		}
+	]
+
+}

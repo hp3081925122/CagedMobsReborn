@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "X X",
+    "rBb",
+    "bQb"
+  ],
+  "key": {
+    "X": {
+      "tag": "c:ingots/netherite"
+    },
+    "r": {
+      "tag": "c:dusts/redstone"
+    },
+    "B": {
+      "tag": "c:storage_blocks/coal"
+    },
+    "b": {
+      "item": "minecraft:blackstone"
+    },
+    "Q": {
+      "tag": "c:storage_blocks/quartz"
+    }
+  },
+  "result": {
+    "item": "cagedmobsreborn:speed_i_upgrade"
+  }
+}

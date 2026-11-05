@@ -1,10 +1,10 @@
-package com.corgam.cagedmobs.blocks.mob_cage;
+package com.corgam.cagedmobsreborn.blocks.mob_cage;
 
-import com.corgam.cagedmobs.helpers.EnvironmentItemSlotHandler;
-import com.corgam.cagedmobs.helpers.UpgradeItemSlotHandler;
-import com.corgam.cagedmobs.items.upgrades.UpgradeItem;
-import com.corgam.cagedmobs.registers.CagedBlocks;
-import com.corgam.cagedmobs.registers.CagedContainers;
+import com.corgam.cagedmobsreborn.helpers.EnvironmentItemSlotHandler;
+import com.corgam.cagedmobsreborn.helpers.UpgradeItemSlotHandler;
+import com.corgam.cagedmobsreborn.items.upgrades.UpgradeItem;
+import com.corgam.cagedmobsreborn.registers.CagedBlocks;
+import com.corgam.cagedmobsreborn.registers.CagedContainers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -17,7 +17,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 
-import static com.corgam.cagedmobs.blocks.mob_cage.MobCageBlockEntity.*;
+import static com.corgam.cagedmobsreborn.blocks.mob_cage.MobCageBlockEntity.*;
 
 public class MobCageContainer extends AbstractContainerMenu {
 

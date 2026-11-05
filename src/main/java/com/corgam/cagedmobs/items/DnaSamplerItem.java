@@ -1,12 +1,12 @@
-package com.corgam.cagedmobs.items;
+package com.corgam.cagedmobsreborn.items;
 
-import com.corgam.cagedmobs.CagedMobsReborn;
-import com.corgam.cagedmobs.blocks.mob_cage.MobCageBlockEntity;
-import com.corgam.cagedmobs.registers.CagedRecipeTypes;
-import com.corgam.cagedmobs.serializers.AutoEntityDataHelper;
-import com.corgam.cagedmobs.serializers.RecipesHelper;
-import com.corgam.cagedmobs.serializers.SerializationHelper;
-import com.corgam.cagedmobs.serializers.entity.EntityData;
+import com.corgam.cagedmobsreborn.CagedMobsReborn;
+import com.corgam.cagedmobsreborn.blocks.mob_cage.MobCageBlockEntity;
+import com.corgam.cagedmobsreborn.registers.CagedRecipeTypes;
+import com.corgam.cagedmobsreborn.serializers.AutoEntityDataHelper;
+import com.corgam.cagedmobsreborn.serializers.RecipesHelper;
+import com.corgam.cagedmobsreborn.serializers.SerializationHelper;
+import com.corgam.cagedmobsreborn.serializers.entity.EntityData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;

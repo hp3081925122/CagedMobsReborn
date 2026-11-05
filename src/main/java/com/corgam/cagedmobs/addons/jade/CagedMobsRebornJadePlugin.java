@@ -1,7 +1,7 @@
-package com.corgam.cagedmobs.addons.jade;
+package com.corgam.cagedmobsreborn.addons.jade;
 
-import com.corgam.cagedmobs.blocks.mob_cage.MobCageBlock;
-import com.corgam.cagedmobs.blocks.mob_cage.MobCageBlockEntity;
+import com.corgam.cagedmobsreborn.blocks.mob_cage.MobCageBlock;
+import com.corgam.cagedmobsreborn.blocks.mob_cage.MobCageBlockEntity;
 import snownee.jade.api.IWailaClientRegistration;
 import snownee.jade.api.IWailaCommonRegistration;
 import snownee.jade.api.IWailaPlugin;

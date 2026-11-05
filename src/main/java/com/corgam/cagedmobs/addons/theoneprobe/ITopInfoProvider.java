@@ -1,4 +1,4 @@
-package com.corgam.cagedmobs.addons.theoneprobe;
+package com.corgam.cagedmobsreborn.addons.theoneprobe;
 
 //import mcjty.theoneprobe.api.IProbeHitData;
 //import mcjty.theoneprobe.api.IProbeInfo;

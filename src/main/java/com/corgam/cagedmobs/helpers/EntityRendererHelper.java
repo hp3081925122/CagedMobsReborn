@@ -1,4 +1,4 @@
-package com.corgam.cagedmobs.helpers;
+package com.corgam.cagedmobsreborn.helpers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -23,7 +23,7 @@ import net.minecraft.world.level.Level;
 
 import java.util.Optional;
 
-import static com.corgam.cagedmobs.CagedMobsReborn.LOGGER;
+import static com.corgam.cagedmobsreborn.CagedMobsReborn.LOGGER;
 
 public class EntityRendererHelper {
 
