@@ -26,6 +26,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.WorldlyContainerHolder;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnRequest;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -38,6 +39,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.SpawnData;
 import net.minecraft.world.level.block.Block;
@@ -463,13 +465,20 @@ public class MobCageBlockEntity extends BlockEntity {
      * @return the entity
      */
     public Entity getCachedEntity(Level level) {
-        if (this.cachedEntity == null) {
-            if(this.renderedEntity == null){
+        if (this.cachedEntity == null && this.entityType != null) {
+            if (this.renderedEntity == null) {
                 CompoundTag nbt = new CompoundTag();
                 nbt.putString("id", EntityType.getKey(this.entityType).toString());
                 this.renderedEntity = new SpawnData(nbt, Optional.empty(), Optional.empty());
             }
-            this.cachedEntity = EntityType.loadEntityRecursive(this.entityType, this.renderedEntity.getEntityToSpawn(), level, EntitySpawnReason.LOAD, entity -> entity);
+            // 按原版刷怪笼方式为虚拟展示实体分配展示 ID 并跳过和平难度检查
+            this.cachedEntity = EntityType.loadEntityRecursive(
+                    this.renderedEntity.getEntityToSpawn(),
+                    level,
+                    new EntitySpawnRequest(EntitySpawnReason.LOAD, true),
+                    BaseSpawner.SET_DISPLAY_ENTITY_ID);
+            CagedMobsReborn.LOGGER.debug("[CAGE-RENDER] Created cached display entity {} at {} (success={})",
+                    EntityType.getKey(this.entityType), this.worldPosition, this.cachedEntity != null);
         }
         return this.cachedEntity;
     }
@@ -783,15 +792,24 @@ public class MobCageBlockEntity extends BlockEntity {
         return drops;
     }
 
-    private Entity getLootEntity(ServerLevel serverLevel){
-        if(this.lootEntity == null || this.lootEntity.getType() != this.entityType){
-            this.lootEntity = this.entityType.create(serverLevel, EntitySpawnReason.LOAD);
-            if(this.lootEntity != null){
+    private Entity getLootEntity(ServerLevel serverLevel) {
+        if ((this.lootEntity == null || this.lootEntity.getType() != this.entityType) && this.entityType != null) {
+            CompoundTag nbt = new CompoundTag();
+            nbt.putString("id", EntityType.getKey(this.entityType).toString());
+            // 为战利品模拟实体分配展示 ID 并忽略和平模式生成限制
+            this.lootEntity = EntityType.loadEntityRecursive(
+                    nbt,
+                    serverLevel,
+                    new EntitySpawnRequest(EntitySpawnReason.LOAD, true),
+                    BaseSpawner.SET_DISPLAY_ENTITY_ID);
+            if (this.lootEntity != null) {
                 Vec3 center = Vec3.atCenterOf(this.worldPosition);
                 this.lootEntity.setPos(center.x, center.y, center.z);
             }
+            CagedMobsReborn.LOGGER.debug("[AUTO-ENTITY] Created virtual loot entity {} at {} (success={})",
+                    EntityType.getKey(this.entityType), this.worldPosition, this.lootEntity != null);
         }
-        if(this.lootEntity instanceof Sheep sheep){
+        if (this.lootEntity instanceof Sheep sheep) {
             sheep.setColor(DyeColor.byId(this.color));
         }
         return this.lootEntity;

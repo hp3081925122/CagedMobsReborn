@@ -3,11 +3,13 @@ package com.corgam.cagedmobsreborn.helpers;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntitySpawnRequest;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.dolphin.Dolphin;
 import net.minecraft.world.entity.animal.fish.AbstractFish;
@@ -19,6 +21,7 @@ import net.minecraft.world.entity.monster.ElderGuardian;
 import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.entity.monster.Guardian;
 import net.minecraft.world.entity.monster.Phantom;
+import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -40,7 +43,12 @@ public class EntityRendererHelper {
             }
             startingNbt.putString("id", EntityType.getKey(entityType).toString());
             if (level != null && level.isClientSide()) {
-                Entity created = EntityType.loadEntityRecursive(entityType, startingNbt, level, EntitySpawnReason.LOAD, value -> value);
+                // 分配虚拟展示实体 ID 并忽略和平模式限制，避免 26.2+ Entity.getId() 崩溃
+                Entity created = EntityType.loadEntityRecursive(
+                        startingNbt,
+                        level,
+                        new EntitySpawnRequest(EntitySpawnReason.LOAD, true),
+                        BaseSpawner.SET_DISPLAY_ENTITY_ID);
                 entity = Optional.ofNullable(created);
             }
         } catch (Exception e) {
@@ -68,7 +76,9 @@ public class EntityRendererHelper {
         Vector3f translation = new Vector3f(0.0F, entityHeight / 2.0F - verticalOffset, 0.0F);
         Quaternionf renderRotation = Axis.ZP.rotationDegrees(180.0F);
         renderRotation.mul(Axis.YP.rotationDegrees(rotation));
-        graphics.entity(state, scale, translation, renderRotation, null, x0, y0, x1, y1);
+        // 将局部 GUI 矩形按当前 pose 矩阵变换到屏幕绝对坐标，避免 JEI 等偏移绘制场景下错位到左上角
+        ScreenRectangle bounds = new ScreenRectangle(x0, y0, x1 - x0, y1 - y0).transformAxisAligned(graphics.pose());
+        graphics.entity(state, scale, translation, renderRotation, null, bounds.left(), bounds.top(), bounds.right(), bounds.bottom());
     }
 
     public static float getScaleForEntityType(Entity entity) {
