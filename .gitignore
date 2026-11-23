@@ -121,3 +121,9 @@ gradle/*
 !gradle/wrapper/
 !gradle/wrapper/gradle-wrapper.jar
 !gradle/wrapper/gradle-wrapper.properties
+
+# 本地迁移文档与自动化测试临时目录不推送远端
+docs/MIGRATION*.md
+*迁移文档*.md
+docs/迁移/
+mctest/

@@ -28,6 +28,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.core.component.DataComponents;
@@ -53,8 +54,6 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -92,6 +91,9 @@ public class MobCageBlock extends BaseEntityBlock implements SimpleWaterloggedBl
     @Override
     protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) {
         // If on client side, skip.
+        if(heldItem.is(Items.WATER_BUCKET) || heldItem.is(Items.BUCKET)) {
+            return InteractionResult.PASS;
+        }
         if(level.isClientSide()) {
             return InteractionResult.SUCCESS;
         }
@@ -273,20 +275,7 @@ public class MobCageBlock extends BaseEntityBlock implements SimpleWaterloggedBl
         return createTickerHelper(type, CagedBlockEntities.MOB_CAGE_BLOCK_ENTITY.get(), MobCageBlockEntity::tick);
     }
 
-    /**
-     * Called on block remove, should drop all items in the inventory.
-     */
-    @Override
-    protected void affectNeighborsAfterRemoval(BlockState state, net.minecraft.server.level.ServerLevel level, BlockPos pos, boolean movedByPiston) {
-        BlockEntity blockentity = level.getBlockEntity(pos);
-        if (blockentity instanceof final MobCageBlockEntity tile) {
-            tile.dropInventory();
-        }
-        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
-    }
-
     // Block item description
-    @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack item, Item.TooltipContext getter, List<Component> tooltip, TooltipFlag flag) {
         tooltip.add(Component.translatable("block.cagedmobsreborn.mob_cage.mainInfo").withStyle(ChatFormatting.GRAY));
         tooltip.add(Component.translatable("block.cagedmobsreborn.mob_cage.rightClickHarvest").withStyle(ChatFormatting.GRAY));
@@ -317,10 +306,18 @@ public class MobCageBlock extends BaseEntityBlock implements SimpleWaterloggedBl
      * Called when placed or when neighbour is updated.
      */
     protected BlockState updateShape(BlockState pState, LevelReader pLevel, net.minecraft.world.level.ScheduledTickAccess ticks, BlockPos pCurrentPos, Direction pFacing, BlockPos pFacingPos, BlockState pFacingState, net.minecraft.util.RandomSource random) {
-        if (pState.getValue(WATERLOGGED)) {
-            ticks.scheduleTick(pCurrentPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
-        }
         return super.updateShape(pState, pLevel, ticks, pCurrentPos, pFacing, pFacingPos, pFacingState, random);
+    }
+
+    @Override
+    public boolean placeLiquid(LevelAccessor level, BlockPos pos, BlockState state, FluidState fluidState) {
+        if (!state.getValue(WATERLOGGED) && fluidState.getType() == Fluids.WATER) {
+            if (!level.isClientSide()) {
+                level.setBlock(pos, state.setValue(WATERLOGGED, Boolean.TRUE), 3);
+            }
+            return true;
+        }
+        return false;
     }
 
     public FluidState getFluidState(BlockState pState) {

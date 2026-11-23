@@ -6,7 +6,7 @@ import com.corgam.cagedmobsreborn.registers.CagedRecipeTypes;
 import com.corgam.cagedmobsreborn.serializers.environment.EnvironmentData;
 import com.corgam.cagedmobsreborn.serializers.entity.AdditionalLootData;
 import com.corgam.cagedmobsreborn.serializers.entity.EntityData;
-import net.minecraft.client.Minecraft;
+import com.corgam.cagedmobsreborn.network.ClientCageRecipes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -23,14 +23,24 @@ public class RecipesHelper {
 
     // Some helper functions
     public static List<EntityData> getEntitiesRecipesList() {
+        if(isClientSide()){
+            List<EntityData> recipes = new ArrayList<>(ClientCageRecipes.getEntities());
+            recipes.addAll(AutoEntityDataHelper.createAutoEntityData(recipes));
+            return recipes;
+        }
         RecipeManager manager = getRecipeManager();
         if (manager != null) {
-            return manager.getRecipes().stream().map(RecipeHolder::value).filter(EntityData.class::isInstance).map(EntityData.class::cast).toList();
+            List<EntityData> recipes = new ArrayList<>(manager.getRecipes().stream().map(RecipeHolder::value).filter(EntityData.class::isInstance).map(EntityData.class::cast).toList());
+            recipes.addAll(AutoEntityDataHelper.createAutoEntityData(recipes));
+            return recipes;
         }
         return Collections.emptyList();
     }
 
     public static List<EnvironmentData> getEnvironmentRecipesList() {
+        if(isClientSide()){
+            return ClientCageRecipes.getEnvironments();
+        }
         RecipeManager manager = getRecipeManager();
         if (manager != null) {
             return manager.getRecipes().stream().map(RecipeHolder::value).filter(EnvironmentData.class::isInstance).map(EnvironmentData.class::cast).toList();
@@ -39,6 +49,9 @@ public class RecipesHelper {
     }
 
     public static List<AdditionalLootData> getAdditionalLootRecipesList() {
+        if(isClientSide()){
+            return ClientCageRecipes.getAdditionalLoots();
+        }
         RecipeManager manager = getRecipeManager();
         if (manager != null) {
             return manager.getRecipes().stream().map(RecipeHolder::value).filter(AdditionalLootData.class::isInstance).map(AdditionalLootData.class::cast).toList();
@@ -46,30 +59,27 @@ public class RecipesHelper {
         return Collections.emptyList();
     }
 
-    public static RecipeManager getRecipeManager(){
-        try{
-            if(EffectiveSide.get().isClient()){
-                return RecipesHelper.getRecipeManagerClient();
-            }else{
-                return RecipesHelper.getRecipeManagerServer();
-            }
-        }catch(final Exception e){
-            throw new RuntimeException(e);
-        }
+    private static boolean isClientSide(){
+        return EffectiveSide.get().isClient();
     }
 
-    private static RecipeManager getRecipeManagerClient() {
-        if(Minecraft.getInstance().player != null){
+    public static RecipeManager getRecipeManager(){
+        if(isClientSide() || ServerLifecycleHooks.getCurrentServer() == null){
             return null;
         }
-        return null;
-    }
-
-    private static RecipeManager getRecipeManagerServer() {
         return ServerLifecycleHooks.getCurrentServer().getRecipeManager();
     }
 
+    public static final String UNIVERSAL_ENVIRONMENT = "universal";
+
+    public static boolean isUniversalEnvironmentAllowed(EntityType<?> entityType) {
+        return !CagedMobsReborn.SERVER_CONFIG.getUniversalEnvironmentBlacklist().contains(String.valueOf(EntityType.getKey(entityType)));
+    }
+
     public static boolean isEnvValidForEntity(EntityData entity, EnvironmentData env) {
+        if(env.getCategories().contains(UNIVERSAL_ENVIRONMENT) && isUniversalEnvironmentAllowed(entity.getEntityType())){
+            return true;
+        }
         for(String s : entity.getEnvironments()){
             for(String s2 : env.getCategories()){
                 if(s.matches(s2)){
@@ -99,12 +109,17 @@ public class RecipesHelper {
         }
     }
 
-    public static List<Item> getItemsFromConfigList(){
+    public static List<Item> getItemsFromConfigList() {
         List<Item> blacklisted = new java.util.ArrayList<>(Collections.emptyList());
         List<? extends String> blacklistedItems = CagedMobsReborn.SERVER_CONFIG.getItemsList();
-        for(String s : blacklistedItems){
-            Item i = BuiltInRegistries.ITEM.get(Identifier.parse(s)).map(holder -> holder.value()).orElse(Items.AIR);
-            if(i != Items.AIR){
+        for (String s : blacklistedItems) {
+            Identifier id = Identifier.tryParse(s);
+            if (id == null) {
+                CagedMobsReborn.LOGGER.warn("[CONFIG] Ignored invalid item id in config list: {}", s);
+                continue;
+            }
+            Item i = BuiltInRegistries.ITEM.get(id).map(holder -> holder.value()).orElse(Items.AIR);
+            if (i != Items.AIR) {
                 blacklisted.add(i);
             }
         }

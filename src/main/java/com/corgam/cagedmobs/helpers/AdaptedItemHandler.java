@@ -1,52 +1,52 @@
 package com.corgam.cagedmobsreborn.helpers;
 
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 /**
- * Written by McJty (https://www.mcjty.eu/docs/1.20/).
+ * 物品资源句柄包装器，用于限制外部方块（如漏斗）对生物笼内部槽位的读写操作。
  */
-public class AdaptedItemHandler implements IItemHandlerModifiable {
+public class AdaptedItemHandler implements ResourceHandler<ItemResource> {
 
-    private final IItemHandlerModifiable handler;
+    private final ResourceHandler<ItemResource> handler;
 
-    public AdaptedItemHandler(IItemHandlerModifiable handler) {
+    public AdaptedItemHandler(ResourceHandler<ItemResource> handler) {
         this.handler = handler;
     }
 
     @Override
-    public void setStackInSlot(int slot, @NotNull ItemStack stack) {
-        handler.setStackInSlot(slot, stack);
+    public int size() {
+        return handler.size();
     }
 
     @Override
-    public int getSlots() {
-        return handler.getSlots();
+    public ItemResource getResource(int index) {
+        return handler.getResource(index);
     }
 
     @Override
-    public @NotNull ItemStack getStackInSlot(int slot) {
-        return handler.getStackInSlot(slot);
+    public long getAmountAsLong(int index) {
+        return handler.getAmountAsLong(index);
     }
 
     @Override
-    public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-        return handler.insertItem(slot, stack, simulate);
+    public long getCapacityAsLong(int index, ItemResource resource) {
+        return handler.getCapacityAsLong(index, resource);
     }
 
     @Override
-    public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
-        return handler.extractItem(slot, amount, simulate);
+    public boolean isValid(int index, ItemResource resource) {
+        return handler.isValid(index, resource);
     }
 
     @Override
-    public int getSlotLimit(int slot) {
-        return handler.getSlotLimit(slot);
+    public int insert(int index, ItemResource resource, int amount, TransactionContext transaction) {
+        return handler.insert(index, resource, amount, transaction);
     }
 
     @Override
-    public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-        return handler.isItemValid(slot, stack);
+    public int extract(int index, ItemResource resource, int amount, TransactionContext transaction) {
+        return handler.extract(index, resource, amount, transaction);
     }
 }

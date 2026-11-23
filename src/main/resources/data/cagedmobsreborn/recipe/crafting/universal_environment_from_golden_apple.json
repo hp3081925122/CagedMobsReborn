@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "NNN",
+    "NAN",
+    "NNN"
+  ],
+  "key": {
+    "N": "cagedmobsreborn:nether_star_fragment",
+    "A": "minecraft:golden_apple"
+  },
+  "result": {
+    "id": "cagedmobsreborn:universal_environment",
+    "count": 1
+  }
+}

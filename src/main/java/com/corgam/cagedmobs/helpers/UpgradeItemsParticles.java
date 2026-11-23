@@ -6,14 +6,11 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SpellParticleOption;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 /**
  * Helper class for emitting cage upgrades' particles on client side.
  */
 
-@OnlyIn(Dist.CLIENT)
 public class UpgradeItemsParticles {
 
     /**

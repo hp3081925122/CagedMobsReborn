@@ -3,6 +3,7 @@ package com.corgam.cagedmobsreborn.items;
 import com.corgam.cagedmobsreborn.CagedMobsReborn;
 import com.corgam.cagedmobsreborn.blocks.mob_cage.MobCageBlockEntity;
 import com.corgam.cagedmobsreborn.registers.CagedRecipeTypes;
+import com.corgam.cagedmobsreborn.serializers.AutoEntityDataHelper;
 import com.corgam.cagedmobsreborn.serializers.RecipesHelper;
 import com.corgam.cagedmobsreborn.serializers.SerializationHelper;
 import com.corgam.cagedmobsreborn.serializers.entity.EntityData;
@@ -25,8 +26,6 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import java.util.function.Consumer;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -54,9 +53,10 @@ public class DnaSamplerItem extends Item {
             // Try to sample the target
             if (canBeCached(target) && !RecipesHelper.isEntityTypeBlacklisted(target.getType())) {
                 if (samplerTierSufficient(stack, target)) {
-                    CompoundTag nbt = new CompoundTag();
+                    // 保留采样器原有自定义数据，仅更新实体与羊颜色字段
+                    CompoundTag nbt = SerializationHelper.getCustomData(stack);
+                    nbt.remove("Color");
                     SerializationHelper.serializeEntityTypeNBT(nbt, target.getType());
-                    // If sheep add it's color to nbt
                     if (target instanceof Sheep) {
                         Sheep sheep = (Sheep) target;
                         DyeColor color = sheep.getColor();
@@ -83,7 +83,7 @@ public class DnaSamplerItem extends Item {
             if(recipe != null) {
                 // Check for null exception
                 if(recipe.getEntityType() == null){continue;}
-                if(recipe.getEntityType().equals(type) && recipe.getSamplerTier() <= getSamplerTierInt(stack.getItem())) {
+                if(recipe.getEntityType().equals(type) && AutoEntityDataHelper.getRequiredSamplerTier(recipe, target) <= getSamplerTierInt(stack.getItem())) {
                     sufficient = true;
                     break;
                 }
@@ -122,16 +122,16 @@ public class DnaSamplerItem extends Item {
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
-        if(player.isCrouching() && SerializationHelper.hasCustomData(itemstack)) {
+        if (player.isCrouching() && DnaSamplerItem.containsEntityType(itemstack)) {
             removeEntityType(itemstack);
             player.swing(hand);
+            CagedMobsReborn.LOGGER.debug("[DNA-SAMPLER] Cleared entity sample on crouch-use (clientSide={})", level.isClientSide());
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.FAIL;
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, @Nullable Item.TooltipContext worldIn, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, display, tooltip, flagIn);
         tooltip.accept(getTooltip(stack));
@@ -179,13 +179,14 @@ public class DnaSamplerItem extends Item {
         SerializationHelper.setCustomData(stack, tag);
     }
 
-    public void setEntityTypeFromCage(MobCageBlockEntity cage, ItemStack stack, Player player, InteractionHand hand){
+    public void setEntityTypeFromCage(MobCageBlockEntity cage, ItemStack stack, Player player, InteractionHand hand) {
         EntityType<?> type = cage.getEntityType();
-        CompoundTag nbt = new CompoundTag();
+        // 保留采样器原有自定义数据，仅覆写生物与颜色字段
+        CompoundTag nbt = SerializationHelper.getCustomData(stack);
+        nbt.remove("Color");
         SerializationHelper.serializeEntityTypeNBT(nbt, type);
-        // If sheep add it's color to nbt
-        if(type.toString().contains("sheep")){
-            nbt.putInt("Color",cage.getColor());
+        if (type.toString().contains("sheep")) {
+            nbt.putInt("Color", cage.getColor());
         }
         SerializationHelper.setCustomData(stack, nbt);
         player.setItemInHand(hand, stack);

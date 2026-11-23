@@ -25,16 +25,54 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 neoForge {
     version = project.neo_version
     runs {
-        client { client(); gameDirectory = project.file('run/client') }
-        server { server(); programArgument '--nogui'; gameDirectory = project.file('run/server') }
+        client {
+            client()
+            gameDirectory = project.file('run/client')
+            logLevel = org.slf4j.event.Level.DEBUG
+            if (project.hasProperty('selfmcpWindow')) {
+                systemProperty 'selfmcp.window', project.property('selfmcpWindow').toString()
+            }
+            if (project.hasProperty('selfmcpWorld')) {
+                programArguments.addAll('--quickPlaySingleplayer', project.property('selfmcpWorld').toString())
+            }
+        }
+        server {
+            server()
+            programArgument '--nogui'
+            gameDirectory = project.file('run/server')
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
     }
     mods { cagedmobsreborn { sourceSet(sourceSets.main) } }
 }
 
 dependencies {
     compileOnly 'curse.maven:jei-238222:8771077'
+    runtimeOnly 'curse.maven:jei-238222:8771077'
     compileOnly 'curse.maven:jade-324717:9156414'
+    runtimeOnly 'curse.maven:jade-324717:9156414'
     compileOnly 'com.blamejared.crafttweaker:CraftTweaker-neoforge-1.21.1:21.0.39'
+}
+
+tasks.withType(ProcessResources).configureEach {
+    def replaceProperties = [
+            minecraft_version      : minecraft_version,
+            minecraft_version_range: minecraft_version_range,
+            neo_version            : neo_version,
+            neo_version_range      : neo_version_range,
+            loader_version_range   : loader_version_range,
+            mod_id                 : mod_id,
+            mod_name               : mod_name,
+            mod_license            : mod_license,
+            mod_version            : mod_version,
+            mod_authors            : mod_authors,
+            mod_description        : mod_description
+    ]
+    inputs.properties replaceProperties
+    filteringCharset = 'UTF-8'
+    filesMatching(['META-INF/neoforge.mods.toml']) {
+        expand replaceProperties
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {

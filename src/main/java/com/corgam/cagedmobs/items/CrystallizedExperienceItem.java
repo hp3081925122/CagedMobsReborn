@@ -13,8 +13,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import java.util.function.Consumer;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -26,7 +24,6 @@ public class CrystallizedExperienceItem extends Item {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, @Nullable Item.TooltipContext worldIn, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flagIn) {
         tooltip.accept(Component.translatable("item.cagedmobsreborn.crystallized_experience.info").withStyle(ChatFormatting.GRAY));
         tooltip.accept(Component.translatable("item.cagedmobsreborn.crystallized_experience.info2").withStyle(ChatFormatting.GRAY));
