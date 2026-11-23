@@ -2,9 +2,6 @@ package com.corgam.cagedmobsreborn;
 
 import com.corgam.cagedmobsreborn.configs.ClientConfig;
 import com.corgam.cagedmobsreborn.configs.ServerConfig;
-import com.corgam.cagedmobsreborn.items.DnaSamplerDiamondItem;
-import com.corgam.cagedmobsreborn.items.DnaSamplerItem;
-import com.corgam.cagedmobsreborn.items.DnaSamplerNetheriteItem;
 import com.corgam.cagedmobsreborn.registers.CagedBlockEntities;
 import com.corgam.cagedmobsreborn.registers.CagedBlocks;
 import com.corgam.cagedmobsreborn.registers.CagedContainers;
@@ -12,13 +9,11 @@ import com.corgam.cagedmobsreborn.registers.CagedCreativeTabs;
 import com.corgam.cagedmobsreborn.registers.CagedItems;
 import com.corgam.cagedmobsreborn.registers.CagedRecipeSerializers;
 import com.corgam.cagedmobsreborn.registers.CagedRecipeTypes;
-import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.apache.logging.log4j.LogManager;
@@ -41,21 +36,14 @@ public final class CagedMobsReborn {
         CagedContainers.CAGED_MENU_TYPES_REGISTER.register(modEventBus);
         modContainer.registerConfig(ModConfig.Type.CLIENT, CLIENT_CONFIG.getModConfigSpec());
         modContainer.registerConfig(ModConfig.Type.SERVER, SERVER_CONFIG.getModConfigSpec());
-        modEventBus.addListener(ClientSetup::renderLayerSetup);
-        modEventBus.addListener(ClientSetup::registerScreens);
-        modEventBus.addListener(this::addPropertiesToItems);
+        // 仅在客户端环境注册渲染、界面与物品属性，避免独立服务端加载客户端类
+        if (FMLEnvironment.dist.isClient()) {
+            ClientSetup.register(modEventBus);
+        }
         modEventBus.addListener(this::registerCapabilities);
     }
 
     private void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CagedBlockEntities.MOB_CAGE_BLOCK_ENTITY.get(), (cage, side) -> side == null ? cage.getInventoryHandler() : cage.getRestrictedItemHandler());
-    }
-
-    private void addPropertiesToItems(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> {
-            ItemProperties.register(CagedItems.DNA_SAMPLER.get(), ResourceLocation.fromNamespaceAndPath(MOD_ID, "full"), (stack, level, entity, seed) -> DnaSamplerItem.containsEntityType(stack) ? 1.0F : 0.0F);
-            ItemProperties.register(CagedItems.DIAMOND_DNA_SAMPLER.get(), ResourceLocation.fromNamespaceAndPath(MOD_ID, "full"), (stack, level, entity, seed) -> DnaSamplerDiamondItem.containsEntityType(stack) ? 1.0F : 0.0F);
-            ItemProperties.register(CagedItems.NETHERITE_DNA_SAMPLER.get(), ResourceLocation.fromNamespaceAndPath(MOD_ID, "full"), (stack, level, entity, seed) -> DnaSamplerNetheriteItem.containsEntityType(stack) ? 1.0F : 0.0F);
-        });
     }
 }

@@ -1,13 +1,23 @@
 package com.corgam.cagedmobsreborn.serializers.entity;
 
+import com.corgam.cagedmobsreborn.CagedMobsReborn;
+import com.corgam.cagedmobsreborn.serializers.SerializationHelper;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Instrument;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.crafting.Ingredient;
+
+import java.util.Optional;
 
 public class LootData {
 
@@ -37,7 +47,7 @@ public class LootData {
     private final String nbtName;
     private final String nbtData;
 
-    public LootData(Ingredient item, Ingredient cookedItem, float chance, int min, int max, boolean lighting, boolean arrow, int color, boolean randomDurability, String nbtName, String nbtData){
+    public LootData(Ingredient item, Ingredient cookedItem, float chance, int min, int max, boolean lighting, boolean arrow, int color, boolean randomDurability, String nbtName, String nbtData) {
         this.chance = chance;
         this.item = item;
         this.cookedItem = cookedItem;
@@ -49,89 +59,82 @@ public class LootData {
         this.randomDurability = randomDurability;
         this.nbtName = nbtName;
         this.nbtData = nbtData;
-        // Check for errors
         if (min < 0 || max < 0) {
             throw new IllegalArgumentException("Amounts must not be negative!");
         }
         if (min > max) {
             throw new IllegalArgumentException("Min amount must not be greater than max amount!");
         }
-        // Apply NBT data
-        if(!nbtName.isEmpty() && !nbtData.isEmpty()){
-            ItemStack newItem = writeNBTtoItem(nbtName, nbtData, item.getItems()[0]);
+        // 为掉落物品写入对应的原版数据组件或自定义数据（先拷贝避免污染原始 Ingredient 缓存）
+        if (!nbtName.isEmpty() && !nbtData.isEmpty() && item.getItems().length > 0) {
+            ItemStack newItem = writeNBTtoItem(nbtName, nbtData, item.getItems()[0].copy());
             this.item = Ingredient.of(newItem);
         }
     }
 
     public static void serializeBuffer(RegistryFriendlyByteBuf buffer, LootData lootData) {
-        // Chance
         buffer.writeFloat(lootData.getChance());
-        // Item
         ItemStack.STREAM_CODEC.encode(buffer, lootData.getItem().getItems()[0]);
-        // Min amount
         buffer.writeInt(lootData.getMinAmount());
-        // Max amount
         buffer.writeInt(lootData.getMaxAmount());
-        // Lightning
         buffer.writeBoolean(lootData.isLighting());
-        // Arrow
         buffer.writeBoolean(lootData.isArrow());
-        // Cooking
         final boolean hasCookedItem = !lootData.getCookedItem().isEmpty();
         buffer.writeBoolean(hasCookedItem);
         if (hasCookedItem) {
             ItemStack.STREAM_CODEC.encode(buffer, lootData.getCookedItem().getItems()[0]);
         }
-        // Color
         buffer.writeInt(lootData.getColor());
-        // Random durability
         buffer.writeBoolean(lootData.ifRandomDurability());
-        // NBT Name
         buffer.writeUtf(lootData.getNbtName());
-        // NBT Data
         buffer.writeUtf(lootData.getNbtData());
     }
 
     public static LootData deserializeBuffer(RegistryFriendlyByteBuf buffer) {
-        // Chance
         final float chance = buffer.readFloat();
-        // Item
         final Ingredient item = Ingredient.of(ItemStack.STREAM_CODEC.decode(buffer));
-        // Min amount
         final int min = buffer.readInt();
-        // Max amount
         final int max = buffer.readInt();
-        // Lightning
         final boolean isLightning = buffer.readBoolean();
-        // Arrow
         final boolean isArrow = buffer.readBoolean();
-        // Cooked item
         final Ingredient cookedItem = buffer.readBoolean()
                 ? Ingredient.of(ItemStack.STREAM_CODEC.decode(buffer))
                 : Ingredient.EMPTY;
-        // Color
         final int color = buffer.readInt();
-        // Random durability
         final boolean randomDurability = buffer.readBoolean();
-        // NBT Name
         final String nbtName = buffer.readUtf();
-        // NBT Data
         final String nbtData = buffer.readUtf();
 
         return new LootData(item, cookedItem, chance, min, max, isLightning, isArrow, color, randomDurability, nbtName, nbtData);
     }
 
-    /**
-     * Writes NBT data to an item stack
-     * @param nbtName the name of the NBT variable
-     * @param nbtData the data for the NBT variable
-     * @param stack the item stack to write to
-     * @return the updated item stack reference
-     */
-    public static ItemStack writeNBTtoItem(String nbtName, String nbtData, ItemStack stack){
-        CompoundTag nbt = new CompoundTag();
-        nbt.putString(nbtName,nbtData);
-        com.corgam.cagedmobsreborn.serializers.SerializationHelper.setCustomData(stack, nbt);
+    // 在 1.21.1 DataComponents 体系下将药水与山羊角映射到原版数据组件，其余键保留已有自定义数据后写入
+    public static ItemStack writeNBTtoItem(String nbtName, String nbtData, ItemStack stack) {
+        if ("Potion".equals(nbtName)) {
+            ResourceLocation id = ResourceLocation.tryParse(nbtData);
+            if (id != null) {
+                Optional<Holder.Reference<Potion>> potion = BuiltInRegistries.POTION.getHolder(id);
+                if (potion.isPresent()) {
+                    stack.set(DataComponents.POTION_CONTENTS, new PotionContents(potion.get()));
+                    CagedMobsReborn.LOGGER.debug("[LOOT-DATA] Applied POTION_CONTENTS={} to {}", nbtData, stack.getItem());
+                    return stack;
+                }
+            }
+        } else if ("instrument".equals(nbtName)) {
+            ResourceLocation id = ResourceLocation.tryParse(nbtData);
+            if (id != null) {
+                Optional<Holder.Reference<Instrument>> instrument = BuiltInRegistries.INSTRUMENT.getHolder(id);
+                if (instrument.isPresent()) {
+                    stack.set(DataComponents.INSTRUMENT, instrument.get());
+                    CagedMobsReborn.LOGGER.debug("[LOOT-DATA] Applied INSTRUMENT={} to {}", nbtData, stack.getItem());
+                    return stack;
+                }
+            }
+        }
+        CompoundTag nbt = SerializationHelper.getCustomData(stack);
+        nbt.putString(nbtName, nbtData);
+        SerializationHelper.setCustomData(stack, nbt);
+        CagedMobsReborn.LOGGER.debug("[LOOT-DATA] Applied custom data {}={} to {}", nbtName, nbtData, stack.getItem());
         return stack;
     }
 
@@ -160,33 +163,35 @@ public class LootData {
         return this.maxAmount;
     }
 
-    public boolean isLighting(){
+    public boolean isLighting() {
         return this.lighting;
     }
-    public boolean isCooking(){
+
+    public boolean isCooking() {
         return !this.cookedItem.isEmpty();
     }
-    public boolean isArrow(){
+
+    public boolean isArrow() {
         return this.arrow;
     }
 
-    public boolean hasColor(){
+    public boolean hasColor() {
         return this.getColor() != -1;
     }
 
-    public int getColor(){
+    public int getColor() {
         return this.color;
     }
 
-    public boolean ifRandomDurability(){
+    public boolean ifRandomDurability() {
         return this.randomDurability;
     }
 
-    public String getNbtName(){
+    public String getNbtName() {
         return this.nbtName;
     }
 
-    public String getNbtData(){
+    public String getNbtData() {
         return this.nbtData;
     }
 }

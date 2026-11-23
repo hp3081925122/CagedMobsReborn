@@ -53,9 +53,10 @@ public class DnaSamplerItem extends Item {
             // Try to sample the target
             if (canBeCached(target) && !RecipesHelper.isEntityTypeBlacklisted(target.getType())) {
                 if (samplerTierSufficient(stack, target)) {
-                    CompoundTag nbt = new CompoundTag();
+                    // 保留采样器原有自定义数据，仅更新实体与羊颜色字段
+                    CompoundTag nbt = SerializationHelper.getCustomData(stack);
+                    nbt.remove("Color");
                     SerializationHelper.serializeEntityTypeNBT(nbt, target.getType());
-                    // If sheep add it's color to nbt
                     if (target instanceof Sheep) {
                         Sheep sheep = (Sheep) target;
                         DyeColor color = sheep.getColor();
@@ -121,10 +122,11 @@ public class DnaSamplerItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
-        if(player.isCrouching() && SerializationHelper.hasCustomData(itemstack)) {
+        if (player.isCrouching() && DnaSamplerItem.containsEntityType(itemstack)) {
             removeEntityType(itemstack);
             player.swing(hand);
-            InteractionResultHolder.success(itemstack);
+            CagedMobsReborn.LOGGER.debug("[DNA-SAMPLER] Cleared entity sample on crouch-use (clientSide={})", level.isClientSide());
+            return InteractionResultHolder.success(itemstack);
         }
         return InteractionResultHolder.fail(itemstack);
     }
@@ -178,13 +180,14 @@ public class DnaSamplerItem extends Item {
         SerializationHelper.setCustomData(stack, tag);
     }
 
-    public void setEntityTypeFromCage(MobCageBlockEntity cage, ItemStack stack, Player player, InteractionHand hand){
+    public void setEntityTypeFromCage(MobCageBlockEntity cage, ItemStack stack, Player player, InteractionHand hand) {
         EntityType<?> type = cage.getEntityType();
-        CompoundTag nbt = new CompoundTag();
+        // 保留采样器原有自定义数据，仅覆写生物与颜色字段
+        CompoundTag nbt = SerializationHelper.getCustomData(stack);
+        nbt.remove("Color");
         SerializationHelper.serializeEntityTypeNBT(nbt, type);
-        // If sheep add it's color to nbt
-        if(type.toString().contains("sheep")){
-            nbt.putInt("Color",cage.getColor());
+        if (type.toString().contains("sheep")) {
+            nbt.putInt("Color", cage.getColor());
         }
         SerializationHelper.setCustomData(stack, nbt);
         player.setItemInHand(hand, stack);
