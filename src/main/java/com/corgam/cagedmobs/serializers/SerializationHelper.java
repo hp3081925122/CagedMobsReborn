@@ -58,8 +58,8 @@ public class SerializationHelper {
 
     public static Block deserializeBlock(FriendlyByteBuf buffer) {
         String locationString = buffer.readUtf();
-        ResourceLocation location = ResourceLocation.parse(locationString);
-        return BuiltInRegistries.BLOCK.get(location);
+        ResourceLocation location = ResourceLocation.tryParse(locationString);
+        return location == null ? net.minecraft.world.level.block.Blocks.AIR : BuiltInRegistries.BLOCK.get(location);
     }
 
     // Entity Type

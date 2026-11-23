@@ -62,8 +62,8 @@ public class RecipesHelper {
         }
     }
 
-private static RecipeManager getRecipeManagerServer() {
-        return ServerLifecycleHooks.getCurrentServer().getRecipeManager();
+    private static RecipeManager getRecipeManagerServer() {
+        return ServerLifecycleHooks.getCurrentServer() == null ? null : ServerLifecycleHooks.getCurrentServer().getRecipeManager();
     }
 
     public static final String UNIVERSAL_ENVIRONMENT = "universal";
@@ -105,12 +105,17 @@ private static RecipeManager getRecipeManagerServer() {
         }
     }
 
-    public static List<Item> getItemsFromConfigList(){
+    public static List<Item> getItemsFromConfigList() {
         List<Item> blacklisted = new java.util.ArrayList<>(Collections.emptyList());
         List<? extends String> blacklistedItems = CagedMobsReborn.SERVER_CONFIG.getItemsList();
-        for(String s : blacklistedItems){
-            Item i = BuiltInRegistries.ITEM.get(ResourceLocation.parse(s));
-            if(i != Items.AIR || i != null){
+        for (String s : blacklistedItems) {
+            ResourceLocation id = ResourceLocation.tryParse(s);
+            if (id == null) {
+                CagedMobsReborn.LOGGER.warn("[CONFIG] Ignored invalid item id in config list: {}", s);
+                continue;
+            }
+            Item i = BuiltInRegistries.ITEM.get(id);
+            if (i != null && i != Items.AIR) {
                 blacklisted.add(i);
             }
         }

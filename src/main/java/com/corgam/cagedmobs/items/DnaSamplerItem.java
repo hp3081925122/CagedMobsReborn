@@ -122,10 +122,11 @@ public class DnaSamplerItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
-        if(player.isCrouching() && SerializationHelper.hasCustomData(itemstack)) {
+        if (player.isCrouching() && DnaSamplerItem.containsEntityType(itemstack)) {
             removeEntityType(itemstack);
             player.swing(hand);
-            InteractionResultHolder.success(itemstack);
+            CagedMobsReborn.LOGGER.debug("[DNA-SAMPLER] Cleared entity sample on crouch-use (clientSide={})", level.isClientSide());
+            return InteractionResultHolder.success(itemstack);
         }
         return InteractionResultHolder.fail(itemstack);
     }

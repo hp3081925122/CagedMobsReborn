@@ -79,7 +79,8 @@ public class MobCageBlockEntity extends BlockEntity {
     public static int UPGRADES_COUNT = 3;
     public static int ENVIRONMENT_SLOT = 0;
     public static int SLOT_COUNT = UPGRADES_COUNT + 1;
-    // Item handlers
+    // 物品处理器与防重复掉落标记
+    private boolean droppingInventory = false;
     private final ItemStackHandler items = createItemHandler();
     private static final IItemHandler EMPTY_HANDLER = new ItemStackHandler(0);
     private final IItemHandler restrictedItemHandler = new AdaptedItemHandler(items){
@@ -125,16 +126,18 @@ public class MobCageBlockEntity extends BlockEntity {
     private ItemStackHandler createItemHandler(){
         return new ItemStackHandler(SLOT_COUNT){
             @Override
-            protected void onContentsChanged(int slot){
-                // Update the environment
-                if(slot == ENVIRONMENT_SLOT){
+            protected void onContentsChanged(int slot) {
+                if (droppingInventory) {
+                    return;
+                }
+                // 更新环境或生长周期
+                if (slot == ENVIRONMENT_SLOT) {
                     updateEnvironment();
-                }else{
+                } else {
                     calculateTotalGrowTicks();
                 }
-                // Notify client and server
                 setChanged();
-                if(level != null){
+                if (level != null) {
                     level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
                 }
             }
@@ -211,18 +214,23 @@ public class MobCageBlockEntity extends BlockEntity {
     /**
      * Drops the whole inventory on the ground.
      */
-    public void dropInventory(){
-        for (int i = 0; i < this.items.getSlots(); i++) {
-            this.dropItem(this.items.getStackInSlot(i));
+    public void dropInventory() {
+        this.droppingInventory = true;
+        try {
+            for (int i = 0; i < this.items.getSlots(); i++) {
+                ItemStack stack = this.items.getStackInSlot(i);
+                if (!stack.isEmpty()) {
+                    this.dropItem(stack.copy());
+                    this.items.setStackInSlot(i, ItemStack.EMPTY);
+                }
+            }
+        } finally {
+            this.droppingInventory = false;
         }
     }
 
-    /**
-     * Creates a single item entity on the ground.
-     * @param item item to drop
-     */
     private void dropItem(ItemStack item) {
-        if(this.level != null && !this.level.isClientSide()) {
+        if (this.level != null && !this.level.isClientSide() && !item.isEmpty()) {
             final double offsetX = (double) (level.random.nextFloat() * 0.7F) + (double) 0.15F;
             final double offsetY = (double) (level.random.nextFloat() * 0.7F) + (double) 0.060000002F + 0.6D;
             final double offsetZ = (double) (level.random.nextFloat() * 0.7F) + (double) 0.15F;
@@ -290,22 +298,23 @@ public class MobCageBlockEntity extends BlockEntity {
     /**
      * Updates the environment from currently held item.
      */
-    public void updateEnvironment(){
+    public void updateEnvironment() {
         ItemStack envItem = this.items.getStackInSlot(ENVIRONMENT_SLOT);
-        envItem.setCount(1);
-        if(envItem.isEmpty()){
+        if (envItem.isEmpty()) {
             this.removeEnvironment();
-        }else if(this.environmentData == null
-                || !this.environmentData.getInputItem().getItems()[0].getItem().equals(envItem.getItem())){
-            this.setEnvironment(envItem);
+        } else {
+            envItem.setCount(1);
+            if (this.environmentData == null || !this.environmentData.getInputItem().test(envItem)) {
+                this.setEnvironment(envItem);
+            }
         }
     }
 
-    /**
-     * Returns the environment data.
-     * @return the environment data
-     */
     public EnvironmentData getEnvironmentData() {
+        // 客户端区块更新早于配方同步到达时延迟补解析环境配方
+        if (this.environmentData == null && this.hasEnvironment()) {
+            this.environmentData = getEnvironmentDataFromItemStack(this.items.getStackInSlot(ENVIRONMENT_SLOT));
+        }
         return this.environmentData;
     }
 
@@ -355,6 +364,9 @@ public class MobCageBlockEntity extends BlockEntity {
      */
     public boolean isEnvironmentSuitable(Player player, EntityType<?> entityType, BlockState state) {
         EntityData recipe = getMobDataFromType(entityType);
+        if (recipe == null) {
+            return false;
+        }
         // Check if entity needs waterlogged cage
         if(recipe.ifRequiresWater() && !state.getValue(BlockStateProperties.WATERLOGGED)){
             player.displayClientMessage(Component.translatable("block.cagedmobsreborn.mob_cage.requiresWater").withStyle(ChatFormatting.RED), true);
@@ -388,71 +400,57 @@ public class MobCageBlockEntity extends BlockEntity {
      * @param sampler sampler item
      */
     public void setEntityFromSampler(EntityType<?> entityType, ItemStack sampler) {
-        // Lookup the entity color
-        if(entityType.toString().contains("sheep")){
-            if(SerializationHelper.hasCustomData(sampler) && SerializationHelper.getCustomData(sampler).contains("Color") ){
+        this.color = 0;
+        if (entityType.toString().contains("sheep")) {
+            if (SerializationHelper.hasCustomData(sampler) && SerializationHelper.getCustomData(sampler).contains("Color")) {
                 this.color = SerializationHelper.getCustomData(sampler).getInt("Color");
             }
         }
-        // Load the mob data
         this.entity = getMobDataFromType(entityType);
         this.entityType = entityType;
-        // Calculate required ticks
+        this.cachedEntity = null;
+        this.renderedEntity = null;
+        this.lootEntity = null;
         this.totalGrowTicks = this.calculateTotalGrowTicks();
-        // Sync with client
-        if(this.level != null){
+        if (this.level != null) {
             this.level.sendBlockUpdated(this.worldPosition, getBlockState(), getBlockState(), 3);
         }
-        // Check this block as a block to be saved upon exiting the chunk
         this.setChanged();
     }
 
-    /**
-     * Returns the current entity data.
-     * @return entity data
-     */
     public Optional<EntityData> getEntity() {
+        // 客户端区块更新早于配方同步到达时延迟补解析生物配方
+        if (this.entity == null && this.entityType != null) {
+            this.entity = getMobDataFromType(this.entityType);
+            if (this.entity != null && this.totalGrowTicks == 0) {
+                this.totalGrowTicks = this.calculateTotalGrowTicks();
+            }
+        }
         return Optional.ofNullable(this.entity);
     }
 
-    /**
-     * Returns the current entity type
-     * @return entity type
-     */
     public EntityType<?> getEntityType() {
         return this.entityType;
     }
 
-    /**
-     * Removes current entity.
-     */
     public void removeEntity() {
-        // Entity
         this.entity = null;
         this.entityType = null;
-        // Entity render
         this.cachedEntity = null;
         this.renderedEntity = null;
-        // Ticks
+        this.lootEntity = null;
         this.currentGrowTicks = 0;
         this.totalGrowTicks = 0;
         this.waitingForHarvest = false;
-        // Color
         this.color = 0;
-        // Sync with client
-        if(this.level != null){
+        if (this.level != null) {
             this.level.sendBlockUpdated(this.worldPosition, getBlockState(), getBlockState(), 3);
         }
-        // Check this block as a block to be saved upon exiting the chunk
         this.setChanged();
     }
 
-    /**
-     * Returns if there is entity.
-     * @return if there exists entity
-     */
     public boolean hasEntity() {
-        return this.entity != null;
+        return this.getEntity().isPresent();
     }
 
     /**
@@ -479,8 +477,8 @@ public class MobCageBlockEntity extends BlockEntity {
      * @return the entity
      */
     public Entity getCachedEntity(Level level) {
-        if (this.cachedEntity == null) {
-            if(this.renderedEntity == null){
+        if (this.cachedEntity == null && this.entityType != null) {
+            if (this.renderedEntity == null) {
                 CompoundTag nbt = new CompoundTag();
                 nbt.putString("id", EntityType.getKey(this.entityType).toString());
                 this.renderedEntity = new SpawnData(nbt, Optional.empty());
@@ -490,12 +488,10 @@ public class MobCageBlockEntity extends BlockEntity {
         return this.cachedEntity;
     }
 
-    /**
-     * Used to get the MobData from entity type. Also adds all additional Loot to the entity.
-     * @param type entity type
-     * @return mob data
-     */
-    private static EntityData getMobDataFromType(EntityType<?> type){
+    private static EntityData getMobDataFromType(EntityType<?> type) {
+        if (type == null) {
+            return null;
+        }
         EntityData finalEntityData = null;
         // Get the mobData
         for(final Recipe<?> recipe : RecipesHelper.getEntitiesRecipesList()) {
@@ -830,15 +826,15 @@ public class MobCageBlockEntity extends BlockEntity {
         return drops;
     }
 
-    private Entity getLootEntity(ServerLevel serverLevel){
-        if(this.lootEntity == null || this.lootEntity.getType() != this.entityType){
+    private Entity getLootEntity(ServerLevel serverLevel) {
+        if ((this.lootEntity == null || this.lootEntity.getType() != this.entityType) && this.entityType != null) {
             this.lootEntity = this.entityType.create(serverLevel);
-            if(this.lootEntity != null){
+            if (this.lootEntity != null) {
                 Vec3 center = Vec3.atCenterOf(this.worldPosition);
                 this.lootEntity.setPos(center.x, center.y, center.z);
             }
         }
-        if(this.lootEntity instanceof Sheep sheep){
+        if (this.lootEntity instanceof Sheep sheep) {
             sheep.setColor(DyeColor.byId(this.color));
         }
         return this.lootEntity;
@@ -936,8 +932,8 @@ public class MobCageBlockEntity extends BlockEntity {
             }
             // Get grow ticks from the entity
             int basicTotalGrowTicks = Math.round(this.getEntity().get().getTotalGrowTicks()/growModifier);
-            // Take into account the config speed of cages
-            this.totalGrowTicks = (int) Math.round(basicTotalGrowTicks/CagedMobsReborn.SERVER_CONFIG.getSpeedOfCages());
+            // 确保总生长刻数至少为 1，避免高倍率配置下四舍五入为 0 导致无法收获
+            this.totalGrowTicks = Math.max(1, (int) Math.round(basicTotalGrowTicks / CagedMobsReborn.SERVER_CONFIG.getSpeedOfCages()));
             // Round up the ticks to the max amount
             if(this.currentGrowTicks >= this.totalGrowTicks){
                 this.currentGrowTicks = this.totalGrowTicks;
@@ -1000,36 +996,30 @@ public class MobCageBlockEntity extends BlockEntity {
      * Loads the block entity data from the tag.
      * @param tag the tag to load
      */
-    private void loadTag(@NotNull CompoundTag tag){
-        // Store old env and entity type
-        ItemStack oldEnv = this.items.getStackInSlot(ENVIRONMENT_SLOT);
+    private void loadTag(@NotNull CompoundTag tag) {
+        ItemStack oldEnv = this.items.getStackInSlot(ENVIRONMENT_SLOT).copy();
         EntityType<?> oldEntityType = this.entityType;
-        // Item capability
         if (tag.contains(ITEMS_TAG)) {
             items.deserializeNBT(tag.getCompound(ITEMS_TAG));
         }
-        // Read the env
         this.environmentData = MobCageBlockEntity.getEnvironmentDataFromItemStack(this.items.getStackInSlot(ENVIRONMENT_SLOT));
-        // Read the mob data
         this.entityType = SerializationHelper.deserializeEntityTypeNBT(tag);
         this.entity = MobCageBlockEntity.getMobDataFromType(this.entityType);
-        if(this.entityType == null){
+        // 生物类型变更或清空时同步失效展示与战利品缓存实体
+        if (!Objects.equals(oldEntityType, this.entityType)) {
             this.renderedEntity = null;
             this.cachedEntity = null;
+            this.lootEntity = null;
         }
-        // Read color
         this.color = tag.getInt("color");
-        // Read ticks info
         this.waitingForHarvest = tag.getBoolean("waitingForHarvest");
         this.currentGrowTicks = tag.getInt("currentGrowTicks");
-        if(hasEntity()){
+        if (hasEntity()) {
             this.totalGrowTicks = this.calculateTotalGrowTicks();
         }
-        // If env or entity changed, refresh model data
-        if(!Objects.equals(oldEnv, this.items.getStackInSlot(ENVIRONMENT_SLOT)) || !Objects.equals(oldEntityType,this.entityType)){
+        if (!ItemStack.matches(oldEnv, this.items.getStackInSlot(ENVIRONMENT_SLOT)) || !Objects.equals(oldEntityType, this.entityType)) {
             requestModelDataUpdate();
-            // Sync with client
-            if(this.level != null){
+            if (this.level != null) {
                 this.level.sendBlockUpdated(this.worldPosition, getBlockState(), getBlockState(), 3);
             }
         }
