@@ -122,7 +122,7 @@ public class DnaSamplerItem extends Item {
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
-        if(player.isCrouching() && SerializationHelper.hasCustomData(itemstack)) {
+        if (player.isCrouching() && DnaSamplerItem.containsEntityType(itemstack)) {
             removeEntityType(itemstack);
             player.swing(hand);
             return InteractionResult.SUCCESS;

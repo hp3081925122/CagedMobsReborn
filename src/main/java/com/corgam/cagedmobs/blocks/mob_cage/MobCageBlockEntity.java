@@ -217,7 +217,7 @@ public class MobCageBlockEntity extends BlockEntity {
      * @param item item to drop
      */
     private void dropItem(ItemStack item) {
-        if(this.level != null && !this.level.isClientSide()) {
+        if (this.level != null && !this.level.isClientSide() && !item.isEmpty()) {
             final double offsetX = (double) (level.getRandom().nextFloat() * 0.7F) + (double) 0.15F;
             final double offsetY = (double) (level.getRandom().nextFloat() * 0.7F) + (double) 0.060000002F + 0.6D;
             final double offsetZ = (double) (level.getRandom().nextFloat() * 0.7F) + (double) 0.15F;
@@ -335,6 +335,9 @@ public class MobCageBlockEntity extends BlockEntity {
      */
     public boolean isEnvironmentSuitable(Player player, EntityType<?> entityType, BlockState state) {
         EntityData recipe = getMobDataFromType(entityType);
+        if (recipe == null) {
+            return false;
+        }
         // Check if entity needs waterlogged cage
         if(recipe.ifRequiresWater() && !state.getValue(BlockStateProperties.WATERLOGGED)){
             player.sendOverlayMessage(Component.translatable("block.cagedmobsreborn.mob_cage.requiresWater").withStyle(ChatFormatting.RED));
@@ -368,15 +371,17 @@ public class MobCageBlockEntity extends BlockEntity {
      * @param sampler sampler item
      */
     public void setEntityFromSampler(EntityType<?> entityType, ItemStack sampler) {
-        // Lookup the entity color
-        if(entityType.toString().contains("sheep")){
-            if(SerializationHelper.hasCustomData(sampler) && SerializationHelper.getCustomData(sampler).contains("Color") ){
+        this.color = 0;
+        if (entityType.toString().contains("sheep")) {
+            if (SerializationHelper.hasCustomData(sampler) && SerializationHelper.getCustomData(sampler).contains("Color")) {
                 this.color = SerializationHelper.getCustomData(sampler).getIntOr("Color", 0);
             }
         }
-        // Load the mob data
         this.entity = getMobDataFromType(entityType);
         this.entityType = entityType;
+        this.cachedEntity = null;
+        this.renderedEntity = null;
+        this.lootEntity = null;
         // Calculate required ticks
         this.totalGrowTicks = this.calculateTotalGrowTicks();
         // Sync with client
@@ -416,9 +421,10 @@ public class MobCageBlockEntity extends BlockEntity {
         // Entity
         this.entity = null;
         this.entityType = null;
-        // Entity render
+        // 清理渲染与战利品模拟实体缓存
         this.cachedEntity = null;
         this.renderedEntity = null;
+        this.lootEntity = null;
         // Ticks
         this.currentGrowTicks = 0;
         this.totalGrowTicks = 0;
@@ -760,11 +766,13 @@ public class MobCageBlockEntity extends BlockEntity {
                 if(amount > 0) {
                     // Add copied item stack to the drop list
                     ItemStack stack = SerializationHelper.ingredientStack(loot.getItem()).copy();
-                    // Replace the item if there is a cooking upgrade.
-                    if(this.hasUpgrades(CagedItems.COOKING_UPGRADE.get(), 3) && loot.isCooking()){
+                    if (this.hasUpgrades(CagedItems.COOKING_UPGRADE.get(), 3) && loot.isCooking()) {
                         stack = new ItemStack(Items.COAL);
-                    }else if(this.hasUpgrades(CagedItems.COOKING_UPGRADE.get(), 1) && loot.isCooking()){
+                    } else if (this.hasUpgrades(CagedItems.COOKING_UPGRADE.get(), 1) && loot.isCooking()) {
                         stack = SerializationHelper.ingredientStack(loot.getCookedItem()).copy();
+                    } else {
+                        // 应用配方中配置的药水、山羊角乐器或自定义数据组件
+                        stack = loot.applyLootData(stack, this.level != null ? this.level.registryAccess() : null);
                     }
                     stack.setCount(amount);
                     if(loot.ifRandomDurability()){
@@ -907,8 +915,8 @@ public class MobCageBlockEntity extends BlockEntity {
             }
             // Get grow ticks from the entity
             int basicTotalGrowTicks = Math.round(this.getEntity().get().getTotalGrowTicks()/growModifier);
-            // Take into account the config speed of cages
-            this.totalGrowTicks = (int) Math.round(basicTotalGrowTicks/CagedMobsReborn.SERVER_CONFIG.getSpeedOfCages());
+            // 确保总生长刻数至少为 1，避免高倍率配置下四舍五入为 0 导致无法收获
+            this.totalGrowTicks = Math.max(1, (int) Math.round(basicTotalGrowTicks / CagedMobsReborn.SERVER_CONFIG.getSpeedOfCages()));
             // Round up the ticks to the max amount
             if(this.currentGrowTicks >= this.totalGrowTicks){
                 this.currentGrowTicks = this.totalGrowTicks;
@@ -962,9 +970,11 @@ public class MobCageBlockEntity extends BlockEntity {
         this.environmentData = MobCageBlockEntity.getEnvironmentDataFromItemStack(this.getStackInSlot(ENVIRONMENT_SLOT));
         this.entityType = input.getString("entity").flatMap(SerializationHelper::findEntityType).orElse(null);
         this.entity = MobCageBlockEntity.getMobDataFromType(this.entityType);
-        if (this.entityType == null) {
+        // 生物类型变更或清空时同步失效展示与战利品缓存实体
+        if (!Objects.equals(oldEntityType, this.entityType)) {
             this.renderedEntity = null;
             this.cachedEntity = null;
+            this.lootEntity = null;
         }
         this.color = input.getIntOr("color", 0);
         this.waitingForHarvest = input.getBooleanOr("waitingForHarvest", false);

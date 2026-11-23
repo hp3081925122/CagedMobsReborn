@@ -212,36 +212,25 @@ public class EntityDataWrapper implements IRecipeCategoryExtension<EntityData> {
         environmentsSlot.addItemStacks(this.getEnvsItems()).setSlotName("environments");
         environmentsSlot.addRichTooltipCallback(this.getEnvTooltip());
 
+        net.minecraft.core.HolderLookup.Provider registries = Minecraft.getInstance().level != null ? Minecraft.getInstance().level.registryAccess() : null;
         int nextSlotId = 2;
         List<Item> blacklistedItems = RecipesHelper.getItemsFromConfigList();
         for (final LootData entry : this.getDrops()) {
-            // If items not blacklisted draw them
-            if(!CagedMobsReborn.SERVER_CONFIG.isItemsListInWhitelistMode()){
-                if(!blacklistedItems.contains(SerializationHelper.ingredientStack(entry.getItem()).getItem())){
-                    int relativeSlotId = nextSlotId - 2;
-                    final IRecipeSlotBuilder lootSlot = builder.addSlot(RecipeIngredientRole.OUTPUT, 101 + 19 * (relativeSlotId % 4), 6 + 19 * (relativeSlotId / 4));
-                    if(entry.isCooking() && this.getCookedIDs().contains(relativeSlotId)){
-                        lootSlot.add(SerializationHelper.ingredientStack(entry.getCookedItem()));
-                    }else{
-                        lootSlot.add(SerializationHelper.ingredientStack(entry.getItem()));
-                    }
-                    nextSlotId++;
-                    // Add tooltip
-                    lootSlot.addRichTooltipCallback(this.getLootTooltip(entry));
+            boolean allowed = CagedMobsReborn.SERVER_CONFIG.isItemsListInWhitelistMode()
+                    ? blacklistedItems.contains(SerializationHelper.ingredientStack(entry.getItem()).getItem())
+                    : !blacklistedItems.contains(SerializationHelper.ingredientStack(entry.getItem()).getItem());
+            if (allowed) {
+                int relativeSlotId = nextSlotId - 2;
+                final IRecipeSlotBuilder lootSlot = builder.addSlot(RecipeIngredientRole.OUTPUT, 101 + 19 * (relativeSlotId % 4), 6 + 19 * (relativeSlotId / 4));
+                if (entry.isCooking() && this.getCookedIDs().contains(relativeSlotId)) {
+                    lootSlot.add(SerializationHelper.ingredientStack(entry.getCookedItem()).copy());
+                } else {
+                    // 应用配方组件/NBT（如药水效果与山羊角乐器），确保 JEI 准确展示
+                    ItemStack displayStack = entry.applyLootData(SerializationHelper.ingredientStack(entry.getItem()).copy(), registries);
+                    lootSlot.add(displayStack);
                 }
-            }else{
-                if(blacklistedItems.contains(SerializationHelper.ingredientStack(entry.getItem()).getItem())){
-                    int relativeSlotId = nextSlotId - 2;
-                    final IRecipeSlotBuilder lootSlot = builder.addSlot(RecipeIngredientRole.OUTPUT, 100 + 19 * (relativeSlotId % 4), 5 + 19 * (relativeSlotId / 4));
-                    if(entry.isCooking() && this.getCookedIDs().contains(relativeSlotId)){
-                        lootSlot.add(SerializationHelper.ingredientStack(entry.getCookedItem()));
-                    }else{
-                        lootSlot.add(SerializationHelper.ingredientStack(entry.getItem()));
-                    }
-                    nextSlotId++;
-                    // Add tooltip
-                    lootSlot.addRichTooltipCallback(this.getLootTooltip(entry));
-                }
+                nextSlotId++;
+                lootSlot.addRichTooltipCallback(this.getLootTooltip(entry));
             }
         }
     }
