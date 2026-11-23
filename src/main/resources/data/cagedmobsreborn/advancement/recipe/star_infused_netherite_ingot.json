@@ -27,7 +27,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "cagedmobsreborn:crafting/star_infused_netherite_ingot"
+        "recipes": "cagedmobsreborn:crafting/star_infused_netherite_ingot"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

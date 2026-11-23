@@ -27,7 +27,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "cagedmobsreborn:crafting/looting_upgrade"
+        "recipes": "cagedmobsreborn:crafting/looting_upgrade"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

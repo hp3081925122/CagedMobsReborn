@@ -15,7 +15,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "cagedmobsreborn:crafting/nether_star_from_fragments"
+        "recipes": "cagedmobsreborn:crafting/nether_star_from_fragments"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

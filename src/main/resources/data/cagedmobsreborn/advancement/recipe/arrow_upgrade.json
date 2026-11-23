@@ -27,7 +27,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "cagedmobsreborn:crafting/arrow_upgrade"
+        "recipes": "cagedmobsreborn:crafting/arrow_upgrade"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

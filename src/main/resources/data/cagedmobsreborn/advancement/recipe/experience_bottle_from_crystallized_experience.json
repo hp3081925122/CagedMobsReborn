@@ -15,7 +15,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "cagedmobsreborn:crafting/experience_bottle_from_crystallized_experience"
+        "recipes": "cagedmobsreborn:crafting/experience_bottle_from_crystallized_experience"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

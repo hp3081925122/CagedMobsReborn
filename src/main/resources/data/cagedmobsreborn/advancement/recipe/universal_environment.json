@@ -15,7 +15,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "cagedmobsreborn:crafting/universal_environment"
+        "recipes": "cagedmobsreborn:crafting/universal_environment"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

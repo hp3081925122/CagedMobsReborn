@@ -27,7 +27,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "cagedmobsreborn:crafting/speed_iii_upgrade"
+        "recipes": "cagedmobsreborn:crafting/speed_iii_upgrade"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -27,7 +27,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "cagedmobsreborn:crafting/lightning_upgrade"
+        "recipes": "cagedmobsreborn:crafting/lightning_upgrade"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

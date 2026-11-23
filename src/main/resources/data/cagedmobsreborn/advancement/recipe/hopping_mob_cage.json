@@ -39,7 +39,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "cagedmobsreborn:crafting/hopping_mob_cage"
+        "recipes": "cagedmobsreborn:crafting/hopping_mob_cage"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

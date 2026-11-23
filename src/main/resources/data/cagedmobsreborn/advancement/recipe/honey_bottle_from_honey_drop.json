@@ -15,7 +15,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "cagedmobsreborn:crafting/honey_bottle_from_honey_drop"
+        "recipes": "cagedmobsreborn:crafting/honey_bottle_from_honey_drop"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

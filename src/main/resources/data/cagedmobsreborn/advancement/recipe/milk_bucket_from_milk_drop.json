@@ -15,7 +15,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "cagedmobsreborn:crafting/milk_bucket_from_milk_drop"
+        "recipes": "cagedmobsreborn:crafting/milk_bucket_from_milk_drop"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -15,7 +15,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "cagedmobsreborn:crafting/universal_environment_from_golden_apple"
+        "recipes": "cagedmobsreborn:crafting/universal_environment_from_golden_apple"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

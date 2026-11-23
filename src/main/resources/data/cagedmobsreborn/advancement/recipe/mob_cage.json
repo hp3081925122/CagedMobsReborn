@@ -15,7 +15,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "cagedmobsreborn:crafting/mob_cage"
+        "recipes": "cagedmobsreborn:crafting/mob_cage"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
