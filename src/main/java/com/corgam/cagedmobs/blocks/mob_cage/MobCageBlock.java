@@ -17,7 +17,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -62,16 +61,9 @@ import static com.corgam.cagedmobsreborn.blocks.mob_cage.MobCageBlockEntity.ENVI
 
 public class MobCageBlock extends BaseEntityBlock implements SimpleWaterloggedBlock, ITopInfoProvider {
 
-    public static final MapCodec<MobCageBlock> CODEC = simpleCodec(MobCageBlock::new);
-
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final BooleanProperty HOPPING = BooleanProperty.create("hopping");
     private static final VoxelShape SHAPE = Block.box(2.0D, 0.0D, 2.0D, 14.0D, 15.0D, 14.0D);
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
-    }
 
     public MobCageBlock(Properties pProperties) {
         super(pProperties);
@@ -138,7 +130,7 @@ public class MobCageBlock extends BaseEntityBlock implements SimpleWaterloggedBl
                                 // If single use samplers config is enabled, destroy the sampler. If not, just use its DNA.
                                 if (CagedMobsReborn.SERVER_CONFIG.areSamplersSingleUse()) {
                                     if (player instanceof ServerPlayer serverPlayer) {
-                                        serverPlayer.onEquippedItemBroken(heldItem.getItem(), hand.asEquipmentSlot());
+                                        serverPlayer.onEquippedItemBroken(heldItem, hand.asEquipmentSlot());
                                     }
                                     heldItem.shrink(1);
                                 } else {

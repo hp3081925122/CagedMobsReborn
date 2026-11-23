@@ -53,10 +53,10 @@ neoForge {
 }
 
 dependencies {
-    compileOnly 'mezz.jei:jei-26.2-neoforge:30.48.0.244'
-    runtimeOnly 'mezz.jei:jei-26.2-neoforge:30.48.0.244'
-    compileOnly 'maven.modrinth:jade:26.2.10+neoforge'
-    runtimeOnly 'maven.modrinth:jade:26.2.10+neoforge'
+    compileOnly 'mezz.jei:jei-26.3-neoforge:31.23.0.129'
+    runtimeOnly 'mezz.jei:jei-26.3-neoforge:31.23.0.129'
+    compileOnly 'maven.modrinth:jade:26.3.5+neoforge'
+    runtimeOnly 'maven.modrinth:jade:26.3.5+neoforge'
     compileOnly 'com.blamejared.crafttweaker:CraftTweaker-neoforge-1.21.1:21.0.39'
 }
 

@@ -22,6 +22,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.item.component.TooltipDisplay;
 import java.util.function.Consumer;
 import net.minecraft.world.item.crafting.Recipe;
@@ -124,7 +125,7 @@ public class DnaSamplerItem extends Item {
         ItemStack itemstack = player.getItemInHand(hand);
         if(player.isCrouching() && SerializationHelper.hasCustomData(itemstack)) {
             removeEntityType(itemstack);
-            player.swing(hand);
+            player.swing(hand, SwingAnimation.DEFAULT, false);
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.FAIL;

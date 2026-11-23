@@ -37,7 +37,7 @@ public final class CagedMobsReborn {
         CagedRecipeSerializers.CAGED_RECIPE_SERIALIZERS_REGISTER.register(modEventBus);
         CagedContainers.CAGED_MENU_TYPES_REGISTER.register(modEventBus);
         modContainer.registerConfig(ModConfig.Type.CLIENT, CLIENT_CONFIG.getModConfigSpec());
-        modContainer.registerConfig(ModConfig.Type.SERVER, SERVER_CONFIG.getModConfigSpec());
+        modContainer.registerConfig(ModConfig.Type.SYNCED, SERVER_CONFIG.getModConfigSpec());
         if (FMLEnvironment.getDist().isClient()) {
             ClientSetup.register(modEventBus);
         }
