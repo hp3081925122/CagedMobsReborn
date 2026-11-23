@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.core.registries.BuiltInRegistries;
 
 import java.util.List;
+import java.util.Optional;
 
 public class SerializationHelper {
 
@@ -60,7 +61,18 @@ public class SerializationHelper {
         return BuiltInRegistries.BLOCK.get(location).map(holder -> holder.value()).orElse(BuiltInRegistries.BLOCK.get(net.minecraft.resources.Identifier.fromNamespaceAndPath("minecraft", "air")).map(holder -> holder.value()).orElse(null));
     }
 
-    // Entity Type
+    // 实体类型解析与序列化
+
+    public static Optional<EntityType<?>> findEntityType(String entityId) {
+        if (entityId == null || entityId.isEmpty()) {
+            return Optional.empty();
+        }
+        Identifier id = Identifier.tryParse(entityId);
+        if (id == null) {
+            return Optional.empty();
+        }
+        return BuiltInRegistries.ENTITY_TYPE.getOptional(id);
+    }
 
     public static CompoundTag serializeEntityTypeNBT(CompoundTag nbt, EntityType<?> entityType) {
         nbt.putString("entity", EntityType.getKey(entityType).toString());
@@ -72,16 +84,11 @@ public class SerializationHelper {
     }
 
     public static EntityType<?> deserializeEntityType(net.minecraft.world.level.storage.ValueInput input) {
-        return input.getString("entity").flatMap(EntityType::byString).orElse(null);
+        return input.getString("entity").flatMap(SerializationHelper::findEntityType).orElse(null);
     }
 
     public static EntityType<?> deserializeEntityTypeNBT(CompoundTag nbt) {
-        // Prepare the resourceLocation
         String resString = nbt.getString("entity").orElse("");
-        if(resString.isEmpty()){return null;}
-        String[] splitted = resString.split(":");
-        Identifier res = Identifier.fromNamespaceAndPath(splitted[0], splitted[1]);
-        // Search for the entity type in the registry and return it
-        return BuiltInRegistries.ENTITY_TYPE.get(res).map(holder -> holder.value()).orElse(null);
+        return findEntityType(resString).orElse(null);
     }
 }

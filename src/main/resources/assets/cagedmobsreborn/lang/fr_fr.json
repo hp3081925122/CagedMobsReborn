@@ -46,7 +46,7 @@
 
 	"jei.category.cagedmobsreborn.entity": "Butin de l'entité",
 	"jei.tooltip.cagedmobsreborn.entity.chance": "Chance: %d%%",
-	"jei.tooltip.cagedmobsreborn.entity.growModifier": "Croissance: +%d%%",
+	"jei.tooltip.cagedmobsreborn.entity.growModifier": "Croissance: %s%%",
 	"jei.tooltip.cagedmobsreborn.entity.amountEqual": "Quantité: %d",
 	"jei.tooltip.cagedmobsreborn.entity.amount": "Quantité: %d - %d",
 	"jei.tooltip.cagedmobsreborn.entity.ticks": "%d secondes",

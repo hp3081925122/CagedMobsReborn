@@ -23,6 +23,18 @@ public class ServerConfig {
 
     private final ModConfigSpec.DoubleValue cagesSpeed;
 
+    private final ModConfigSpec.ConfigValue<List<? extends String>> universalEnvironmentBlacklist;
+
+    private final ModConfigSpec.BooleanValue autoEntityDataEnabled;
+    private final ModConfigSpec.ConfigValue<List<? extends String>> autoEntityDataBlacklist;
+    private final ModConfigSpec.BooleanValue autoEntityDataExcludeBosses;
+    private final ModConfigSpec.BooleanValue samplerTierByCurrentHealth;
+    private final ModConfigSpec.DoubleValue normalSamplerMaxHealth;
+    private final ModConfigSpec.DoubleValue diamondSamplerMaxHealth;
+    private final ModConfigSpec.IntValue autoMinGrowTicks;
+    private final ModConfigSpec.IntValue autoMaxGrowTicks;
+    private final ModConfigSpec.DoubleValue autoGrowHealthScale;
+
     public ServerConfig(){
         final ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
         builder.comment("Server side config for CagedMobsReborn. If changed it will affect the whole server!");
@@ -69,6 +81,46 @@ public class ServerConfig {
                 "Example use: when 'itemsListInWhitelistMode' value is set to true and 'itemsList' contains [\"minecraft:iron_ingot\"] only iron ingots could be obtained from caged entities.");
         this.itemsListInWhitelistMode = builder.define("itemsListInWhitelistMode", false);
 
+        builder.comment("List of entities that can not be put into cages with the Universal Environment (in a modid:name format).\n" +
+                "These entities still work with their own normal environments.\n" +
+                "Example use: when 'universalEnvironmentBlacklist' contains [\"minecraft:warden\", \"minecraft:wither\"] warden and wither will require their normal environments.");
+        this.universalEnvironmentBlacklist = builder.defineList("universalEnvironmentBlacklist", Collections.emptyList(), it -> it instanceof String);
+
+        builder.pop();
+
+        builder.comment("Automatic entity data for living entities that have no entity_data recipe in data packs.",
+                "Entities defined by data packs always use their data pack values (drops, sampler tier, environments, grow ticks).");
+        builder.push("autoEntityData");
+
+        builder.comment("Enables automatic entity data. Entities without a data pack definition can be sampled and caged,",
+                "only work with the Universal Environment and produce drops by rolling their own loot table.");
+        this.autoEntityDataEnabled = builder.define("enabled", true);
+
+        builder.comment("List of entities that never get automatic entity data (in a modid:name format).",
+                "Example use: [\"minecraft:villager\", \"somemod:rare_mob\"]");
+        this.autoEntityDataBlacklist = builder.defineList("blacklist", Collections.emptyList(), it -> it instanceof String);
+
+        builder.comment("Excludes every entity inside the 'c:bosses' entity tag from automatic entity data.");
+        this.autoEntityDataExcludeBosses = builder.define("excludeBosses", false);
+
+        builder.comment("If false, the required DNA sampler tier uses the entity's default max health.",
+                "If true, the current health of the sampled entity is used instead (damaged mobs need lower tier samplers).",
+                "Taking an entity back out of a cage always uses the default max health.");
+        this.samplerTierByCurrentHealth = builder.define("samplerTierByCurrentHealth", false);
+
+        builder.comment("Entities with health up to this value can be sampled with the normal DNA Sampler.");
+        this.normalSamplerMaxHealth = builder.defineInRange("normalSamplerMaxHealth", 20.0, 0.0, 1000000.0);
+
+        builder.comment("Entities with health up to this value can be sampled with the Diamond DNA Sampler.",
+                "Entities above it require the Netherite DNA Sampler. The Netherite DNA Sampler works on every entity.");
+        this.diamondSamplerMaxHealth = builder.defineInRange("diamondSamplerMaxHealth", 100.0, 0.0, 1000000.0);
+
+        builder.comment("Grow ticks are calculated as: maxGrowTicks - (maxGrowTicks - minGrowTicks) * e^(-health / growHealthScale).",
+                "Low health entities stay close to minGrowTicks, high health entities approach but never exceed maxGrowTicks.");
+        this.autoMinGrowTicks = builder.defineInRange("minGrowTicks", 600, 1, 1000000);
+        this.autoMaxGrowTicks = builder.defineInRange("maxGrowTicks", 3600, 1, 1000000);
+        this.autoGrowHealthScale = builder.defineInRange("growHealthScale", 100.0, 0.01, 1000000.0);
+
         builder.pop();
         this.spec = builder.build();
     }
@@ -104,4 +156,26 @@ public class ServerConfig {
     public boolean areSpawnEggsDisabled(){return this.disableSpawnEggs.get();}
 
     public Double getSpeedOfCages(){return this.cagesSpeed.get();}
+
+    public boolean isAutoEntityDataEnabled(){return this.autoEntityDataEnabled.get();}
+
+    public List<? extends String> getAutoEntityDataBlacklist(){return this.autoEntityDataBlacklist.get();}
+
+    public boolean ifAutoEntityDataExcludesBosses(){return this.autoEntityDataExcludeBosses.get();}
+
+    public boolean isSamplerTierByCurrentHealth(){return this.samplerTierByCurrentHealth.get();}
+
+    public double getNormalSamplerMaxHealth(){return this.normalSamplerMaxHealth.get();}
+
+    public double getDiamondSamplerMaxHealth(){return this.diamondSamplerMaxHealth.get();}
+
+    public int getAutoMinGrowTicks(){return this.autoMinGrowTicks.get();}
+
+    public int getAutoMaxGrowTicks(){return this.autoMaxGrowTicks.get();}
+
+    public double getAutoGrowHealthScale(){return this.autoGrowHealthScale.get();}
+
+    public List<? extends String> getUniversalEnvironmentBlacklist(){
+        return this.universalEnvironmentBlacklist.get();
+    }
 }

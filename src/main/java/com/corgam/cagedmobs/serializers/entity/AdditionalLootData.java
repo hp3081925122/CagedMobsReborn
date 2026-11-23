@@ -3,6 +3,7 @@ package com.corgam.cagedmobsreborn.serializers.entity;
 import com.corgam.cagedmobsreborn.CagedMobsReborn;
 import com.corgam.cagedmobsreborn.registers.CagedRecipeSerializers;
 import com.corgam.cagedmobsreborn.registers.CagedRecipeTypes;
+import com.corgam.cagedmobsreborn.serializers.SerializationHelper;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
@@ -62,7 +63,7 @@ public class AdditionalLootData implements Recipe<RecipeInput> {
     public void setEntityId(String entityId){
         this.entityId = entityId;
         // Change entity type
-        Optional<EntityType<?>> entityType = EntityType.byString(this.entityId);
+        Optional<EntityType<?>> entityType = SerializationHelper.findEntityType(this.entityId);
         entityType.ifPresent(type -> this.entityType = type);
     }
 
@@ -74,7 +75,7 @@ public class AdditionalLootData implements Recipe<RecipeInput> {
     public EntityType<?> getEntityType(){
         // Try to find again entity type if it's null
         if(this.entityType == null){
-            Optional<EntityType<?>> entityType = EntityType.byString(this.entityId);
+            Optional<EntityType<?>> entityType = SerializationHelper.findEntityType(this.entityId);
             if(entityType.isPresent()) {
                 this.entityType = entityType.get();
                 return entityType.get();

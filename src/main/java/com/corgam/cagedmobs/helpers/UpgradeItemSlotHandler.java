@@ -2,32 +2,31 @@ package com.corgam.cagedmobsreborn.helpers;
 
 import com.corgam.cagedmobsreborn.items.upgrades.UpgradeItem;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.SlotItemHandler;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
+import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 import org.jetbrains.annotations.NotNull;
 
-public class UpgradeItemSlotHandler extends SlotItemHandler {
+public class UpgradeItemSlotHandler extends ResourceHandlerSlot {
 
-    public UpgradeItemSlotHandler(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
-        super(itemHandler, index, xPosition, yPosition);
+    public UpgradeItemSlotHandler(ItemStacksResourceHandler itemHandler, int index, int xPosition, int yPosition) {
+        super(itemHandler, itemHandler::set, index, xPosition, yPosition);
     }
 
     @Override
-    public boolean mayPlace(@NotNull ItemStack stack)
-    {
-        if (stack.isEmpty()){
+    public boolean mayPlace(@NotNull ItemStack stack) {
+        if (stack.isEmpty()) {
             return false;
-        }else{
-            return stack.getItem() instanceof UpgradeItem;
         }
+        return stack.getItem() instanceof UpgradeItem;
     }
+
     @Override
     public int getMaxStackSize() {
         return 1;
     }
 
     @Override
-    public int getMaxStackSize(@NotNull ItemStack stack){
+    public int getMaxStackSize(@NotNull ItemStack stack) {
         return 1;
     }
 }

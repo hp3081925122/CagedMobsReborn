@@ -49,10 +49,19 @@ public class MobCageScreen extends AbstractContainerScreen<MobCageContainer> {
         super.extractRenderState(graphics, mouseX, mouseY, partialTick);
         BlockEntity blockEntity = this.menu.player.level().getBlockEntity(this.menu.pos);
         if(blockEntity instanceof MobCageBlockEntity cageBE && cageBE.getEntity().isPresent()) {
-            Optional<Entity> entity = EntityRendererHelper.createEntity(this.menu.player.level(), cageBE.getEntity().get().getEntityType(), null);
-            entity.ifPresent(value -> EntityRendererHelper.renderEntity(graphics, this.leftPos + 87, this.topPos + 125, yaw, 70, rotation, value));
-            rotation = (rotation + 0.5F) % 360.0F;
-            yaw = (yaw + 1.5D) % 720.0D;
+            Optional<Entity> entity;
+            if(cageBE.getColor() != -1){
+                CompoundTag nbt = new CompoundTag();
+                nbt.putInt("Color", cageBE.getColor());
+                entity = EntityRendererHelper.createEntity(this.menu.player.level(), cageBE.getEntity().get().getEntityType(), nbt);
+            }else{
+                entity = EntityRendererHelper.createEntity(this.menu.player.level(), cageBE.getEntity().get().getEntityType(), null);
+            }
+            if (entity.isPresent()) {
+                rotation = (rotation + 0.5F) % 360.0F;
+                EntityRendererHelper.renderEntity(graphics, this.leftPos + 62, this.topPos + 17, this.leftPos + 114, this.topPos + 87, rotation, entity.get());
+                yaw = (yaw + 1.5D) % 720.0D;
+            }
         }
     }
 
@@ -68,17 +77,17 @@ public class MobCageScreen extends AbstractContainerScreen<MobCageContainer> {
         super.extractBackground(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
         int leftPos = this.leftPos;
         int topPos = this.topPos;
-        pGuiGraphics.blit(RenderPipelines.GUI_TEXTURED, GUI, leftPos, topPos, 0.0F, 0.0F, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
+        pGuiGraphics.blit(RenderPipelines.GUI_TEXTURED, GUI, leftPos, topPos, 0.0F, 0.0F, this.imageWidth, this.imageHeight, 256, 256);
         // Render item outline for environment slot
         Slot envSlot = this.menu.getEnvironmentSlot();
         if(!envSlot.hasItem()){
-            pGuiGraphics.blit(RenderPipelines.GUI_TEXTURED, ENVIRONMENT_SLOT_OUTLINE, leftPos+envSlot.x, topPos+envSlot.y, 0.0F, 0.0F, 16, 16, 16, 16, 16, 16);
+            pGuiGraphics.blit(RenderPipelines.GUI_TEXTURED, ENVIRONMENT_SLOT_OUTLINE, leftPos+envSlot.x, topPos+envSlot.y, 0.0F, 0.0F, 16, 16, 16, 16);
         }
         // Render item outlines for upgrade slots
         int i = 1;
         for(Slot slot : this.menu.getUpgradeSlots()){
             if (!slot.hasItem()) {
-                pGuiGraphics.blit(RenderPipelines.GUI_TEXTURED, UPGRADE_SLOT_OUTLINE, leftPos+slot.x, topPos+slot.y, (float)(this.imageWidth + (16 * (i - 1))), 0.0F, 16, 16, 16, 16, 64, 16);
+                pGuiGraphics.blit(RenderPipelines.GUI_TEXTURED, UPGRADE_SLOT_OUTLINE, leftPos+slot.x, topPos+slot.y, 0.0F, 0.0F, 16, 16, 16, 16);
                 i++;
             }
         }

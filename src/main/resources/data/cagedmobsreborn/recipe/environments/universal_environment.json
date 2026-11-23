@@ -1,0 +1,15 @@
+{
+  "type": "cagedmobsreborn:environment_data",
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "cagedmobsreborn"
+    }
+  ],
+  "input": "cagedmobsreborn:universal_environment",
+  "render": "minecraft:crying_obsidian",
+  "growModifier": 0.85,
+  "categories": [
+    "universal"
+  ]
+}

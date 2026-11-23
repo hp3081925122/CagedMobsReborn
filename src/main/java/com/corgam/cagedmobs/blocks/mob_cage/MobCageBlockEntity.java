@@ -5,8 +5,10 @@ import com.corgam.cagedmobsreborn.helpers.AdaptedItemHandler;
 import com.corgam.cagedmobsreborn.items.upgrades.SpeedIIIUpgradeItem;
 import com.corgam.cagedmobsreborn.items.upgrades.SpeedIIUpgradeItem;
 import com.corgam.cagedmobsreborn.items.upgrades.SpeedIUpgradeItem;
+import com.corgam.cagedmobsreborn.items.upgrades.UpgradeItem;
 import com.corgam.cagedmobsreborn.registers.CagedBlockEntities;
 import com.corgam.cagedmobsreborn.registers.CagedItems;
+import com.corgam.cagedmobsreborn.serializers.AutoEntityDataHelper;
 import com.corgam.cagedmobsreborn.serializers.RecipesHelper;
 import com.corgam.cagedmobsreborn.serializers.SerializationHelper;
 import com.corgam.cagedmobsreborn.serializers.entity.EntityData;
@@ -19,7 +21,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.WorldlyContainer;
@@ -27,6 +28,11 @@ import net.minecraft.world.WorldlyContainerHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.animal.sheep.Sheep;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -40,16 +46,18 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemStackHandler;
-import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.transfer.EmptyResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
+import net.neoforged.neoforge.transfer.item.WorldlyContainerWrapper;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import java.util.*;
-import java.util.function.Function;
 
 import static com.corgam.cagedmobsreborn.blocks.mob_cage.MobCageBlock.HOPPING;
 import static com.corgam.cagedmobsreborn.helpers.UpgradeItemsParticles.*;
@@ -62,6 +70,7 @@ public class MobCageBlockEntity extends BlockEntity {
     private EntityType<?> entityType = null;
     private Entity cachedEntity;
     private SpawnData renderedEntity;
+    private Entity lootEntity;
     // Ticks
     private int currentGrowTicks = 0;
     private int totalGrowTicks = 0;
@@ -74,77 +83,76 @@ public class MobCageBlockEntity extends BlockEntity {
     public static int UPGRADES_COUNT = 3;
     public static int ENVIRONMENT_SLOT = 0;
     public static int SLOT_COUNT = UPGRADES_COUNT + 1;
-    // Item handlers
-    private final ItemStackHandler items = createItemHandler();
-    private static final IItemHandler EMPTY_HANDLER = new ItemStackHandler(0);
-    private final IItemHandler restrictedItemHandler = new AdaptedItemHandler(items){
-        /**
-         * Does not allow item extraction (for example hoppers).
-         * @param slot     Slot to extract from.
-         * @param amount   Amount to extract
-         * @param simulate If true, the extraction is only simulated
-         * @return empty item stack
-         */
+    // 物品传输与存储句柄（NeoForge Transfer API v2）
+    private boolean droppingInventory = false;
+    private final ItemStacksResourceHandler items = createItemHandler();
+    private final ResourceHandler<ItemResource> restrictedItemHandler = new AdaptedItemHandler(items) {
+        // 禁止外部自动化设备（如漏斗）抽取内部环境与升级
         @Override
-        public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
-            return ItemStack.EMPTY;
+        public int extract(int index, ItemResource resource, int amount, TransactionContext transaction) {
+            return 0;
         }
 
-        /**
-         * Does not allow item insertion (for example hoppers).
-         * @param slot     Slot to insert into.
-         * @param stack    ItemStack to insert. This must not be modified by the item handler.
-         * @param simulate If true, the insertion is only simulated
-         * @return the same input stack
-         */
+        // 禁止外部自动化设备（如漏斗）向内部槽位插入物品
         @Override
-        public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-            return stack;
+        public int insert(int index, ItemResource resource, int amount, TransactionContext transaction) {
+            return 0;
         }
     };
 
-    /**
-     * Creates a new cage block entity
-     * @param pPos the position of the entity
-     * @param pBlockState the state of the entity
-     */
     public MobCageBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(CagedBlockEntities.MOB_CAGE_BLOCK_ENTITY.get(), pPos, pBlockState);
     }
 
-    /**
-     * Creates the item handler.
-     * @return the item handler.
-     */
     @Nonnull
-    private ItemStackHandler createItemHandler(){
-        return new ItemStackHandler(SLOT_COUNT){
+    private ItemStacksResourceHandler createItemHandler() {
+        return new ItemStacksResourceHandler(SLOT_COUNT) {
             @Override
-            protected void onContentsChanged(int slot){
-                // Update the environment
-                if(slot == ENVIRONMENT_SLOT){
+            public boolean isValid(int index, ItemResource resource) {
+                if (resource.isEmpty()) {
+                    return false;
+                }
+                if (index == ENVIRONMENT_SLOT) {
+                    return existsEnvironmentFromItemStack(resource.toStack());
+                }
+                return resource.getItem() instanceof UpgradeItem;
+            }
+
+            @Override
+            protected int getCapacity(int index, ItemResource resource) {
+                return 1;
+            }
+
+            @Override
+            protected void onContentsChanged(int index, ItemStack previousContents) {
+                if (droppingInventory) {
+                    return;
+                }
+                // 更新环境或生长周期
+                if (index == ENVIRONMENT_SLOT) {
                     updateEnvironment();
-                }else{
+                } else {
                     calculateTotalGrowTicks();
                 }
-                // Notify client and server
+                // 通知服务端保存并同步客户端
                 setChanged();
-                if(level != null){
+                if (level != null) {
                     level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
                 }
             }
         };
     }
 
-    /**
-     * Returns the item handler for environment and upgrades
-     * @return items handler
-     */
-    public ItemStackHandler getInventoryHandler(){
+    private ItemStack getStackInSlot(int slot) {
+        int count = this.items.getAmountAsInt(slot);
+        return count <= 0 ? ItemStack.EMPTY : this.items.getResource(slot).toStack(count);
+    }
+
+    public ItemStacksResourceHandler getInventoryHandler() {
         return this.items;
     }
 
-    public IItemHandler getRestrictedItemHandler() {
+    public ResourceHandler<ItemResource> getRestrictedItemHandler() {
         return this.restrictedItemHandler;
     }
 
@@ -178,12 +186,27 @@ public class MobCageBlockEntity extends BlockEntity {
         }
     }
 
-    /**
-     * Drops the whole inventory on the ground.
-     */
-    public void dropInventory(){
-        for (int i = 0; i < this.items.getSlots(); i++) {
-            this.dropItem(this.items.getStackInSlot(i));
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        super.preRemoveSideEffects(pos, state);
+        if (this.level != null && !this.level.isClientSide()) {
+            CagedMobsReborn.LOGGER.debug("Dropping cage inventory before block entity removal at {}: {}", pos, this.getUpgradesAsItemStacks());
+            this.dropInventory();
+        }
+    }
+
+    public void dropInventory() {
+        this.droppingInventory = true;
+        try {
+            for (int i = 0; i < this.items.size(); i++) {
+                ItemStack stack = this.getStackInSlot(i);
+                if (!stack.isEmpty()) {
+                    this.dropItem(stack);
+                    this.items.set(i, ItemResource.EMPTY, 0);
+                }
+            }
+        } finally {
+            this.droppingInventory = false;
         }
     }
 
@@ -210,16 +233,12 @@ public class MobCageBlockEntity extends BlockEntity {
      */
     public void setEnvironment(ItemStack heldItem) {
         this.environmentData = getEnvironmentDataFromItemStack(heldItem);
-        if(this.items.getStackInSlot(ENVIRONMENT_SLOT).isEmpty()){
-            // Set the env item
-            ItemStack itemstack = heldItem.copy();
-            itemstack.setCount(1);
-            this.items.insertItem(ENVIRONMENT_SLOT, itemstack, false);
+        if (this.items.getAmountAsInt(ENVIRONMENT_SLOT) == 0 && !heldItem.isEmpty()) {
+            // 写入环境物品到环境槽位
+            this.items.set(ENVIRONMENT_SLOT, ItemResource.of(heldItem), 1);
         }
-        // Check this block as a block to be saved upon exiting the chunk
         this.setChanged();
-        // Sync with client
-        if(this.level != null){
+        if (this.level != null) {
             this.level.sendBlockUpdated(this.worldPosition, getBlockState(), getBlockState(), 3);
         }
     }
@@ -260,39 +279,28 @@ public class MobCageBlockEntity extends BlockEntity {
     /**
      * Updates the environment from currently held item.
      */
-    public void updateEnvironment(){
-        ItemStack envItem = this.items.getStackInSlot(ENVIRONMENT_SLOT);
-        envItem.setCount(1);
-        if(envItem.isEmpty()){
+    public void updateEnvironment() {
+        ItemStack envItem = this.getStackInSlot(ENVIRONMENT_SLOT);
+        if (envItem.isEmpty()) {
             this.removeEnvironment();
-        }else if(this.environmentData == null
-                || !SerializationHelper.ingredientStack(this.environmentData.getInputItem()).getItem().equals(envItem.getItem())){
+        } else if (this.environmentData == null || !this.environmentData.getInputItem().test(envItem)) {
             this.setEnvironment(envItem);
         }
     }
 
-    /**
-     * Returns the environment data.
-     * @return the environment data
-     */
     public EnvironmentData getEnvironmentData() {
+        if (this.environmentData == null && this.hasEnvironment()) {
+            this.environmentData = getEnvironmentDataFromItemStack(this.getStackInSlot(ENVIRONMENT_SLOT));
+        }
         return this.environmentData;
     }
 
-    /**
-     * Returns the current environment item stack
-     * @return environment item stack
-     */
-    public ItemStack getEnvironmentItemStack(){
-        return this.items.getStackInSlot(ENVIRONMENT_SLOT);
+    public ItemStack getEnvironmentItemStack() {
+        return this.getStackInSlot(ENVIRONMENT_SLOT);
     }
 
-    /**
-     * Checks if the block entity has environment data.
-     * @return if block entity has environment data.
-     */
     public boolean hasEnvironment() {
-        return !this.items.getStackInSlot(ENVIRONMENT_SLOT).isEmpty();
+        return this.items.getAmountAsInt(ENVIRONMENT_SLOT) > 0;
     }
 
     /**
@@ -330,12 +338,21 @@ public class MobCageBlockEntity extends BlockEntity {
             player.sendOverlayMessage(Component.translatable("block.cagedmobsreborn.mob_cage.requiresWater").withStyle(ChatFormatting.RED));
             return false;
         }
+        boolean universal = false;
         if(this.environmentData != null){
+            universal = this.environmentData.getCategories().contains(RecipesHelper.UNIVERSAL_ENVIRONMENT);
+            if(universal && RecipesHelper.isUniversalEnvironmentAllowed(entityType)){
+                return true;
+            }
             for(String env : this.environmentData.getCategories()){
                 if(recipe.getEnvironments().contains(env)){
                     return true;
                 }
             }
+        }
+        if(universal){
+            player.sendOverlayMessage(Component.translatable("block.cagedmobsreborn.mob_cage.universalBlacklisted").withStyle(ChatFormatting.RED));
+            return false;
         }
         player.sendOverlayMessage(Component.translatable("block.cagedmobsreborn.mob_cage.envNotSuitable").withStyle(ChatFormatting.RED));
         return false;
@@ -373,6 +390,12 @@ public class MobCageBlockEntity extends BlockEntity {
      * @return entity data
      */
     public Optional<EntityData> getEntity() {
+        if (this.entity == null && this.entityType != null) {
+            this.entity = getMobDataFromType(this.entityType);
+            if (this.entity != null && this.totalGrowTicks == 0) {
+                this.totalGrowTicks = this.calculateTotalGrowTicks();
+            }
+        }
         return Optional.ofNullable(this.entity);
     }
 
@@ -413,7 +436,7 @@ public class MobCageBlockEntity extends BlockEntity {
      * @return if there exists entity
      */
     public boolean hasEntity() {
-        return this.entity != null;
+        return this.getEntity().isPresent();
     }
 
     /**
@@ -446,7 +469,7 @@ public class MobCageBlockEntity extends BlockEntity {
                 nbt.putString("id", EntityType.getKey(this.entityType).toString());
                 this.renderedEntity = new SpawnData(nbt, Optional.empty(), Optional.empty());
             }
-            this.cachedEntity = EntityType.loadEntityRecursive(this.renderedEntity.getEntityToSpawn(), level, net.minecraft.world.entity.EntitySpawnReason.LOAD, entity -> entity);
+            this.cachedEntity = EntityType.loadEntityRecursive(this.entityType, this.renderedEntity.getEntityToSpawn(), level, EntitySpawnReason.LOAD, entity -> entity);
         }
         return this.cachedEntity;
     }
@@ -510,74 +533,48 @@ public class MobCageBlockEntity extends BlockEntity {
      * @param heldItem upgrade to add.
      */
     public void addUpgrade(ItemStack heldItem) {
-        for (int slot = ENVIRONMENT_SLOT+1; slot < this.items.getSlots(); slot++) {
-            // Check for empty slot
-            if(this.items.getStackInSlot(slot).isEmpty()){
-                ItemStack upgrade = heldItem.copy();
-                upgrade.setCount(1);
-                // Check if upgrade is valid
-                if(this.items.isItemValid(slot, upgrade)){
-                    // Insert upgrade
-                    this.items.insertItem(slot, upgrade, false);
-                    return;
-                }
+        if (heldItem.isEmpty()) {
+            return;
+        }
+        ItemResource resource = ItemResource.of(heldItem);
+        for (int slot = ENVIRONMENT_SLOT + 1; slot < this.items.size(); slot++) {
+            if (this.items.getAmountAsInt(slot) == 0 && this.items.isValid(slot, resource)) {
+                this.items.set(slot, resource, 1);
+                return;
             }
         }
     }
 
-    /**
-     * Returns if the cage can accept more upgrades.
-     * @return if cage can accept more upgrades.
-     */
     public boolean acceptsUpgrades() {
-        return this.items.getStackInSlot(ENVIRONMENT_SLOT+1).isEmpty() ||
-                this.items.getStackInSlot(ENVIRONMENT_SLOT+2).isEmpty() ||
-                this.items.getStackInSlot(ENVIRONMENT_SLOT+3).isEmpty();
+        return this.items.getAmountAsInt(ENVIRONMENT_SLOT + 1) == 0 ||
+                this.items.getAmountAsInt(ENVIRONMENT_SLOT + 2) == 0 ||
+                this.items.getAmountAsInt(ENVIRONMENT_SLOT + 3) == 0;
     }
 
-    /**
-     * Returns if the cage has any upgrade.
-     * @return if the cage has any upgrade
-     */
-    public boolean hasAnyUpgrades(){
-        return !this.items.getStackInSlot(ENVIRONMENT_SLOT+1).isEmpty() ||
-                !this.items.getStackInSlot(ENVIRONMENT_SLOT+2).isEmpty() ||
-                !this.items.getStackInSlot(ENVIRONMENT_SLOT+3).isEmpty();
+    public boolean hasAnyUpgrades() {
+        return this.items.getAmountAsInt(ENVIRONMENT_SLOT + 1) > 0 ||
+                this.items.getAmountAsInt(ENVIRONMENT_SLOT + 2) > 0 ||
+                this.items.getAmountAsInt(ENVIRONMENT_SLOT + 3) > 0;
     }
 
-    /**
-     * Return the amount of a specific upgrade.
-     * @param upgradeItem the upgrade to check for
-     * @return the amount of specific upgrade
-     */
-    public int getUpgradeCount(Item upgradeItem){
+    public int getUpgradeCount(Item upgradeItem) {
         int currentCount = 0;
-        for (int i = 0; i < this.items.getSlots(); i++) {
-            if(this.items.getStackInSlot(i).getItem().equals(upgradeItem)){
+        for (int i = 0; i < this.items.size(); i++) {
+            if (this.items.getAmountAsInt(i) > 0 && this.items.getResource(i).is(upgradeItem)) {
                 currentCount++;
             }
         }
         return currentCount;
     }
 
-    public boolean hasUpgrades(Item upgradeItem, int requiredCount){
-        int currentCount = 0;
-        for (int i = 0; i < this.items.getSlots(); i++) {
-            if(this.items.getStackInSlot(i).getItem().equals(upgradeItem)){
-                currentCount++;
-            }
-        }
-        return currentCount >= requiredCount;
+    public boolean hasUpgrades(Item upgradeItem, int requiredCount) {
+        return this.getUpgradeCount(upgradeItem) >= requiredCount;
     }
 
-    /**
-     * Returns a list of upgrades as ItemStacks.
-     * @return list of upgrades
-     */
-    public List<ItemStack> getUpgradesAsItemStacks(){
+    public List<ItemStack> getUpgradesAsItemStacks() {
         List<ItemStack> upgrades = new ArrayList<>();
-        for(int slot = ENVIRONMENT_SLOT+1; slot <= UPGRADES_COUNT; slot++){
-            upgrades.add(this.items.getStackInSlot(slot));
+        for (int slot = ENVIRONMENT_SLOT + 1; slot <= UPGRADES_COUNT; slot++) {
+            upgrades.add(this.getStackInSlot(slot));
         }
         return upgrades;
     }
@@ -668,18 +665,18 @@ public class MobCageBlockEntity extends BlockEntity {
      * @return if the harvest happened
      */
     private boolean autoHarvest() {
-        final IItemHandler inventory = getInv(this.level, this.worldPosition.below(), Direction.UP);
-        if(inventory != EMPTY_HANDLER && !this.level.isClientSide()){
-            // For every item in drop list
-            NonNullList<ItemStack> drops =this.createDropsList();
-            for(final ItemStack item : drops){
-                // For every slot in inv
-                for(int slot = 0; slot < inventory.getSlots(); slot++){
-                    // Simulate the insert
-                    if(inventory.isItemValid(slot, item) && inventory.insertItem(slot,item,true).getCount() != item.getCount()){
-                        // Actual insert
-                        inventory.insertItem(slot, item, false);
-                        break;
+        final ResourceHandler<ItemResource> inventory = getInv(this.level, this.worldPosition.below(), Direction.UP);
+        if (inventory != EmptyResourceHandler.<ItemResource>instance() && !this.level.isClientSide()) {
+            NonNullList<ItemStack> drops = this.createDropsList();
+            for (final ItemStack item : drops) {
+                if (item.isEmpty()) {
+                    continue;
+                }
+                ItemResource resource = ItemResource.of(item);
+                try (Transaction tx = Transaction.openRoot()) {
+                    int inserted = inventory.insert(resource, item.getCount(), tx);
+                    if (inserted > 0) {
+                        tx.commit();
                     }
                 }
             }
@@ -688,28 +685,23 @@ public class MobCageBlockEntity extends BlockEntity {
         return false;
     }
 
-    /**
-     * Gets the ItemHandler from the block
-     * @param world the world of the block
-     * @param pos the position of the block
-     * @param side the side of the block
-     * @return the ItemHandler
-     */
-    private IItemHandler getInv(Level world, BlockPos pos, Direction side){
+    private ResourceHandler<ItemResource> getInv(Level world, BlockPos pos, Direction side) {
         final BlockEntity te = world.getBlockEntity(pos);
-        if(te != null){
-            final var invCap = Capabilities.Item.BLOCK.getCapability(world, pos, world.getBlockState(pos), te, side);
-            if(invCap != null) return net.neoforged.neoforge.items.IItemHandler.of(invCap);
+        if (te != null) {
+            final ResourceHandler<ItemResource> invCap = Capabilities.Item.BLOCK.getCapability(world, pos, world.getBlockState(pos), te, side);
+            if (invCap != null) {
+                return invCap;
+            }
         }
-        if(te instanceof WorldlyContainer inv){
-            return new SidedInvWrapper(inv, side);
+        if (te instanceof WorldlyContainer inv) {
+            return new WorldlyContainerWrapper(inv, side);
         }
         final BlockState state = world.getBlockState(pos);
-        if(state.getBlock() instanceof WorldlyContainerHolder invProvider){
+        if (state.getBlock() instanceof WorldlyContainerHolder invProvider) {
             final WorldlyContainer inv = invProvider.getContainer(state, world, pos);
-            return new SidedInvWrapper(inv, side);
+            return new WorldlyContainerWrapper(inv, side);
         }
-        return EMPTY_HANDLER;
+        return EmptyResourceHandler.instance();
     }
 
     /**
@@ -719,9 +711,17 @@ public class MobCageBlockEntity extends BlockEntity {
     private NonNullList<ItemStack> createDropsList(){
         NonNullList<ItemStack> drops = NonNullList.create();
         List<Item> blacklistedItems = RecipesHelper.getItemsFromConfigList();
+        if(this.entity.isAutoGenerated() && this.level instanceof ServerLevel serverLevel){
+            for(ItemStack stack : AutoEntityDataHelper.rollLoot(serverLevel, this.worldPosition, this.getLootEntity(serverLevel), this.getUpgradeCount(CagedItems.LOOTING_UPGRADE.get()), this.hasUpgrades(CagedItems.COOKING_UPGRADE.get(), 1))){
+                if(stack.isEmpty() || blacklistedItems.contains(stack.getItem()) != CagedMobsReborn.SERVER_CONFIG.isItemsListInWhitelistMode()){
+                    continue;
+                }
+                drops.add(stack);
+            }
+        }
         for(LootData loot : this.entity.getResults()) {
             // Skip item if it's blacklisted or whitelisted
-            if(!CagedMobsReborn.SERVER_CONFIG.isEntitiesListInWhitelistMode()){
+            if(!CagedMobsReborn.SERVER_CONFIG.isItemsListInWhitelistMode()){
                 if(blacklistedItems.contains(SerializationHelper.ingredientStack(loot.getItem()).getItem())){
                     continue;
                 }
@@ -781,6 +781,20 @@ public class MobCageBlockEntity extends BlockEntity {
             }
         }
         return drops;
+    }
+
+    private Entity getLootEntity(ServerLevel serverLevel){
+        if(this.lootEntity == null || this.lootEntity.getType() != this.entityType){
+            this.lootEntity = this.entityType.create(serverLevel, EntitySpawnReason.LOAD);
+            if(this.lootEntity != null){
+                Vec3 center = Vec3.atCenterOf(this.worldPosition);
+                this.lootEntity.setPos(center.x, center.y, center.z);
+            }
+        }
+        if(this.lootEntity instanceof Sheep sheep){
+            sheep.setColor(DyeColor.byId(this.color));
+        }
+        return this.lootEntity;
     }
 
     /**
@@ -924,28 +938,34 @@ public class MobCageBlockEntity extends BlockEntity {
     }
 
     private void loadTag(net.minecraft.world.level.storage.ValueInput input) {
-        ItemStack oldEnv = this.items.getStackInSlot(ENVIRONMENT_SLOT);
+        ItemStack oldEnv = this.getStackInSlot(ENVIRONMENT_SLOT);
         EntityType<?> oldEntityType = this.entityType;
-        input.readChild(ITEMS_TAG, items);
-        this.environmentData = MobCageBlockEntity.getEnvironmentDataFromItemStack(this.items.getStackInSlot(ENVIRONMENT_SLOT));
-        this.entityType = input.getString("entity").flatMap(EntityType::byString).orElse(null);
+        input.child(ITEMS_TAG).ifPresent(items::deserialize);
+        this.environmentData = MobCageBlockEntity.getEnvironmentDataFromItemStack(this.getStackInSlot(ENVIRONMENT_SLOT));
+        this.entityType = input.getString("entity").flatMap(SerializationHelper::findEntityType).orElse(null);
         this.entity = MobCageBlockEntity.getMobDataFromType(this.entityType);
-        if(this.entityType == null){
+        if (this.entityType == null) {
             this.renderedEntity = null;
             this.cachedEntity = null;
         }
         this.color = input.getIntOr("color", 0);
         this.waitingForHarvest = input.getBooleanOr("waitingForHarvest", false);
         this.currentGrowTicks = input.getIntOr("currentGrowTicks", 0);
-        if(hasEntity()) {
+        if (hasEntity()) {
             this.totalGrowTicks = this.calculateTotalGrowTicks();
         }
-        if(!Objects.equals(oldEnv, this.items.getStackInSlot(ENVIRONMENT_SLOT)) || !Objects.equals(oldEntityType, this.entityType)) {
+        if (!ItemStack.matches(oldEnv, this.getStackInSlot(ENVIRONMENT_SLOT)) || !Objects.equals(oldEntityType, this.entityType)) {
             requestModelDataUpdate();
-            if(this.level != null) {
+            if (this.level != null) {
                 this.level.sendBlockUpdated(this.worldPosition, getBlockState(), getBlockState(), 3);
             }
         }
+    }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        // 区块加载与方块更新时向客户端同步完整的笼内环境、生物与生长进度
+        return this.saveCustomOnly(registries);
     }
 
     @Nullable
